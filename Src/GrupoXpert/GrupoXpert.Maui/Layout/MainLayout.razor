@@ -19,12 +19,12 @@
                        Elevation="1"
                        Style="@($"background-image: linear-gradient(to bottom, {Colors.Yellow.Darken4}, {Colors.Yellow.Darken3}, {Colors.Yellow.Darken2}, {Colors.Yellow.Darken1});")">
                 <MudDrawerHeader>
-                    <MudText Typo="Typo.h5">Coin Control</MudText>
+                    <MudText Typo="Typo.h5">Grupo Xpert</MudText>
                 </MudDrawerHeader>
                 <MudNavMenu Class="">
-                    <MudNavLink Match="NavLinkMatch.All" Href="" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="counter" Icon="@Icons.Material.Filled.Countertops">Counter</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="weather" Icon="@Icons.Material.Filled.WebAsset">Weather</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/2" Icon="@Icons.Material.Filled.Home">Dashboard 2</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/3" Icon="@Icons.Material.Filled.Home">Dashboard 3</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" OnClick="@OnLogout" Icon="@Icons.Material.Filled.Logout">Salir</MudNavLink>
                 </MudNavMenu>
             </MudDrawer>
@@ -65,7 +65,7 @@
                 UserName = e.Usuario,
                 Password = e.Clave
             };
-        AuthorizationResponse auth = new GrupoXpert.Client.AuthenticationService().Login(authRequest);
+        AuthorizationResponse auth = new GrupoXpert.Client.AuthenticationService().LoginDummy(authRequest);
         if (auth != null)
         {
             await AuthStateProvider.Login(e.Usuario, auth.Token);

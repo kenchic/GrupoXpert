@@ -1,0 +1,23 @@
+Install-Package Microsoft.EntityFrameworkCore.Tools
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+
+Scaffold-DbContext "Host=localhost; Database=grupoxpert; Username=mi_usuario; Password=mi_contraseña_segura;" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models -force
+
+
+comandos
+dotnet tool install --global dotnet-ef --version 8.* 
+dotnet ef migrations add InitialCreate
+Update-Database -Context GrupoXpertDbContext
+
+
+dotnet tool install -g dotnet-aspnet-codegenerator
+dotnet add Lineup.Api package Microsoft.VisualStudio.Web.CodeGeneration.Design
+dotnet-aspnet-codegenerator controller -p Lineup.Api -name ElementoController -m Elemento -outDir Controllers --no-build -api -actions -dc SphericalContext    (ApiControllerWithContext)
+
+
+FD-10 - completar endpoints
+todo desarrollo - ficha tecnica
+- cambio formato
+
+
+- regla que disparamos textchange si se asigna valor

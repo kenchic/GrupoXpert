@@ -1,25 +1,32 @@
 ﻿@using GrupoXpert.Blazor.EventArgs
 
-<h3>Autenticar</h3>
-<EditForm FormName="Login" OnValidSubmit="OnValidSubmit" Model="credencial">
-    <DataAnnotationsValidator />
-    <MudGrid>
-        <MudItem xs="12" sm="12">
-            <MudCard>
-                <MudCardContent>                    
-                    <MudTextField Label="Usuario" HelperText="Nombre de usuario"
-                                  @bind-Value="credencial.Usuario" For="@(() => credencial.Usuario)" />
-                    <MudTextField Label="Contraseña" Class="mt-3" HelperText="Contraseña de usuario"
-                                  @bind-Value="credencial.Clave" For="@(() => credencial.Clave)" />
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Ingresar</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
-</EditForm>
 
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-center align-center min-height-100">
+    <MudCard Class="pa-4" Style="width: 400px; text-align: center;">
+        
+        <MudCardContent>
+            <MudImage Src="images/logo.jpg" Width="200" Height="150" Class="rounded-lg" />
+            <EditForm FormName="Login" OnValidSubmit="OnValidSubmit" Model="credencial">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12" sm="12">
+                        <MudCard>
+                            <MudCardContent>
+                                <MudTextField Label="Usuario" HelperText="Nombre de usuario"
+                                              @bind-Value="credencial.Usuario" For="@(() => credencial.Usuario)" />
+                                <MudTextField Label="Contraseña" Class="mt-3" HelperText="Contraseña de usuario"
+                                              @bind-Value="credencial.Clave" For="@(() => credencial.Clave)" />
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" style="color: #B5387A" Class="ml-auto">Ingresar</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
 @code {
 
     [Parameter]

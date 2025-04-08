@@ -23,5 +23,17 @@ namespace GrupoXpert.Client
             }
             return null;
         }
+
+        public AuthorizationResponse LoginDummy(AuthorizationRequest authorization)
+        {
+
+            AuthorizationResponse auth = new AuthorizationResponse()
+            {
+                Message = string.Empty,                
+                Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJHQUxWQVJFWiIsIm5iZiI6MTc0NDA0NTE2NiwiZXhwIjoxNzQ0MDQ1MjI2LCJpYXQiOjE3NDQwNDUxNjZ9.vMHtjrrOwv2IBpFnF_D7A8LG6-cwdiBWfP2urSZFAzw"
+            };
+
+            return auth;
+        }
     }
 }

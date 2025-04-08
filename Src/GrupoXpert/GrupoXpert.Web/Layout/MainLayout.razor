@@ -9,7 +9,7 @@
 <AuthorizeView>
     <Authorized>
         <MudLayout>
-            <MudAppBar Elevation="1" Style="@($"background:{Colors.Yellow.Darken4};")">
+            <MudAppBar Elevation="1" Style="@($"background:{Colors.Purple.Darken3};")">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" Color="Color.Inherit" OnClick="@ToggleDrawer" />
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
@@ -17,23 +17,21 @@
 
             <MudDrawer @bind-Open="@abrirMenu"
                        Elevation="1"
-                       Style="@($"background-image: linear-gradient(to bottom, {Colors.Yellow.Darken4}, {Colors.Yellow.Darken3}, {Colors.Yellow.Darken2}, {Colors.Yellow.Darken1});")">
+                       Style="@($"background-image: linear-gradient(to bottom, {Colors.Purple.Darken3}, {Colors.Purple.Darken2}, {Colors.Purple.Darken1}, {Colors.Purple.Lighten1});")">
                 <MudDrawerHeader>
                     <MudText Typo="Typo.h5">Coin Control</MudText>
                 </MudDrawerHeader>
-                <MudNavMenu Class="">
-                    <MudNavLink Match="NavLinkMatch.All" Href="" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="counter" Icon="@Icons.Material.Filled.Countertops">Counter</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="weather" Icon="@Icons.Material.Filled.WebAsset">Weather</MudNavLink>
+                <MudNavMenu Style="color: white">
+                    <MudNavLink Match="NavLinkMatch.All" Href="" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/dash2" Icon="@Icons.Material.Filled.Home">Dashboard 2</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/dash3" Icon="@Icons.Material.Filled.Home">Dashboard 3</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" OnClick="@OnLogout" Icon="@Icons.Material.Filled.Logout">Salir</MudNavLink>
                 </MudNavMenu>
             </MudDrawer>
 
-            <MudMainContent Class="pt-16 px-16">
-                <MudContainer Class="mt-6">
-                    <MudAlert Severity="Severity.Success" Class="mt-16">
-                        @Body
-                    </MudAlert>
+            <MudMainContent Class="pt-16 px-5">
+                <MudContainer Class="mt-3">
+                    @Body
                 </MudContainer>
             </MudMainContent>
         </MudLayout>
@@ -65,7 +63,7 @@
                 UserName = e.Usuario,
                 Password = e.Clave
             };
-        AuthorizationResponse auth = new GrupoXpert.Client.AuthenticationService().Login(authRequest);
+        AuthorizationResponse auth = new GrupoXpert.Client.AuthenticationService().LoginDummy(authRequest);
         if (auth != null)
         {
             await ((CustomAuthenticationStateProvider)AuthenticationStateProvider!).UpdateAuthenticationState(authRequest.UserName, auth.Token);
