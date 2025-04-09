@@ -1,0 +1,81 @@
+﻿@page "/home3"
+@using GrupoXpert.Blazor.Models
+
+<PageTitle>Grupo Xpert</PageTitle>
+
+<h1>Bienvenido a GrupoXpert 3</h1>
+
+<Dashboard3 Servicios="servicios" MostrarFiltros="true" />
+@code {
+
+    private List<Servicio> servicios = new List<Servicio>
+    {
+        new Servicio
+        {
+            Id = 1,
+            Titulo = "Asesorías Académicas",
+            Descripcion = "Ofrecemos asesorías personalizadas para estudiantes en diversas áreas académicas, ayudándote a mejorar tu rendimiento y alcanzar tus metas educativas.",
+            Icono = "fas fa-graduation-cap",
+            ColorFondo = "#4285F4",
+            UrlDestino = "/servicios/asesorias",
+            Destacado = true,
+            Categoria = "Académico"
+        },
+        new Servicio
+        {
+            Id = 2,
+            Titulo = "Consultorías Profesionales",
+            Descripcion = "Nuestro equipo de expertos te brinda consultoría especializada para resolver problemas específicos y optimizar procesos en tu empresa o proyecto.",
+            Icono = "fas fa-briefcase",
+            ColorFondo = "#34A853",
+            UrlDestino = "/servicios/consultorias",
+            Destacado = false,
+            Categoria = "Profesional"
+        },
+        new Servicio
+        {
+            Id = 3,
+            Titulo = "Trabajos de Grado",
+            Descripcion = "Te acompañamos en el desarrollo de tu trabajo de grado, desde la definición del tema hasta la presentación final, garantizando calidad académica.",
+            Icono = "fas fa-book",
+            ImagenUrl = "images/trabajos-grado.jpg",
+            ColorFondo = "#FBBC05",
+            UrlDestino = "/servicios/trabajos-grado",
+            Destacado = true,
+            Categoria = "Académico"
+        },
+        new Servicio
+        {
+            Id = 4,
+            Titulo = "Videos Inspiracionales",
+            Descripcion = "Accede a nuestra colección de videos donde profesionales comparten sus experiencias superando adversidades para alcanzar sus metas y sueños.",
+            Icono = "fas fa-video",
+            ColorFondo = "#EA4335",
+            UrlDestino = "/servicios/videos",
+            Destacado = false,
+            Categoria = "Inspiracional"
+        },
+        new Servicio
+        {
+            Id = 5,
+            Titulo = "Mentoría Personalizada",
+            Descripcion = "Conectamos estudiantes y profesionales con mentores experimentados que los guiarán en su desarrollo académico y profesional.",
+            Icono = "fas fa-user-tie",
+            ColorFondo = "#8E44AD",
+            UrlDestino = "/servicios/mentoria",
+            Destacado = false,
+            Categoria = "Profesional"
+        },
+        new Servicio
+        {
+            Id = 6,
+            Titulo = "Talleres Prácticos",
+            Descripcion = "Participa en nuestros talleres prácticos donde aprenderás habilidades específicas aplicables inmediatamente a tu campo de estudio o trabajo.",
+            Icono = "fas fa-tools",
+            ColorFondo = "#16A085",
+            UrlDestino = "/servicios/talleres",
+            Destacado = true,
+            Categoria = "Formación"
+        }
+    };
+}

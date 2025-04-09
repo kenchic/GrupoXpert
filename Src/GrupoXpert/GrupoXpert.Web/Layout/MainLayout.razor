@@ -9,7 +9,7 @@
 <AuthorizeView>
     <Authorized>
         <MudLayout>
-            <MudAppBar Elevation="1" Style="@($"background:{Colors.Purple.Darken3};")">
+            <MudAppBar Elevation="1" Style="@($"background: #4a70af;")">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" Color="Color.Inherit" OnClick="@ToggleDrawer" />
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
@@ -17,15 +17,15 @@
 
             <MudDrawer @bind-Open="@abrirMenu"
                        Elevation="1"
-                       Style="@($"background-image: linear-gradient(to bottom, {Colors.Purple.Darken3}, {Colors.Purple.Darken2}, {Colors.Purple.Darken1}, {Colors.Purple.Lighten1});")">
+                       Style="@($"color: white; background-image: linear-gradient(to bottom, #4a70af, #566aa9, #6264a3, #7a5797, #855192, #914b8c);")">
                 <MudDrawerHeader>
-                    <MudText Typo="Typo.h5">Coin Control</MudText>
+                    <MudText Typo="Typo.h5" Style="color: white">Grupo Xpert</MudText>
                 </MudDrawerHeader>
-                <MudNavMenu Style="color: white">
-                    <MudNavLink Match="NavLinkMatch.All" Href="" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="/dash2" Icon="@Icons.Material.Filled.Home">Dashboard 2</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" Href="/dash3" Icon="@Icons.Material.Filled.Home">Dashboard 3</MudNavLink>
-                    <MudNavLink Match="NavLinkMatch.All" OnClick="@OnLogout" Icon="@Icons.Material.Filled.Logout">Salir</MudNavLink>
+                <MudNavMenu Dense="true" Rounded="true" Color="Color.Secondary">
+                    <MudNavLink Href="" IconColor="Color.Info" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
+                    <MudNavLink Href="/home2" IconColor="Color.Info" Icon="@Icons.Material.Filled.Home">Dashboard 2</MudNavLink>
+                    <MudNavLink Href="/home3" IconColor="Color.Info" Icon="@Icons.Material.Filled.Home">Dashboard 3</MudNavLink>
+                    <MudNavLink OnClick="@OnLogout" IconColor="Color.Info" Icon="@Icons.Material.Filled.Logout">Salir</MudNavLink>
                 </MudNavMenu>
             </MudDrawer>
 

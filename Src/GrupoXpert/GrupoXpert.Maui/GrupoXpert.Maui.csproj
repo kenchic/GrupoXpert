@@ -86,4 +86,10 @@
       <Folder Include="Components\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Pages\Home2.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+    </ItemGroup>
+
 </Project>
