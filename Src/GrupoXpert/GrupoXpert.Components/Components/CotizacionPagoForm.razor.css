@@ -1,0 +1,298 @@
+/* Estilos para el componente de Cotización y Pago */
+
+.cotizacion-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.detalle-costos {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resumen-pago {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.resumen-pago .mud-text {
+    color: white !important;
+}
+
+.modalidad-pago {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.modalidad-pago:hover {
+    border-color: var(--mud-palette-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modalidad-pago.selected {
+    border-color: var(--mud-palette-primary);
+    background: rgba(var(--mud-palette-primary-rgb), 0.05);
+}
+
+.fases-cronograma {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.fase-item {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.fase-item:hover {
+    background-color: #f8f9fa;
+}
+
+.fase-item:last-child {
+    border-bottom: none;
+}
+
+.metodo-pago-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.metodo-pago-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.metodo-pago-card:hover {
+    border-color: var(--mud-palette-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metodo-pago-card.selected {
+    border-color: var(--mud-palette-primary);
+    background: rgba(var(--mud-palette-primary-rgb), 0.05);
+}
+
+.total-destacado {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--mud-palette-primary);
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.descuento-badge {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.urgente-badge {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.procesando-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.procesando-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.slide-in {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cotizacion-container {
+        padding: 10px;
+    }
+    
+    .detalle-costos,
+    .resumen-pago {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .metodo-pago-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .total-destacado {
+        font-size: 1.25rem;
+    }
+    
+    .modalidad-pago {
+        padding: 15px;
+        margin: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .cotizacion-container {
+        padding: 5px;
+    }
+    
+    .detalle-costos,
+    .resumen-pago,
+    .modalidad-pago {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .total-destacado {
+        font-size: 1.1rem;
+    }
+    
+    .procesando-content {
+        padding: 20px;
+        margin: 20px;
+    }
+}
+
+/* Estilos para tablas en dispositivos móviles */
+@media (max-width: 600px) {
+    .mud-table-container {
+        overflow-x: auto;
+    }
+    
+    .mud-table {
+        min-width: 500px;
+    }
+}
+
+/* Efectos hover mejorados */
+.mud-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.mud-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Estilos para estados de validación */
+.mud-input-error {
+    border-color: #f44336 !important;
+}
+
+.mud-input-success {
+    border-color: #4caf50 !important;
+}
+
+/* Personalización de colores */
+:root {
+    --cotizacion-primary: #1976d2;
+    --cotizacion-secondary: #dc004e;
+    --cotizacion-success: #388e3c;
+    --cotizacion-warning: #f57c00;
+    --cotizacion-error: #d32f2f;
+    --cotizacion-info: #0288d1;
+}
+
+/* Estilos para elementos destacados */
+.destacado {
+    background: linear-gradient(135deg, var(--cotizacion-primary) 0%, var(--cotizacion-secondary) 100%);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.info-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.info-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+}

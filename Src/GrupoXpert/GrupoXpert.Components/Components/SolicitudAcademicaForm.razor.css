@@ -1,0 +1,166 @@
+.solicitud-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.solicitud-container .mud-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.solicitud-container .mud-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.solicitud-container .mud-card-header .mud-card-header-content {
+    padding: 24px;
+}
+
+.solicitud-container .mud-card-header .mud-icon-root {
+    color: white;
+}
+
+.solicitud-container .mud-card-header .mud-typography {
+    color: white;
+    font-weight: 600;
+}
+
+.solicitud-container .mud-card-content {
+    padding: 32px;
+}
+
+.solicitud-container .mud-card-actions {
+    padding: 24px 32px;
+    background-color: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+.solicitud-container .mud-input-outlined {
+    border-radius: 8px;
+}
+
+.solicitud-container .mud-input-outlined:hover {
+    border-color: #667eea;
+}
+
+.solicitud-container .mud-input-outlined.mud-input-focused {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.solicitud-container .mud-select-outlined {
+    border-radius: 8px;
+}
+
+.solicitud-container .mud-select-outlined:hover {
+    border-color: #667eea;
+}
+
+.solicitud-container .mud-select-outlined.mud-select-focused {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.solicitud-container .mud-button-filled-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-transform: none;
+    transition: all 0.3s ease;
+}
+
+.solicitud-container .mud-button-filled-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.solicitud-container .mud-button-filled-primary:disabled {
+    background: #e0e0e0;
+    color: #9e9e9e;
+    transform: none;
+    box-shadow: none;
+}
+
+.solicitud-container .mud-checkbox {
+    margin: 8px 0;
+}
+
+.solicitud-container .mud-checkbox .mud-checkbox-label {
+    font-weight: 500;
+}
+
+.solicitud-container .mud-paper {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.solicitud-container .mud-paper:hover {
+    border-color: #667eea;
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+.solicitud-container .mud-paper.mud-border-primary {
+    border-color: #667eea;
+    background-color: rgba(102, 126, 234, 0.1);
+}
+
+.solicitud-container .mud-list-item {
+    border-radius: 8px;
+    margin: 4px 0;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.solicitud-container .mud-list-item:hover {
+    background-color: #e9ecef;
+}
+
+.solicitud-container .mud-icon-button {
+    border-radius: 50%;
+}
+
+.solicitud-container .mud-icon-button:hover {
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+.solicitud-container .validation-message {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.solicitud-container .mud-input-helper-text {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.solicitud-container .gap-2 {
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .solicitud-container {
+        padding: 10px;
+    }
+    
+    .solicitud-container .mud-card-content {
+        padding: 20px;
+    }
+    
+    .solicitud-container .mud-card-actions {
+        padding: 16px 20px;
+    }
+    
+    .solicitud-container .mud-card-header .mud-card-header-content {
+        padding: 16px;
+    }
+    
+    .solicitud-container .mud-typography.mud-typography-h4 {
+        font-size: 1.5rem;
+    }
+}

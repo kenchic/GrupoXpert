@@ -1,0 +1,236 @@
+@page "/cotizacion-pago"
+@using GrupoXpert.Blazor.Models
+@using GrupoXpert.Blazor.Components
+@rendermode InteractiveServer
+
+<PageTitle>Cotización y Pago - GrupoXpert</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4">
+    @if (!mostrarFormulario)
+    {
+        <!-- Sección promocional -->
+        <MudCard Elevation="3" Class="mb-6">
+            <MudCardContent Class="pa-8">
+                <div class="text-center">
+                    <MudIcon Icon="Icons.Material.Filled.RequestQuote" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+                    <MudText Typo="Typo.h3" Class="mb-4" Color="Color.Primary">
+                        Cotización Automática
+                    </MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4" Color="Color.Secondary">
+                        Obtén tu presupuesto personalizado al instante
+                    </MudText>
+                    <MudText Typo="Typo.body1" Class="mb-6" Style="max-width: 600px; margin: 0 auto;">
+                        Nuestro sistema de cotización automática te permite conocer el costo exacto de tu trabajo académico 
+                        en tiempo real. Elige entre pago único con descuento o pago por fases según tu conveniencia.
+                    </MudText>
+                    
+                    <MudGrid Justify="Justify.Center" Class="mb-6">
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="Icons.Material.Filled.Speed" Color="Color.Success" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Success">Instantáneo</MudText>
+                                    <MudText Typo="Typo.body2">Cotización en tiempo real</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="Icons.Material.Filled.Discount" Color="Color.Warning" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Warning">15% Descuento</MudText>
+                                    <MudText Typo="Typo.body2">En pago único</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="Icons.Material.Filled.Schedule" Color="Color.Info" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Info">Pago por Fases</MudText>
+                                    <MudText Typo="Typo.body2">Flexibilidad de pago</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="Icons.Material.Filled.Security" Color="Color.Error" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Error">Pago Seguro</MudText>
+                                    <MudText Typo="Typo.body2">Múltiples plataformas</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                    
+                    <MudButton Variant="Variant.Filled" 
+                              Color="Color.Primary" 
+                              Size="Size.Large"
+                              StartIcon="Icons.Material.Filled.Calculate"
+                              OnClick="@(() => mostrarFormulario = true)"
+                              Class="px-8 py-3">
+                        Generar Cotización
+                    </MudButton>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    }
+    else
+    {
+        <!-- Formulario de cotización -->
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudText Typo="Typo.h4" Color="Color.Primary">
+                <MudIcon Icon="Icons.Material.Filled.RequestQuote" Class="mr-2" />
+                Cotización y Pago
+            </MudText>
+            <MudButton Variant="Variant.Outlined" 
+                      Color="Color.Secondary" 
+                      StartIcon="Icons.Material.Filled.ArrowBack"
+                      OnClick="@(() => mostrarFormulario = false)">
+                Volver
+            </MudButton>
+        </div>
+        
+        <CotizacionPagoForm OnCotizacionGenerada="@OnCotizacionGenerada"
+                           OnPagoIniciado="@OnPagoIniciado"
+                           OnCancelado="@OnCancelado"
+                           CotizacionInicial="@cotizacionActual" />
+    }
+</MudContainer>
+
+<!-- Snackbar para notificaciones -->
+<MudSnackbarProvider />
+
+@code {
+    [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    
+    private bool mostrarFormulario = false;
+    private GrupoXpert.Blazor.Models.CotizacionPago? cotizacionActual;
+
+    private async Task OnCotizacionGenerada(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        cotizacionActual = cotizacion;
+        
+        // Mostrar notificación de cotización actualizada
+        Snackbar.Add($"Cotización actualizada: {cotizacion.Total:C}", Severity.Info);
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task OnPagoIniciado(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        try
+        {
+            // Simular procesamiento de pago
+            Snackbar.Add("Iniciando proceso de pago...", Severity.Info);
+            
+            // Aquí iría la integración real con la plataforma de pagos
+            await SimularProcesoPago(cotizacion);
+            
+            // Simular respuesta exitosa
+            cotizacion.EstadoPago = EstadoPago.Completado;
+            cotizacion.TransactionId = GenerarTransactionId();
+            
+            Snackbar.Add("¡Pago procesado exitosamente!", Severity.Success);
+            
+            // Redirigir a página de confirmación o dashboard
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            cotizacion.EstadoPago = EstadoPago.Fallido;
+            Snackbar.Add($"Error en el procesamiento: {ex.Message}", Severity.Error);
+        }
+    }
+    
+    private async Task OnCancelado()
+    {
+        mostrarFormulario = false;
+        cotizacionActual = null;
+        
+        Snackbar.Add("Cotización cancelada", Severity.Warning);
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task SimularProcesoPago(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        // Simular tiempo de procesamiento
+        await Task.Delay(3000);
+        
+        // Simular diferentes escenarios de pago según la plataforma
+        switch (cotizacion.PlataformaPago?.ToLower())
+        {
+            case "paypal":
+                await SimularPagoPayPal(cotizacion);
+                break;
+            case "stripe":
+                await SimularPagoStripe(cotizacion);
+                break;
+            case "mercadopago":
+                await SimularPagoMercadoPago(cotizacion);
+                break;
+            default:
+                await SimularPagoGenerico(cotizacion);
+                break;
+        }
+    }
+
+    private async Task SimularPagoPayPal(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        // Simular integración con PayPal
+        Snackbar.Add("Procesando con PayPal...", Severity.Info);
+        await Task.Delay(2000);
+        
+        // Simular éxito (90% de probabilidad)
+        if (new Random().NextDouble() > 0.1)
+        {
+            cotizacion.TransactionId = $"PP_{DateTime.Now:yyyyMMddHHmmss}";
+            Snackbar.Add("Pago PayPal completado", Severity.Success);
+        }
+        else
+        {
+            throw new Exception("Error de conexión con PayPal");
+        }
+    }
+
+    private async Task SimularPagoStripe(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        // Simular integración con Stripe
+        Snackbar.Add("Procesando con Stripe...", Severity.Info);
+        await Task.Delay(1500);
+        
+        cotizacion.TransactionId = $"ST_{DateTime.Now:yyyyMMddHHmmss}";
+        Snackbar.Add("Pago Stripe completado", Severity.Success);
+    }
+
+    private async Task SimularPagoMercadoPago(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        // Simular integración con Mercado Pago
+        Snackbar.Add("Procesando con Mercado Pago...", Severity.Info);
+        await Task.Delay(2500);
+        
+        cotizacion.TransactionId = $"MP_{DateTime.Now:yyyyMMddHHmmss}";
+        Snackbar.Add("Pago Mercado Pago completado", Severity.Success);
+    }
+
+    private async Task SimularPagoGenerico(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    {
+        // Simular procesamiento genérico
+        Snackbar.Add("Procesando pago...", Severity.Info);
+        await Task.Delay(2000);
+        
+        cotizacion.TransactionId = GenerarTransactionId();
+        Snackbar.Add("Pago procesado exitosamente", Severity.Success);
+    }
+    
+    private string GenerarTransactionId()
+    {
+        return $"TXN_{DateTime.Now:yyyyMMddHHmmss}_{new Random().Next(1000, 9999)}";
+    }
+}

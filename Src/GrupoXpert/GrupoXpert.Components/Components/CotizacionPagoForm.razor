@@ -1,0 +1,438 @@
+@using GrupoXpert.Blazor.Models
+@using System.ComponentModel.DataAnnotations
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="pa-6">
+    <MudCard Elevation="3">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="Icons.Material.Filled.RequestQuote" Class="mr-3" />
+                    <MudText Typo="Typo.h5">Cotización y Pago</MudText>
+                </div>
+            </CardHeaderContent>
+        </MudCardHeader>
+        
+        <MudCardContent>
+            <EditForm Model="@cotizacion" OnValidSubmit="@OnValidSubmit">
+                <DataAnnotationsValidator />
+                
+                <!-- Información del Trabajo -->
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" @bind-Value="cotizacion.TipoTrabajo" Label="Tipo de Trabajo" 
+                                  Variant="Variant.Outlined" Required="true" 
+                                  For="@(() => cotizacion.TipoTrabajo)">
+                                    @foreach (var tipo in TarifasAcademicas.MultiplicadorTipo.Keys)
+                                    {
+                                        <MudSelectItem Value="@tipo">@tipo</MudSelectItem>
+                                    }
+                        </MudSelect>
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" @bind-Value="cotizacion.NivelAcademico" Label="Nivel Académico" 
+                                  Variant="Variant.Outlined" Required="true" 
+                                  For="@(() => cotizacion.NivelAcademico)">
+                            @foreach (var nivel in TarifasAcademicas.CostoPorNivel.Keys)
+                            {
+                                <MudSelectItem Value="@nivel">@nivel</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <MudNumericField @bind-Value="cotizacion.NumeroPaginas" Label="Número de Páginas" 
+                                        Variant="Variant.Outlined" Min="1" Required="true"
+                                        For="@(() => cotizacion.NumeroPaginas)" />
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <MudNumericField @bind-Value="cotizacion.NumeroWords" Label="Número de Palabras" 
+                                        Variant="Variant.Outlined" Min="1" Required="true"
+                                        For="@(() => cotizacion.NumeroWords)" />
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <MudDatePicker @bind-Date="fechaEntrega" Label="Fecha de Entrega" 
+                                      Variant="Variant.Outlined" Required="true"
+                                      MinDate="DateTime.Today.AddDays(1)" />
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <div class="d-flex flex-column gap-2">
+                            <MudCheckBox @bind-Value="cotizacion.EsUrgente" Label="Entrega Urgente (+50%)" 
+                                        Color="Color.Warning"/>
+                            <MudCheckBox @bind-Value="cotizacion.EntregaPorFases" Label="Entrega por Fases (+10%)"
+                                         Color="Color.Info" />
+                        </div>
+                    </MudItem>
+                </MudGrid>
+                
+                <MudDivider Class="my-6" />
+                
+                <!-- Detalle de Costos -->
+                <MudText Typo="Typo.h6" Class="mb-4">Detalle de Costos</MudText>
+                
+                <MudGrid>
+                    <MudItem xs="12" md="8">
+                        <MudTable Items="@detallesCosto" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm">
+                            <HeaderContent>
+                                <MudTh>Concepto</MudTh>
+                                <MudTh Style="text-align:right">Cantidad</MudTh>
+                                <MudTh Style="text-align:right">Precio Unit.</MudTh>
+                                <MudTh Style="text-align:right">Total</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="detalle">
+                                <MudTd DataLabel="Concepto">@detalle.Concepto</MudTd>
+                                <MudTd DataLabel="Cantidad" Style="text-align:right">@detalle.Cantidad</MudTd>
+                                <MudTd DataLabel="Precio Unit." Style="text-align:right">@detalle.PrecioUnitario.ToString("C")</MudTd>
+                                <MudTd DataLabel="Total" Style="text-align:right">@detalle.Total.ToString("C")</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="4">
+                        <MudCard Elevation="2">
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Class="mb-3">Resumen</MudText>
+                                
+                                <div class="d-flex justify-space-between mb-2">
+                                    <MudText>Subtotal:</MudText>
+                                    <MudText>@cotizacion.Subtotal.ToString("C")</MudText>
+                                </div>
+                                
+                                @if (cotizacion.Descuento > 0)
+                                {
+                                    <div class="d-flex justify-space-between mb-2">
+                                        <MudText Color="Color.Success">Descuento:</MudText>
+                                        <MudText Color="Color.Success">-@cotizacion.Descuento.ToString("C")</MudText>
+                                    </div>
+                                }
+                                
+                                <MudDivider Class="my-2" />
+                                
+                                <div class="d-flex justify-space-between">
+                                    <MudText Typo="Typo.h6">Total:</MudText>
+                                    <MudText Typo="Typo.h6" Color="Color.Primary">@cotizacion.Total.ToString("C")</MudText>
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+                
+                <MudDivider Class="my-6" />
+                
+                <!-- Modalidad de Pago -->
+                <MudText Typo="Typo.h6" Class="mb-4">Modalidad de Pago</MudText>
+                
+                <MudRadioGroup @bind-Value="cotizacion.ModalidadPago" T="ModalidadPago">
+                    <MudRadio Option="ModalidadPago.PagoUnico" Color="Color.Success">
+                        <MudText>
+                            <strong>Pago Único</strong> - Descuento del 15%
+                            <br />
+                            <small class="text-muted">Total: @((cotizacion.Subtotal * (1 - TarifasAcademicas.DescuentoPagoUnico)).ToString("C"))</small>
+                        </MudText>
+                    </MudRadio>
+                    <MudRadio Option="ModalidadPago.PagoPorFases" Color="Color.Info">
+                        <MudText>
+                            <strong>Pago por Fases</strong> - Recargo del 10%
+                            <br />
+                            <small class="text-muted">Total: @((cotizacion.Subtotal * (1 + TarifasAcademicas.RecargoFases)).ToString("C"))</small>
+                        </MudText>
+                    </MudRadio>
+                </MudRadioGroup>
+                
+                @if (cotizacion.ModalidadPago == ModalidadPago.PagoPorFases)
+                {
+                    <MudCard Class="mt-4" Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.subtitle1" Class="mb-3">Cronograma de Pagos</MudText>
+                            
+                            <MudTable Items="@cotizacion.FasesPago" Dense="true" Hover="true">
+                                <HeaderContent>
+                                    <MudTh>Fase</MudTh>
+                                    <MudTh>Descripción</MudTh>
+                                    <MudTh Style="text-align:right">Porcentaje</MudTh>
+                                    <MudTh Style="text-align:right">Monto</MudTh>
+                                    <MudTh Style="text-align:center">Fecha Vencimiento</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="fase">
+                                    <MudTd DataLabel="Fase">@fase.Nombre</MudTd>
+                                    <MudTd DataLabel="Descripción">@fase.Descripcion</MudTd>
+                                    <MudTd DataLabel="Porcentaje" Style="text-align:right">@fase.Porcentaje%</MudTd>
+                                    <MudTd DataLabel="Monto" Style="text-align:right">@fase.Monto.ToString("C")</MudTd>
+                                    <MudTd DataLabel="Fecha" Style="text-align:center">@fase.FechaVencimiento.ToString("dd/MM/yyyy")</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudCardContent>
+                    </MudCard>
+                }
+                
+                <MudDivider Class="my-6" />
+                
+                <!-- Método de Pago -->
+                <MudText Typo="Typo.h6" Class="mb-4">Método de Pago</MudText>
+                
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" @bind-Value="cotizacion.MetodoPago" Label="Seleccionar Método" 
+                                  Variant="Variant.Outlined" Required="true">
+                            @foreach (var metodo in MetodosPago.Disponibles)
+                            {
+                                <MudSelectItem Value="@metodo">@metodo</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    
+                    <MudItem xs="12" md="6">
+                        <MudSelect @bind-Value="cotizacion.PlataformaPago" Label="Plataforma de Pago" 
+                                  Variant="Variant.Outlined" Required="true">
+                            <MudSelectItem Value="@("PayPal")">PayPal</MudSelectItem>
+                            <MudSelectItem Value="@("Stripe")">Stripe</MudSelectItem>
+                            <MudSelectItem Value="@("MercadoPago")">Mercado Pago</MudSelectItem>
+                            <MudSelectItem Value="@("Conekta")">Conekta</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+                
+                <MudDivider Class="my-6" />
+                
+                <!-- Botones de Acción -->
+                <div class="d-flex justify-end gap-3">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@OnCancelar">
+                        Cancelar
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit"
+                              StartIcon="Icons.Material.Filled.Payment" Disabled="@isProcessing">
+                        @if (isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Procesando...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Proceder al Pago</MudText>
+                        }
+                    </MudButton>
+                </div>
+                
+                <ValidationSummary />
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    [Parameter] public EventCallback<CotizacionPago> OnCotizacionGenerada { get; set; }
+    [Parameter] public EventCallback<CotizacionPago> OnPagoIniciado { get; set; }
+    [Parameter] public EventCallback OnCancelado { get; set; }
+    [Parameter] public CotizacionPago? CotizacionInicial { get; set; }
+    
+    private CotizacionPago cotizacion = new();
+    private DateTime? fechaEntrega;
+    private bool isProcessing = false;
+    private List<DetalleCosto> detallesCosto = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (CotizacionInicial != null)
+        {
+            cotizacion = CotizacionInicial;
+            fechaEntrega = cotizacion.FechaEntrega;
+        }
+        else
+        {
+            cotizacion.FechaEntrega = DateTime.Today.AddDays(7);
+            fechaEntrega = cotizacion.FechaEntrega;
+        }
+        
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnTipoTrabajoChanged(string value)
+    {
+        cotizacion.TipoTrabajo = value;
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnNivelAcademicoChanged(string value)
+    {
+        cotizacion.NivelAcademico = value;
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnPaginasChanged(int value)
+    {
+        cotizacion.NumeroPaginas = value;
+        cotizacion.NumeroWords = value * 250; // Estimación de 250 palabras por página
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnPalabrasChanged(int value)
+    {
+        cotizacion.NumeroWords = value;
+        cotizacion.NumeroPaginas = (int)Math.Ceiling(value / 250.0); // Estimación inversa
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnFechaEntregaChanged(DateTime? date)
+    {
+        if (date.HasValue)
+        {
+            cotizacion.FechaEntrega = date.Value;
+            fechaEntrega = date.Value;
+            
+            // Verificar si es urgente (menos de 3 días)
+            var diasRestantes = (date.Value - DateTime.Today).Days;
+            cotizacion.EsUrgente = diasRestantes <= 3;
+            
+            await CalcularCotizacion();
+        }
+    }
+    
+    private async Task OnUrgenteChanged(bool value)
+    {
+        cotizacion.EsUrgente = value;
+        await CalcularCotizacion();
+    }
+    
+    private async Task OnFasesChanged(bool value)
+    {
+        cotizacion.EntregaPorFases = value;
+        await CalcularCotizacion();
+        
+        if (value)
+        {
+            GenerarFasesPago();
+        }
+        else
+        {
+            cotizacion.FasesPago.Clear();
+        }
+    }
+    
+    private async Task CalcularCotizacion()
+    {
+        if (string.IsNullOrEmpty(cotizacion.TipoTrabajo) || string.IsNullOrEmpty(cotizacion.NivelAcademico) || cotizacion.NumeroPaginas <= 0)
+            return;
+        
+        // Obtener tarifas base
+        var costoPorPagina = TarifasAcademicas.CostoPorNivel.GetValueOrDefault(cotizacion.NivelAcademico, 10.00m);
+        var multiplicadorTipo = TarifasAcademicas.MultiplicadorTipo.GetValueOrDefault(cotizacion.TipoTrabajo, 1.0m);
+        
+        cotizacion.CostoPorPagina = costoPorPagina * multiplicadorTipo;
+        cotizacion.CostoBase = cotizacion.CostoPorPagina * cotizacion.NumeroPaginas;
+        
+        // Calcular recargos
+        cotizacion.CostoUrgencia = cotizacion.EsUrgente ? cotizacion.CostoBase * TarifasAcademicas.RecargoUrgencia : 0;
+        cotizacion.CostoFases = cotizacion.EntregaPorFases ? cotizacion.CostoBase * TarifasAcademicas.RecargoFases : 0;
+        
+        cotizacion.Subtotal = cotizacion.CostoBase + cotizacion.CostoUrgencia + cotizacion.CostoFases;
+        
+        // Calcular descuento o recargo según modalidad
+        if (cotizacion.ModalidadPago == ModalidadPago.PagoUnico)
+        {
+            cotizacion.Descuento = cotizacion.Subtotal * TarifasAcademicas.DescuentoPagoUnico;
+            cotizacion.Total = cotizacion.Subtotal - cotizacion.Descuento;
+        }
+        else
+        {
+            cotizacion.Descuento = 0;
+            cotizacion.Total = cotizacion.Subtotal;
+        }
+        
+        GenerarDetalleCostos();
+        
+        await OnCotizacionGenerada.InvokeAsync(cotizacion);
+    }
+    
+    private void GenerarDetalleCostos()
+    {
+        detallesCosto.Clear();
+        
+        detallesCosto.Add(new DetalleCosto
+        {
+            Concepto = $"{cotizacion.TipoTrabajo} - {cotizacion.NivelAcademico}",
+            Cantidad = cotizacion.NumeroPaginas,
+            PrecioUnitario = cotizacion.CostoPorPagina,
+            Total = cotizacion.CostoBase
+        });
+        
+        if (cotizacion.EsUrgente)
+        {
+            detallesCosto.Add(new DetalleCosto
+            {
+                Concepto = "Recargo por Urgencia (50%)",
+                Cantidad = 1,
+                PrecioUnitario = cotizacion.CostoUrgencia,
+                Total = cotizacion.CostoUrgencia
+            });
+        }
+        
+        if (cotizacion.EntregaPorFases)
+        {
+            detallesCosto.Add(new DetalleCosto
+            {
+                Concepto = "Recargo por Fases (10%)",
+                Cantidad = 1,
+                PrecioUnitario = cotizacion.CostoFases,
+                Total = cotizacion.CostoFases
+            });
+        }
+    }
+    
+    private void GenerarFasesPago()
+    {
+        cotizacion.FasesPago.Clear();
+        
+        var fases = FasesEstandar.FasesDefault.Select(f => new DetalleFase
+        {
+            Nombre = f.Nombre,
+            Descripcion = f.Descripcion,
+            Porcentaje = f.Porcentaje,
+            Monto = cotizacion.Total * (f.Porcentaje / 100.0m),
+            Estado = EstadoPago.Pendiente
+        }).ToList();
+        
+        // Calcular fechas de vencimiento
+        var diasTotales = (cotizacion.FechaEntrega - DateTime.Today).Days;
+        var diasPorFase = diasTotales / fases.Count;
+        
+        for (int i = 0; i < fases.Count; i++)
+        {
+            fases[i].FechaVencimiento = DateTime.Today.AddDays((i + 1) * diasPorFase);
+        }
+        
+        cotizacion.FasesPago = fases;
+    }
+    
+    private async Task OnValidSubmit()
+    {
+        isProcessing = true;
+        
+        try
+        {
+            cotizacion.EstadoPago = EstadoPago.Procesando;
+            cotizacion.FechaPago = DateTime.Now;
+            
+            await OnPagoIniciado.InvokeAsync(cotizacion);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+    
+    private async Task OnCancelar()
+    {
+        await OnCancelado.InvokeAsync();
+    }
+    
+    public class DetalleCosto
+    {
+        public string Concepto { get; set; } = string.Empty;
+        public int Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
+        public decimal Total { get; set; }
+    }
+}

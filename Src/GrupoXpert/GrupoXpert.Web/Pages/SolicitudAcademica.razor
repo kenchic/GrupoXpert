@@ -1,0 +1,109 @@
+@page "/solicitud-academica"
+@using GrupoXpert.Blazor.Models
+@using GrupoXpert.Blazor.Components
+@using MudBlazor
+
+<PageTitle>Solicitud Académica - Grupo Xpert</PageTitle>
+
+<div class="solicitud-page">
+    @if (!mostrarFormulario)
+    {
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-6">
+            <MudPaper Class="pa-8 text-center" Elevation="3">
+                <MudIcon Icon="Icons.Material.Filled.School" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+                <MudText Typo="Typo.h3" Class="mb-4">Solicitud Académica Personalizada</MudText>
+                <MudText Typo="Typo.body1" Class="mb-6">
+                    Obtén ayuda profesional para tus trabajos académicos. Nuestro equipo de expertos te acompañará 
+                    en la elaboración de ensayos, tesis, artículos y más, garantizando calidad y cumplimiento de normas académicas.
+                </MudText>
+                
+                <MudGrid Class="mb-6">
+                    <MudItem xs="12" md="4">
+                        <MudPaper Class="pa-4" Elevation="1">
+                            <MudIcon Icon="Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mb-2" />
+                            <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Calidad Garantizada</MudText>
+                            <MudText Typo="Typo.body2">Trabajos elaborados por profesionales especializados</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudPaper Class="pa-4" Elevation="1">
+                            <MudIcon Icon="Icons.Material.Filled.Schedule" Color="Color.Info" Class="mb-2" />
+                            <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Entrega Puntual</MudText>
+                            <MudText Typo="Typo.body2">Cumplimos con los plazos establecidos</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudPaper Class="pa-4" Elevation="1">
+                            <MudIcon Icon="Icons.Material.Filled.Support" Color="Color.Warning" Class="mb-2" />
+                            <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Soporte 24/7</MudText>
+                            <MudText Typo="Typo.body2">Acompañamiento durante todo el proceso</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+                
+                <MudButton Variant="Variant.Filled" 
+                          Color="Color.Primary" 
+                          Size="Size.Large"
+                          StartIcon="Icons.Material.Filled.Add"
+                          OnClick="@(() => mostrarFormulario = true)"
+                          Class="px-8">
+                    Nueva Solicitud
+                </MudButton>
+            </MudPaper>
+        </MudContainer>
+    }
+    else
+    {
+        <MudContainer MaxWidth="MaxWidth.Large">
+            <MudBreadcrumbs Items="breadcrumbItems" Class="mb-4" />
+            
+            <SolicitudAcademicaForm OnSolicitudEnviada="OnSolicitudEnviada" />
+            
+            <div class="mt-4 text-center">
+                <MudButton Variant="Variant.Text" 
+                          Color="Color.Secondary"
+                          StartIcon="Icons.Material.Filled.ArrowBack"
+                          OnClick="@(() => mostrarFormulario = false)">
+                    Volver
+                </MudButton>
+            </div>
+        </MudContainer>
+    }
+</div>
+
+<!-- Snackbar para notificaciones -->
+<MudSnackbarProvider />
+
+@code {
+    private bool mostrarFormulario = false;
+    
+    private List<BreadcrumbItem> breadcrumbItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Inicio", href: "/", icon: Icons.Material.Filled.Home),
+        new BreadcrumbItem("Solicitud Académica", href: null, disabled: true)
+    };
+    
+    [Inject] private ISnackbar Snackbar { get; set; }
+    
+    private async Task OnSolicitudEnviada()
+    {
+        try
+        {
+            // Aquí iría la lógica para enviar la solicitud al backend
+            // Por ahora simulamos el envío
+            await Task.Delay(2000);
+            
+            Snackbar.Add("¡Solicitud enviada exitosamente! Te contactaremos pronto.", Severity.Success);
+            
+            // Volver a la vista inicial
+            mostrarFormulario = false;
+            
+            // Opcional: Navegar a una página de confirmación
+            // NavigationManager.NavigateTo("/solicitud-confirmacion");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al enviar la solicitud: {ex.Message}", Severity.Error);
+        }
+    }
+}
