@@ -144,7 +144,7 @@ public class CotizacionPago
 3. Incluye los using necesarios en `_Imports.razor`:
 
 ```razor
-@using GrupoXpert.Blazor.Models
+@using GrupoXpert.Core.Models
 @using GrupoXpert.Blazor.Components
 @using MudBlazor
 ```

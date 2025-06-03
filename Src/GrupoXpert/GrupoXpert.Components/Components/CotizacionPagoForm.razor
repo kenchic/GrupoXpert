@@ -1,4 +1,4 @@
-@using GrupoXpert.Blazor.Models
+@using GrupoXpert.Core.Models
 @using System.ComponentModel.DataAnnotations
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="pa-6">
@@ -6,7 +6,7 @@
         <MudCardHeader>
             <CardHeaderContent>
                 <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="Icons.Material.Filled.RequestQuote" Class="mr-3" />
+                    <MudIcon Icon="@Icons.Material.Filled.RequestQuote" Class="mr-3" />
                     <MudText Typo="Typo.h5">Cotización y Pago</MudText>
                 </div>
             </CardHeaderContent>
@@ -126,14 +126,14 @@
                 <MudText Typo="Typo.h6" Class="mb-4">Modalidad de Pago</MudText>
                 
                 <MudRadioGroup @bind-Value="cotizacion.ModalidadPago" T="ModalidadPago">
-                    <MudRadio Option="ModalidadPago.PagoUnico" Color="Color.Success">
+                    <MudRadio Value="ModalidadPago.PagoUnico" Color="Color.Success">
                         <MudText>
                             <strong>Pago Único</strong> - Descuento del 15%
                             <br />
                             <small class="text-muted">Total: @((cotizacion.Subtotal * (1 - TarifasAcademicas.DescuentoPagoUnico)).ToString("C"))</small>
                         </MudText>
                     </MudRadio>
-                    <MudRadio Option="ModalidadPago.PagoPorFases" Color="Color.Info">
+                    <MudRadio Value="ModalidadPago.PagoPorFases" Color="Color.Info">
                         <MudText>
                             <strong>Pago por Fases</strong> - Recargo del 10%
                             <br />
@@ -203,7 +203,7 @@
                         Cancelar
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit"
-                              StartIcon="Icons.Material.Filled.Payment" Disabled="@isProcessing">
+                              StartIcon="@Icons.Material.Filled.Payment" Disabled="@isProcessing">
                         @if (isProcessing)
                         {
                             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />

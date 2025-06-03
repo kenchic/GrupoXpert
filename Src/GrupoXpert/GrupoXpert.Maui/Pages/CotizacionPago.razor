@@ -1,5 +1,5 @@
 @page "/cotizacion-pago"
-@using GrupoXpert.Blazor.Models
+@using GrupoXpert.Core.Models
 @using GrupoXpert.Blazor.Components
 
 <PageTitle>Cotización y Pago - GrupoXpert</PageTitle>
@@ -11,7 +11,7 @@
         <MudCard Elevation="3" Class="mb-6">
             <MudCardContent Class="pa-8">
                 <div class="text-center">
-                    <MudIcon Icon="Icons.Material.Filled.RequestQuote" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+                    <MudIcon Icon="@Icons.Material.Filled.RequestQuote" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
                     <MudText Typo="Typo.h3" Class="mb-4" Color="Color.Primary">
                         Cotización Automática
                     </MudText>
@@ -27,7 +27,7 @@
                         <MudItem xs="12" sm="6" md="3">
                             <MudCard Elevation="2" Class="pa-4">
                                 <div class="text-center">
-                                    <MudIcon Icon="Icons.Material.Filled.Speed" Color="Color.Success" Size="Size.Large" Class="mb-2" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Success" Size="Size.Large" Class="mb-2" />
                                     <MudText Typo="Typo.h6" Color="Color.Success">Instantáneo</MudText>
                                     <MudText Typo="Typo.body2">Cotización en tiempo real</MudText>
                                 </div>
@@ -37,7 +37,7 @@
                         <MudItem xs="12" sm="6" md="3">
                             <MudCard Elevation="2" Class="pa-4">
                                 <div class="text-center">
-                                    <MudIcon Icon="Icons.Material.Filled.Discount" Color="Color.Warning" Size="Size.Large" Class="mb-2" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Discount" Color="Color.Warning" Size="Size.Large" Class="mb-2" />
                                     <MudText Typo="Typo.h6" Color="Color.Warning">15% Descuento</MudText>
                                     <MudText Typo="Typo.body2">En pago único</MudText>
                                 </div>
@@ -47,7 +47,7 @@
                         <MudItem xs="12" sm="6" md="3">
                             <MudCard Elevation="2" Class="pa-4">
                                 <div class="text-center">
-                                    <MudIcon Icon="Icons.Material.Filled.Schedule" Color="Color.Info" Size="Size.Large" Class="mb-2" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Info" Size="Size.Large" Class="mb-2" />
                                     <MudText Typo="Typo.h6" Color="Color.Info">Pago por Fases</MudText>
                                     <MudText Typo="Typo.body2">Flexibilidad de pago</MudText>
                                 </div>
@@ -57,7 +57,7 @@
                         <MudItem xs="12" sm="6" md="3">
                             <MudCard Elevation="2" Class="pa-4">
                                 <div class="text-center">
-                                    <MudIcon Icon="Icons.Material.Filled.Security" Color="Color.Error" Size="Size.Large" Class="mb-2" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Error" Size="Size.Large" Class="mb-2" />
                                     <MudText Typo="Typo.h6" Color="Color.Error">Pago Seguro</MudText>
                                     <MudText Typo="Typo.body2">Múltiples plataformas</MudText>
                                 </div>
@@ -68,7 +68,7 @@
                     <MudButton Variant="Variant.Filled" 
                               Color="Color.Primary" 
                               Size="Size.Large"
-                              StartIcon="Icons.Material.Filled.Calculate"
+                              StartIcon="@Icons.Material.Filled.Calculate"
                               OnClick="@(() => mostrarFormulario = true)"
                               Class="px-8 py-3">
                         Generar Cotización
@@ -82,12 +82,12 @@
         <!-- Formulario de cotización -->
         <div class="d-flex justify-space-between align-center mb-4">
             <MudText Typo="Typo.h4" Color="Color.Primary">
-                <MudIcon Icon="Icons.Material.Filled.RequestQuote" Class="mr-2" />
+                <MudIcon Icon="@Icons.Material.Filled.RequestQuote" Class="mr-2" />
                 Cotización y Pago
             </MudText>
             <MudButton Variant="Variant.Outlined" 
                       Color="Color.Secondary" 
-                      StartIcon="Icons.Material.Filled.ArrowBack"
+                      StartIcon="@Icons.Material.Filled.ArrowBack"
                       OnClick="@(() => mostrarFormulario = false)">
                 Volver
             </MudButton>
@@ -108,9 +108,9 @@
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     
     private bool mostrarFormulario = false;
-    private GrupoXpert.Blazor.Models.CotizacionPago? cotizacionActual;
+    private GrupoXpert.Core.Models.CotizacionPago? cotizacionActual;
 
-    private async Task OnCotizacionGenerada(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task OnCotizacionGenerada(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         cotizacionActual = cotizacion;
         
@@ -120,7 +120,7 @@
         await Task.CompletedTask;
     }
     
-    private async Task OnPagoIniciado(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task OnPagoIniciado(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         try
         {
@@ -157,7 +157,7 @@
         await Task.CompletedTask;
     }
 
-    private async Task SimularProcesoPago(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task SimularProcesoPago(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         // Simular tiempo de procesamiento
         await Task.Delay(3000);
@@ -180,7 +180,7 @@
         }
     }
 
-    private async Task SimularPagoPayPal(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task SimularPagoPayPal(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         // Simular integración con PayPal
         Snackbar.Add("Procesando con PayPal...", Severity.Info);
@@ -198,7 +198,7 @@
         }
     }
 
-    private async Task SimularPagoStripe(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task SimularPagoStripe(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         // Simular integración con Stripe
         Snackbar.Add("Procesando con Stripe...", Severity.Info);
@@ -208,7 +208,7 @@
         Snackbar.Add("Pago Stripe completado", Severity.Success);
     }
 
-    private async Task SimularPagoMercadoPago(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task SimularPagoMercadoPago(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         // Simular integración con Mercado Pago
         Snackbar.Add("Procesando con Mercado Pago...", Severity.Info);
@@ -218,7 +218,7 @@
         Snackbar.Add("Pago Mercado Pago completado", Severity.Success);
     }
 
-    private async Task SimularPagoGenerico(GrupoXpert.Blazor.Models.CotizacionPago cotizacion)
+    private async Task SimularPagoGenerico(GrupoXpert.Core.Models.CotizacionPago cotizacion)
     {
         // Simular procesamiento genérico
         Snackbar.Add("Procesando pago...", Severity.Info);

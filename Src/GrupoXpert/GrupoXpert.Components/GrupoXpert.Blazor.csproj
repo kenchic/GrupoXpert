@@ -6,14 +6,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\CotizacionPago.cs" />
+    <Compile Remove="Models\Servicio.cs" />
+    <Compile Remove="Models\SolicitudAcademica.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" />
-    <PackageReference Include="MudBlazor" Version="6.19.1" />
+    <PackageReference Include="MudBlazor" Version="8.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GrupoXpert.Core\GrupoXpert.Core.csproj" />
+    <ProjectReference Include="..\GrupoXpert.Tools\GrupoXpert.Tools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
