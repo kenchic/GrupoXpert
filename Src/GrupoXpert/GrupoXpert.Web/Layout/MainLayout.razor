@@ -22,12 +22,16 @@
                 <MudDrawerHeader>
                     <MudText Typo="Typo.h5" Style="color: white">Grupo Xpert</MudText>
                 </MudDrawerHeader>
-                <MudNavMenu Dense="true" Rounded="true" Color="Color.Secondary">
-                    <MudNavLink Href="/" IconColor="Color.Success" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
+                <MudNavMenu Color="Color.Secondary">
+                    <MudNavLink Href="/home" IconColor="Color.Success" Icon="@Icons.Material.Filled.Home">Dashboard 1</MudNavLink>
                     <MudNavLink Href="/home2" IconColor="Color.Success" Icon="@Icons.Material.Filled.Home">Dashboard 2</MudNavLink>
                     <MudNavLink Href="/home3" IconColor="Color.Success" Icon="@Icons.Material.Filled.Home">Dashboard 3</MudNavLink>
                     <MudNavLink Href="/solicitud-academica" IconColor="Color.Success" Icon="@Icons.Material.Filled.BarChart">Solicitud Académica</MudNavLink>
                     <MudNavLink Href="/cotizacion-pago" IconColor="Color.Success" Icon="@Icons.Material.Filled.BarChart">Cotización y Pago</MudNavLink>
+                    <MudNavLink Href="/asignacion-solicitudes" IconColor="Color.Success" Icon="@Icons.Material.Filled.BarChart">Asignación de Solicitudes</MudNavLink>
+
+
+                    
                     <MudNavLink OnClick="@OnLogout" IconColor="Color.Success" Icon="@Icons.Material.Filled.Logout">Salir</MudNavLink>
                 </MudNavMenu>
             </MudDrawer>

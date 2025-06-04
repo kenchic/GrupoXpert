@@ -1,0 +1,650 @@
+@using GrupoXpert.Core.Models
+@using MudBlazor
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4">
+    <!-- Header -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <div class="d-flex justify-space-between align-center">
+            <div>
+                <MudText Typo="Typo.h4" Color="Color.Primary">
+                    <MudIcon Icon="@Icons.Material.Filled.Assignment" Class="mr-2" />
+                    Dashboard de Asignación de Solicitudes
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Gestiona y asigna solicitudes académicas a colaboradores
+                </MudText>
+            </div>
+            <div class="d-flex gap-2">
+                <MudButton Variant="Variant.Outlined" 
+                          StartIcon="@Icons.Material.Filled.Refresh"
+                          OnClick="@CargarDatos"
+                          Color="Color.Primary">
+                    Actualizar
+                </MudButton>
+                <MudButton Variant="Variant.Filled" 
+                          StartIcon="@Icons.Material.Filled.Add"
+                          OnClick="@(() => mostrarDialogoAsignacion = true)"
+                          Color="Color.Success"
+                          Disabled="@(solicitudSeleccionada == null)">
+                    Asignar Seleccionada
+                </MudButton>
+            </div>
+        </div>
+    </MudPaper>
+
+    <!-- Filtros -->
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="string" @bind-Value="filtroEstado" Label="Estado" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@string.Empty">Todos los estados</MudSelectItem>
+                    @foreach (var estado in EstadosSolicitud.Opciones)
+                    {
+                        <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="string" @bind-Value="filtroNivel" Label="Nivel Académico" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@string.Empty">Todos los niveles</MudSelectItem>
+                    @foreach (var nivel in NivelesAcademicos.Opciones)
+                    {
+                        <MudSelectItem Value="@nivel">@nivel</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="string" @bind-Value="filtroColaborador" Label="Colaborador" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@string.Empty">Todos los colaboradores</MudSelectItem>
+                    <MudSelectItem Value="@("sin-asignar")">Sin asignar</MudSelectItem>
+                    @foreach (var colaborador in colaboradores)
+                    {
+                        <MudSelectItem Value="@colaborador.Id">@colaborador.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudTextField @bind-Value="filtroBusqueda" 
+                             Label="Buscar por tema" 
+                             Variant="Variant.Outlined"
+                             Adornment="Adornment.End"
+                             AdornmentIcon="@Icons.Material.Filled.Search" />
+            </MudItem>
+        </MudGrid>
+        <div class="mt-3">
+            <MudButton Variant="Variant.Text" 
+                      StartIcon="@Icons.Material.Filled.FilterAlt"
+                      OnClick="@AplicarFiltros"
+                      Color="Color.Primary">
+                Aplicar Filtros
+            </MudButton>
+            <MudButton Variant="Variant.Text" 
+                      StartIcon="@Icons.Material.Filled.Clear"
+                      OnClick="@LimpiarFiltros"
+                      Color="Color.Secondary">
+                Limpiar
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <!-- Estadísticas -->
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Size="Size.Large" Class="mr-3" />
+                    <div>
+                        <MudText Typo="Typo.h6">@solicitudesFiltradas.Count()</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Total Solicitudes</MudText>
+                    </div>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.HourglassEmpty" Color="Color.Warning" Size="Size.Large" Class="mr-3" />
+                    <div>
+                        <MudText Typo="Typo.h6">@solicitudesFiltradas.Count(s => s.Estado == EstadosSolicitud.Pendiente)</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Pendientes</MudText>
+                    </div>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Color="Color.Success" Size="Size.Large" Class="mr-3" />
+                    <div>
+                        <MudText Typo="Typo.h6">@solicitudesFiltradas.Count(s => !string.IsNullOrEmpty(s.ColaboradorAsignadoId))</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Asignadas</MudText>
+                    </div>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" Size="Size.Large" Class="mr-3" />
+                    <div>
+                        <MudText Typo="Typo.h6">@solicitudesFiltradas.Count(s => s.Estado == EstadosSolicitud.Completada)</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Completadas</MudText>
+                    </div>
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Tabla de solicitudes -->
+    <MudPaper Elevation="2">
+        <MudDataGrid T="SolicitudAcademica" 
+                     Items="@solicitudesFiltradas" 
+                     Sortable="true" 
+                     Filterable="false"
+                     QuickFilter="@_quickFilter"
+                     RowClick="@OnRowClick"
+                     SelectedItem="@solicitudSeleccionada"
+                     SelectedItemChanged="@OnSelectedItemChanged"
+                     Hover="true"
+                     Dense="true"
+                     Height="600px">
+            <Columns>
+                <PropertyColumn Property="x => x.Id" Title="ID" Sortable="true" />
+                <PropertyColumn Property="x => x.Tema" Title="Tema" Sortable="true">
+                    <CellTemplate>
+                        <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            @context.Item.Tema
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.NivelAcademico" Title="Nivel" Sortable="true" />
+                <PropertyColumn Property="x => x.TipoTrabajo" Title="Tipo" Sortable="true" />
+                <PropertyColumn Property="x => x.FechaEntrega" Title="Entrega" Sortable="true">
+                    <CellTemplate>
+                        <div class="@(context.Item.FechaEntrega < DateTime.Now ? "text-danger" : "")">
+                            @context.Item.FechaEntrega?.ToString("dd/MM/yyyy")
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Estado" Title="Estado" Sortable="true">
+                    <CellTemplate>
+                        <MudChip Color="@GetEstadoColor(context.Item.Estado)" Size="Size.Small">
+                            @context.Item.Estado
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.ColaboradorAsignadoNombre" Title="Colaborador" Sortable="true">
+                    <CellTemplate>
+                        @if (!string.IsNullOrEmpty(context.Item.ColaboradorAsignadoNombre))
+                        {
+                            <div class="d-flex align-center">
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
+                                @context.Item.ColaboradorAsignadoNombre
+                            </div>
+                        }
+                        else
+                        {
+                            <MudChip Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">
+                                Sin asignar
+                            </MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.EsUrgente" Title="Urgente" Sortable="true">
+                    <CellTemplate>
+                        @if (context.Item.EsUrgente)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.PriorityHigh" Color="Color.Error" />
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn Title="Acciones" Sortable="false">
+                    <CellTemplate>
+                        <div class="d-flex gap-1">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" 
+                                          Size="Size.Small" 
+                                          Color="Color.Primary"
+                                          OnClick="@(() => VerDetalle(context.Item))"
+                                          Title="Ver detalle" />
+                            <MudIconButton Icon="@Icons.Material.Filled.AssignmentInd" 
+                                          Size="Size.Small" 
+                                          Color="Color.Success"
+                                          OnClick="@(() => AsignarColaborador(context.Item))"
+                                          Title="Asignar colaborador" />
+                            @if (!string.IsNullOrEmpty(context.Item.ColaboradorAsignadoId))
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.PersonRemove" 
+                                              Size="Size.Small" 
+                                              Color="Color.Warning"
+                                              OnClick="@(() => DesasignarColaborador(context.Item))"
+                                              Title="Desasignar colaborador" />
+                            }
+                        </div>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="SolicitudAcademica" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudContainer>
+
+<!-- Diálogo de asignación -->
+<MudDialog @bind-IsVisible="mostrarDialogoAsignacion" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Class="mr-3" />
+            Asignar Colaborador
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (solicitudParaAsignar != null)
+        {
+            <div class="mb-4">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Solicitud:</MudText>
+                <MudPaper Class="pa-3" Elevation="1">
+                    <MudText Typo="Typo.body2"><strong>ID:</strong> @solicitudParaAsignar.Id</MudText>
+                    <MudText Typo="Typo.body2"><strong>Tema:</strong> @solicitudParaAsignar.Tema</MudText>
+                    <MudText Typo="Typo.body2"><strong>Nivel:</strong> @solicitudParaAsignar.NivelAcademico</MudText>
+                    <MudText Typo="Typo.body2"><strong>Tipo:</strong> @solicitudParaAsignar.TipoTrabajo</MudText>
+                    <MudText Typo="Typo.body2"><strong>Entrega:</strong> @solicitudParaAsignar.FechaEntrega?.ToString("dd/MM/yyyy")</MudText>
+                </MudPaper>
+            </div>
+            
+            <MudSelect T="string" @bind-Value="colaboradorSeleccionadoId" 
+                      Label="Seleccionar Colaborador" 
+                      Variant="Variant.Outlined"
+                      Required="true">
+                @foreach (var colaborador in colaboradoresDisponibles)
+                {
+                    <MudSelectItem Value="@colaborador.Id">
+                        <div class="d-flex justify-space-between align-center">
+                            <span>@colaborador.Name</span>
+                            <MudChip T="string" Size="Size.Small" Color="@GetCargaTrabajoColor(colaborador.CargaTrabajo)">
+                                @colaborador.CargaTrabajo solicitudes
+                            </MudChip>
+                        </div>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+            
+            <MudTextField @bind-Value="notasAsignacion" 
+                         Label="Notas de asignación (opcional)" 
+                         Variant="Variant.Outlined"
+                         Lines="3"
+                         Class="mt-4" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => mostrarDialogoAsignacion = false)">Cancelar</MudButton>
+        <MudButton Color="Color.Success" 
+                  Variant="Variant.Filled" 
+                  OnClick="@ConfirmarAsignacion"
+                  Disabled="@string.IsNullOrEmpty(colaboradorSeleccionadoId)">
+            Asignar
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<!-- Diálogo de detalle -->
+<MudDialog @bind-IsVisible="mostrarDialogoDetalle" Options="dialogOptionsDetalle">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3" />
+            Detalle de Solicitud
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (solicitudDetalle != null)
+        {
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Información General</MudText>
+                    <MudPaper Class="pa-3 mb-3" Elevation="1">
+                        <MudText Typo="Typo.body2"><strong>ID:</strong> @solicitudDetalle.Id</MudText>
+                        <MudText Typo="Typo.body2"><strong>Tema:</strong> @solicitudDetalle.Tema</MudText>
+                        <MudText Typo="Typo.body2"><strong>Nivel Académico:</strong> @solicitudDetalle.NivelAcademico</MudText>
+                        <MudText Typo="Typo.body2"><strong>Tipo de Trabajo:</strong> @solicitudDetalle.TipoTrabajo</MudText>
+                        <MudText Typo="Typo.body2"><strong>Área:</strong> @solicitudDetalle.AreaConocimiento</MudText>
+                        <MudText Typo="Typo.body2"><strong>Norma de Citación:</strong> @solicitudDetalle.NormaCitacion</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Detalles del Trabajo</MudText>
+                    <MudPaper Class="pa-3 mb-3" Elevation="1">
+                        <MudText Typo="Typo.body2"><strong>Páginas:</strong> @solicitudDetalle.NumeroPaginas</MudText>
+                        <MudText Typo="Typo.body2"><strong>Palabras:</strong> @solicitudDetalle.NumeroPalabras</MudText>
+                        <MudText Typo="Typo.body2"><strong>Fecha de Entrega:</strong> @solicitudDetalle.FechaEntrega?.ToString("dd/MM/yyyy HH:mm")</MudText>
+                        <MudText Typo="Typo.body2"><strong>Es Urgente:</strong> @(solicitudDetalle.EsUrgente ? "Sí" : "No")</MudText>
+                        <MudText Typo="Typo.body2"><strong>Entrega por Fases:</strong> @(solicitudDetalle.EntregaPorFases ? "Sí" : "No")</MudText>
+                        <MudText Typo="Typo.body2"><strong>Estado:</strong> @solicitudDetalle.Estado</MudText>
+                    </MudPaper>
+                </MudItem>
+                @if (!string.IsNullOrEmpty(solicitudDetalle.ColaboradorAsignadoId))
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">Información de Asignación</MudText>
+                        <MudPaper Class="pa-3 mb-3" Elevation="1">
+                            <MudText Typo="Typo.body2"><strong>Colaborador:</strong> @solicitudDetalle.ColaboradorAsignadoNombre</MudText>
+                            <MudText Typo="Typo.body2"><strong>Fecha de Asignación:</strong> @solicitudDetalle.FechaAsignacion?.ToString("dd/MM/yyyy HH:mm")</MudText>
+                            @if (!string.IsNullOrEmpty(solicitudDetalle.NotasAsignacion))
+                            {
+                                <MudText Typo="Typo.body2"><strong>Notas:</strong> @solicitudDetalle.NotasAsignacion</MudText>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                }
+                @if (!string.IsNullOrEmpty(solicitudDetalle.Instrucciones))
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">Instrucciones Adicionales</MudText>
+                        <MudPaper Class="pa-3" Elevation="1">
+                            <MudText Typo="Typo.body2">@solicitudDetalle.Instrucciones</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => mostrarDialogoDetalle = false)">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public EventCallback<SolicitudAcademica> OnSolicitudAsignada { get; set; }
+    [Parameter] public EventCallback<SolicitudAcademica> OnSolicitudDesasignada { get; set; }
+    [Parameter] public List<SolicitudAcademica> SolicitudesIniciales { get; set; } = new();
+    [Parameter] public List<Usuario> ColaboradoresIniciales { get; set; } = new();
+
+    private List<SolicitudAcademica> solicitudes = new();
+    private List<SolicitudAcademica> solicitudesFiltradas = new();
+    private List<Usuario> colaboradores = new();
+    private List<Usuario> colaboradoresDisponibles = new();
+    
+    private SolicitudAcademica? solicitudSeleccionada;
+    private SolicitudAcademica? solicitudParaAsignar;
+    private SolicitudAcademica? solicitudDetalle;
+    
+    private bool mostrarDialogoAsignacion = false;
+    private bool mostrarDialogoDetalle = false;
+    
+    private string colaboradorSeleccionadoId = string.Empty;
+    private string notasAsignacion = string.Empty;
+    
+    // Filtros
+    private string filtroEstado = string.Empty;
+    private string filtroNivel = string.Empty;
+    private string filtroColaborador = string.Empty;
+    private string filtroBusqueda = string.Empty;
+    
+    private DialogOptions dialogOptions = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    private DialogOptions dialogOptionsDetalle = new() { MaxWidth = MaxWidth.Large, FullWidth = true };
+    
+    private Func<SolicitudAcademica, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(filtroBusqueda))
+            return true;
+        
+        return x.Tema.Contains(filtroBusqueda, StringComparison.OrdinalIgnoreCase) ||
+               x.NivelAcademico.Contains(filtroBusqueda, StringComparison.OrdinalIgnoreCase) ||
+               x.TipoTrabajo.Contains(filtroBusqueda, StringComparison.OrdinalIgnoreCase) ||
+               (x.ColaboradorAsignadoNombre?.Contains(filtroBusqueda, StringComparison.OrdinalIgnoreCase) ?? false);
+    };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatos();
+    }
+    
+    private async Task CargarDatos()
+    {
+        // Cargar datos iniciales o desde parámetros
+        if (SolicitudesIniciales.Any())
+        {
+            solicitudes = new List<SolicitudAcademica>(SolicitudesIniciales);
+        }
+        else
+        {
+            // Generar datos de ejemplo
+            solicitudes = GenerarSolicitudesEjemplo();
+        }
+        
+        if (ColaboradoresIniciales.Any())
+        {
+            colaboradores = new List<Usuario>(ColaboradoresIniciales);
+        }
+        else
+        {
+            // Generar colaboradores de ejemplo
+            colaboradores = GenerarColaboradoresEjemplo();
+        }
+        
+        colaboradoresDisponibles = colaboradores.Where(c => c.Activo && c.Rol == RolesUsuario.Colaborador).ToList();
+        
+        AplicarFiltros();
+        await Task.CompletedTask;
+    }
+    
+    private void AplicarFiltros()
+    {
+        solicitudesFiltradas = solicitudes.Where(s =>
+        {
+            if (!string.IsNullOrEmpty(filtroEstado) && s.Estado != filtroEstado)
+                return false;
+                
+            if (!string.IsNullOrEmpty(filtroNivel) && s.NivelAcademico != filtroNivel)
+                return false;
+                
+            if (!string.IsNullOrEmpty(filtroColaborador))
+            {
+                if (filtroColaborador == "sin-asignar" && !string.IsNullOrEmpty(s.ColaboradorAsignadoId))
+                    return false;
+                else if (filtroColaborador != "sin-asignar" && s.ColaboradorAsignadoId != filtroColaborador)
+                    return false;
+            }
+            
+            return true;
+        }).ToList();
+    }
+    
+    private void LimpiarFiltros()
+    {
+        filtroEstado = string.Empty;
+        filtroNivel = string.Empty;
+        filtroColaborador = string.Empty;
+        filtroBusqueda = string.Empty;
+        AplicarFiltros();
+    }
+    
+    private void OnRowClick(DataGridRowClickEventArgs<SolicitudAcademica> args)
+    {
+        solicitudSeleccionada = args.Item;
+    }
+    
+    private void OnSelectedItemChanged(SolicitudAcademica item)
+    {
+        solicitudSeleccionada = item;
+    }
+    
+    private void VerDetalle(SolicitudAcademica solicitud)
+    {
+        solicitudDetalle = solicitud;
+        mostrarDialogoDetalle = true;
+    }
+    
+    private void AsignarColaborador(SolicitudAcademica solicitud)
+    {
+        solicitudParaAsignar = solicitud;
+        colaboradorSeleccionadoId = string.Empty;
+        notasAsignacion = string.Empty;
+        mostrarDialogoAsignacion = true;
+    }
+    
+    private async Task ConfirmarAsignacion()
+    {
+        if (solicitudParaAsignar != null && !string.IsNullOrEmpty(colaboradorSeleccionadoId))
+        {
+            var colaborador = colaboradores.FirstOrDefault(c => c.Id == colaboradorSeleccionadoId);
+            if (colaborador != null)
+            {
+                solicitudParaAsignar.ColaboradorAsignadoId = colaborador.Id;
+                solicitudParaAsignar.ColaboradorAsignadoNombre = colaborador.Name;
+                solicitudParaAsignar.FechaAsignacion = DateTime.Now;
+                solicitudParaAsignar.NotasAsignacion = notasAsignacion;
+                solicitudParaAsignar.Estado = EstadosSolicitud.Asignada;
+                
+                // Actualizar carga de trabajo del colaborador
+                colaborador.CargaTrabajo++;
+                
+                mostrarDialogoAsignacion = false;
+                
+                Snackbar.Add($"Solicitud asignada exitosamente a {colaborador.Name}", Severity.Success);
+                
+                // Notificar al componente padre
+                await OnSolicitudAsignada.InvokeAsync(solicitudParaAsignar);
+                
+                AplicarFiltros();
+            }
+        }
+    }
+    
+    private async Task DesasignarColaborador(SolicitudAcademica solicitud)
+    {
+        if (!string.IsNullOrEmpty(solicitud.ColaboradorAsignadoId))
+        {
+            var colaborador = colaboradores.FirstOrDefault(c => c.Id == solicitud.ColaboradorAsignadoId);
+            if (colaborador != null)
+            {
+                colaborador.CargaTrabajo = Math.Max(0, colaborador.CargaTrabajo - 1);
+            }
+            
+            solicitud.ColaboradorAsignadoId = null;
+            solicitud.ColaboradorAsignadoNombre = null;
+            solicitud.FechaAsignacion = null;
+            solicitud.NotasAsignacion = null;
+            solicitud.Estado = EstadosSolicitud.Pendiente;
+            
+            Snackbar.Add("Colaborador desasignado exitosamente", Severity.Warning);
+            
+            // Notificar al componente padre
+            await OnSolicitudDesasignada.InvokeAsync(solicitud);
+            
+            AplicarFiltros();
+        }
+    }
+    
+    private Color GetEstadoColor(string estado)
+    {
+        return estado switch
+        {
+            EstadosSolicitud.Pendiente => Color.Warning,
+            EstadosSolicitud.Asignada => Color.Info,
+            EstadosSolicitud.EnProgreso => Color.Primary,
+            EstadosSolicitud.EnRevision => Color.Secondary,
+            EstadosSolicitud.Completada => Color.Success,
+            EstadosSolicitud.Cancelada => Color.Default,
+            EstadosSolicitud.Rechazada => Color.Error,
+            _ => Color.Default
+        };
+    }
+    
+    private Color GetCargaTrabajoColor(int carga)
+    {
+        return carga switch
+        {
+            <= 2 => Color.Success,
+            <= 5 => Color.Warning,
+            _ => Color.Error
+        };
+    }
+    
+    // Métodos para generar datos de ejemplo
+    private List<SolicitudAcademica> GenerarSolicitudesEjemplo()
+    {
+        var random = new Random();
+        var solicitudesEjemplo = new List<SolicitudAcademica>();
+        
+        for (int i = 1; i <= 20; i++)
+        {
+            var solicitud = new SolicitudAcademica
+            {
+                Id = i,
+                Tema = $"Tema de investigación {i}: {GetTemaEjemplo(random)}",
+                NivelAcademico = NivelesAcademicos.Opciones[random.Next(NivelesAcademicos.Opciones.Count)],
+                TipoTrabajo = TiposTrabajos.Opciones[random.Next(TiposTrabajos.Opciones.Count)],
+                AreaConocimiento = AreasConocimiento.Opciones[random.Next(AreasConocimiento.Opciones.Count)],
+                NormaCitacion = NormasCitacion.Opciones[random.Next(NormasCitacion.Opciones.Count)],
+                NumeroPaginas = random.Next(5, 100),
+                NumeroPalabras = random.Next(1000, 25000),
+                FechaEntrega = DateTime.Now.AddDays(random.Next(-10, 30)),
+                EsUrgente = random.NextDouble() < 0.3,
+                EntregaPorFases = random.NextDouble() < 0.4,
+                Estado = EstadosSolicitud.Opciones[random.Next(EstadosSolicitud.Opciones.Count)],
+                FechaCreacion = DateTime.Now.AddDays(-random.Next(1, 30)),
+                Instrucciones = $"Instrucciones específicas para la solicitud {i}"
+            };
+            
+            // Asignar algunos colaboradores aleatoriamente
+            if (random.NextDouble() < 0.6) // 60% de probabilidad de estar asignado
+            {
+                var colaboradorEjemplo = GetColaboradorEjemplo(random);
+                solicitud.ColaboradorAsignadoId = colaboradorEjemplo.Id;
+                solicitud.ColaboradorAsignadoNombre = colaboradorEjemplo.Name;
+                solicitud.FechaAsignacion = DateTime.Now.AddDays(-random.Next(1, 15));
+                solicitud.NotasAsignacion = $"Asignado por especialidad en {solicitud.AreaConocimiento}";
+            }
+            
+            solicitudesEjemplo.Add(solicitud);
+        }
+        
+        return solicitudesEjemplo;
+    }
+    
+    private List<Usuario> GenerarColaboradoresEjemplo()
+    {
+        return new List<Usuario>
+        {
+            new Usuario { Id = "1", Name = "Dr. María González", Email = "maria.gonzalez@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Ciencias de la Salud", CargaTrabajo = 3 },
+            new Usuario { Id = "2", Name = "Ing. Carlos Rodríguez", Email = "carlos.rodriguez@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Ingeniería", CargaTrabajo = 2 },
+            new Usuario { Id = "3", Name = "Lic. Ana Martínez", Email = "ana.martinez@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Ciencias Sociales", CargaTrabajo = 4 },
+            new Usuario { Id = "4", Name = "Dr. Roberto Silva", Email = "roberto.silva@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Derecho", CargaTrabajo = 1 },
+            new Usuario { Id = "5", Name = "Mg. Laura Pérez", Email = "laura.perez@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Educación", CargaTrabajo = 5 },
+            new Usuario { Id = "6", Name = "Dr. Fernando López", Email = "fernando.lopez@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Administración y Negocios", CargaTrabajo = 2 },
+            new Usuario { Id = "7", Name = "Lic. Patricia Morales", Email = "patricia.morales@grupoxpert.com", Rol = RolesUsuario.Colaborador, Especialidad = "Psicología", CargaTrabajo = 3 }
+        };
+    }
+    
+    private string GetTemaEjemplo(Random random)
+    {
+        var temas = new[]
+        {
+            "Análisis de mercado en el sector tecnológico",
+            "Impacto de la inteligencia artificial en la educación",
+            "Sostenibilidad ambiental en las organizaciones",
+            "Metodologías ágiles en el desarrollo de software",
+            "Psicología organizacional y productividad",
+            "Derecho digital y protección de datos",
+            "Innovación en ciencias de la salud",
+            "Transformación digital en PYMES"
+        };
+        
+        return temas[random.Next(temas.Length)];
+    }
+    
+    private Usuario GetColaboradorEjemplo(Random random)
+    {
+        var colaboradoresEjemplo = new[]
+        {
+            new Usuario { Id = "1", Name = "Dr. María González" },
+            new Usuario { Id = "2", Name = "Ing. Carlos Rodríguez" },
+            new Usuario { Id = "3", Name = "Lic. Ana Martínez" },
+            new Usuario { Id = "4", Name = "Dr. Roberto Silva" },
+            new Usuario { Id = "5", Name = "Mg. Laura Pérez" }
+        };
+        
+        return colaboradoresEjemplo[random.Next(colaboradoresEjemplo.Length)];
+    }
+}

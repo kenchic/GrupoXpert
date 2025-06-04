@@ -43,6 +43,15 @@ namespace GrupoXpert.Core.Models
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         
         public string Estado { get; set; } = "Pendiente";
+        
+        // Campos de asignación
+        public string? ColaboradorAsignadoId { get; set; }
+        
+        public string? ColaboradorAsignadoNombre { get; set; }
+        
+        public DateTime? FechaAsignacion { get; set; }
+        
+        public string? NotasAsignacion { get; set; }
     }
     
     public static class NivelesAcademicos
@@ -112,5 +121,27 @@ namespace GrupoXpert.Core.Models
             "Medicina",
             "Otra (especificar en tema)"
         };
+    }
+    
+    public static class EstadosSolicitud
+    {
+        public static readonly List<string> Opciones = new List<string>
+        {
+            "Pendiente",
+            "Asignada",
+            "En Progreso",
+            "En Revisión",
+            "Completada",
+            "Cancelada",
+            "Rechazada"
+        };
+        
+        public const string Pendiente = "Pendiente";
+        public const string Asignada = "Asignada";
+        public const string EnProgreso = "En Progreso";
+        public const string EnRevision = "En Revisión";
+        public const string Completada = "Completada";
+        public const string Cancelada = "Cancelada";
+        public const string Rechazada = "Rechazada";
     }
 }

@@ -1,0 +1,365 @@
+@page "/asignacion-solicitudes"
+@using GrupoXpert.Core.Models
+@using GrupoXpert.Blazor.Components
+
+<PageTitle>Asignación de Solicitudes - GrupoXpert</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4">
+    @if (!mostrarDashboard)
+    {
+        <!-- Sección promocional -->
+        <MudCard Elevation="3" Class="mb-6">
+            <MudCardContent Class="pa-8">
+                <div class="text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+                    <MudText Typo="Typo.h3" Class="mb-4" Color="Color.Primary">
+                        Dashboard de Asignación
+                    </MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4" Color="Color.Secondary">
+                        Gestiona y asigna solicitudes académicas a colaboradores
+                    </MudText>
+                    <MudText Typo="Typo.body1" Class="mb-6" Style="max-width: 600px; margin: 0 auto;">
+                        Centraliza la gestión de todas las solicitudes académicas. Visualiza el estado de cada proyecto, 
+                        asigna colaboradores según su especialidad y carga de trabajo, y mantén un seguimiento completo 
+                        del progreso de cada solicitud.
+                    </MudText>
+                    
+                    <MudGrid Justify="Justify.Center" Class="mb-6">
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Info" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Info">Vista Completa</MudText>
+                                    <MudText Typo="Typo.body2">Todas las solicitudes en un lugar</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.FilterAlt" Color="Color.Success" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Success">Filtros Avanzados</MudText>
+                                    <MudText Typo="Typo.body2">Encuentra rápidamente lo que buscas</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Warning" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Warning">Gestión de Colaboradores</MudText>
+                                    <MudText Typo="Typo.body2">Asignación inteligente por especialidad</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                        
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="pa-4">
+                                <div class="text-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Color="Color.Error" Size="Size.Large" Class="mb-2" />
+                                    <MudText Typo="Typo.h6" Color="Color.Error">Estadísticas</MudText>
+                                    <MudText Typo="Typo.body2">Métricas de rendimiento</MudText>
+                                </div>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                    
+                    <div class="mb-4">
+                        <MudText Typo="Typo.subtitle1" Class="mb-3">Funcionalidades Principales:</MudText>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem xs="12" md="6">
+                                <MudList T="string">
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Visualización de todas las solicitudes" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Asignación rápida de colaboradores" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Filtros por estado, nivel y colaborador" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Seguimiento de carga de trabajo" />
+                                </MudList>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudList T="string">
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Estadísticas en tiempo real" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Gestión de estados de solicitudes" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Detalles completos de cada solicitud" />
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" Text="Interfaz responsive y moderna" />
+                                </MudList>
+                            </MudItem>
+                        </MudGrid>
+                    </div>
+                    
+                    <MudButton Variant="Variant.Filled" 
+                              Color="Color.Primary" 
+                              Size="Size.Large"
+                              StartIcon="@Icons.Material.Filled.Dashboard"
+                              OnClick="@(() => mostrarDashboard = true)"
+                              Class="px-8 py-3">
+                        Acceder al Dashboard
+                    </MudButton>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    }
+    else
+    {
+        <!-- Dashboard de asignación -->
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudText Typo="Typo.h4" Color="Color.Primary">
+                <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Class="mr-2" />
+                Dashboard de Asignación
+            </MudText>
+            <MudButton Variant="Variant.Outlined" 
+                      Color="Color.Secondary" 
+                      StartIcon="@Icons.Material.Filled.ArrowBack"
+                      OnClick="@(() => mostrarDashboard = false)">
+                Volver
+            </MudButton>
+        </div>
+        
+        <AsignacionSolicitudesForm OnSolicitudAsignada="@OnSolicitudAsignada"
+                                  OnSolicitudDesasignada="@OnSolicitudDesasignada"
+                                  SolicitudesIniciales="@solicitudes"
+                                  ColaboradoresIniciales="@colaboradores" />
+    }
+</MudContainer>
+
+<!-- Snackbar para notificaciones -->
+<MudSnackbarProvider />
+
+@code {
+    [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    
+    private bool mostrarDashboard = false;
+    private List<GrupoXpert.Core.Models.SolicitudAcademica> solicitudes = new();
+    private List<Usuario> colaboradores = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatosIniciales();
+    }
+    
+    private async Task CargarDatosIniciales()
+    {
+        // Aquí normalmente cargarías los datos desde una API o base de datos
+        // Por ahora, generamos datos de ejemplo
+        
+        solicitudes = GenerarSolicitudesEjemplo();
+        colaboradores = GenerarColaboradoresEjemplo();
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task OnSolicitudAsignada(GrupoXpert.Core.Models.SolicitudAcademica solicitud)
+    {
+        // Aquí iría la lógica para persistir la asignación en la base de datos
+        Snackbar.Add($"Solicitud #{solicitud.Id} asignada exitosamente", Severity.Success);
+        
+        // Ejemplo de llamada a API:
+        // await _solicitudService.AsignarColaboradorAsync(solicitud.Id, solicitud.ColaboradorAsignadoId);
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task OnSolicitudDesasignada(GrupoXpert.Core.Models.SolicitudAcademica solicitud)
+    {
+        // Aquí iría la lógica para persistir la desasignación en la base de datos
+        Snackbar.Add($"Colaborador desasignado de la solicitud #{solicitud.Id}", Severity.Warning);
+        
+        // Ejemplo de llamada a API:
+        // await _solicitudService.DesasignarColaboradorAsync(solicitud.Id);
+        
+        await Task.CompletedTask;
+    }
+    
+    // Métodos para generar datos de ejemplo
+    private List<GrupoXpert.Core.Models.SolicitudAcademica> GenerarSolicitudesEjemplo()
+    {
+        var random = new Random();
+        var solicitudesEjemplo = new List<GrupoXpert.Core.Models.SolicitudAcademica>();
+
+        var temasEjemplo = new[]
+        {
+            "Análisis del impacto de la inteligencia artificial en la educación superior",
+            "Estrategias de marketing digital para PYMES en el sector tecnológico",
+            "Sostenibilidad ambiental en la industria manufacturera colombiana",
+            "Metodologías ágiles en el desarrollo de software: Un estudio comparativo",
+            "Psicología organizacional y su influencia en la productividad laboral",
+            "Marco jurídico del comercio electrónico en América Latina",
+            "Innovaciones en telemedicina post-pandemia COVID-19",
+            "Transformación digital en instituciones educativas públicas",
+            "Análisis financiero de startups tecnológicas en Colombia",
+            "Impacto de las redes sociales en el comportamiento del consumidor",
+            "Gestión de la cadena de suministro en tiempos de crisis",
+            "Energías renovables: Viabilidad económica en el contexto colombiano",
+            "Neurociencias aplicadas al proceso de aprendizaje",
+            "Ciberseguridad en el sector bancario: Retos y oportunidades",
+            "Responsabilidad social empresarial en multinacionales"
+        };
+        
+        for (int i = 1; i <= 25; i++)
+        {
+            var fechaEntrega = DateTime.Now.AddDays(random.Next(-15, 45));
+            var esUrgente = fechaEntrega <= DateTime.Now.AddDays(7);
+
+            var solicitud = new GrupoXpert.Core.Models.SolicitudAcademica
+                {
+                Id = i,
+                Tema = temasEjemplo[random.Next(temasEjemplo.Length)],
+                NivelAcademico = NivelesAcademicos.Opciones[random.Next(NivelesAcademicos.Opciones.Count)],
+                TipoTrabajo = TiposTrabajos.Opciones[random.Next(TiposTrabajos.Opciones.Count)],
+                AreaConocimiento = AreasConocimiento.Opciones[random.Next(AreasConocimiento.Opciones.Count)],
+                NormaCitacion = NormasCitacion.Opciones[random.Next(NormasCitacion.Opciones.Count)],
+                NumeroPaginas = random.Next(10, 150),
+                NumeroPalabras = random.Next(2500, 37500),
+                FechaEntrega = fechaEntrega,
+                EsUrgente = esUrgente,
+                EntregaPorFases = random.NextDouble() < 0.4,
+                Estado = EstadosSolicitud.Opciones[random.Next(EstadosSolicitud.Opciones.Count)],
+                FechaCreacion = DateTime.Now.AddDays(-random.Next(1, 60)),
+                Instrucciones = $"Instrucciones específicas para la solicitud {i}. Se requiere especial atención en la metodología y análisis de resultados."
+            };
+            
+            // Asignar colaboradores a algunas solicitudes
+            if (random.NextDouble() < 0.65) // 65% de probabilidad de estar asignado
+            {
+                var colaboradoresDisponibles = colaboradores.Where(c => c.Activo && c.Rol == RolesUsuario.Colaborador).ToList();
+                if (colaboradoresDisponibles.Any())
+                {
+                    var colaborador = colaboradoresDisponibles[random.Next(colaboradoresDisponibles.Count)];
+                    solicitud.ColaboradorAsignadoId = colaborador.Id;
+                    solicitud.ColaboradorAsignadoNombre = colaborador.Name;
+                    solicitud.FechaAsignacion = DateTime.Now.AddDays(-random.Next(1, 20));
+                    solicitud.NotasAsignacion = $"Asignado por especialidad en {solicitud.AreaConocimiento}. Colaborador con experiencia en este tipo de trabajos.";
+                    
+                    // Actualizar estado si está asignado
+                    if (solicitud.Estado == EstadosSolicitud.Pendiente)
+                    {
+                        solicitud.Estado = EstadosSolicitud.Asignada;
+                    }
+                }
+            }
+            
+            solicitudesEjemplo.Add(solicitud);
+        }
+        
+        return solicitudesEjemplo;
+    }
+    
+    private List<Usuario> GenerarColaboradoresEjemplo()
+    {
+        return new List<Usuario>
+        {
+            new Usuario 
+            { 
+                Id = "1", 
+                Name = "Dr. María Elena González", 
+                Email = "maria.gonzalez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Ciencias de la Salud", 
+                CargaTrabajo = 3,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-6)
+            },
+            new Usuario 
+            { 
+                Id = "2", 
+                Name = "Ing. Carlos Alberto Rodríguez", 
+                Email = "carlos.rodriguez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Ingeniería", 
+                CargaTrabajo = 2,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-8)
+            },
+            new Usuario 
+            { 
+                Id = "3", 
+                Name = "Lic. Ana Patricia Martínez", 
+                Email = "ana.martinez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Ciencias Sociales", 
+                CargaTrabajo = 4,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-4)
+            },
+            new Usuario 
+            { 
+                Id = "4", 
+                Name = "Dr. Roberto Silva Mendoza", 
+                Email = "roberto.silva@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Derecho", 
+                CargaTrabajo = 1,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-10)
+            },
+            new Usuario 
+            { 
+                Id = "5", 
+                Name = "Mg. Laura Beatriz Pérez", 
+                Email = "laura.perez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Educación", 
+                CargaTrabajo = 5,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-3)
+            },
+            new Usuario 
+            { 
+                Id = "6", 
+                Name = "Dr. Fernando López Castro", 
+                Email = "fernando.lopez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Administración y Negocios", 
+                CargaTrabajo = 2,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-7)
+            },
+            new Usuario 
+            { 
+                Id = "7", 
+                Name = "Lic. Patricia Morales Vega", 
+                Email = "patricia.morales@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Psicología", 
+                CargaTrabajo = 3,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-5)
+            },
+            new Usuario 
+            { 
+                Id = "8", 
+                Name = "Dr. Andrés Felipe Ramírez", 
+                Email = "andres.ramirez@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Tecnología", 
+                CargaTrabajo = 1,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-2)
+            },
+            new Usuario 
+            { 
+                Id = "9", 
+                Name = "Mg. Claudia Esperanza Torres", 
+                Email = "claudia.torres@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Humanidades", 
+                CargaTrabajo = 4,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-9)
+            },
+            new Usuario 
+            { 
+                Id = "10", 
+                Name = "Dr. Jorge Luis Herrera", 
+                Email = "jorge.herrera@grupoxpert.com", 
+                Rol = RolesUsuario.Colaborador, 
+                Especialidad = "Ciencias Exactas y Naturales", 
+                CargaTrabajo = 2,
+                Activo = true,
+                FechaCreacion = DateTime.Now.AddMonths(-6)
+            }
+        };
+    }
+}

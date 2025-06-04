@@ -121,15 +121,97 @@ public class CotizacionPago
 - Transferencia Bancaria
 - Tarjeta de Crédito/Débito
 
+### 3. AsignacionSolicitudesForm
+
+Componente dashboard para la gestión y asignación de solicitudes académicas a colaboradores.
+
+#### Características:
+- Dashboard completo con estadísticas en tiempo real
+- Filtros avanzados por estado, nivel académico, colaborador y búsqueda
+- Visualización de todas las solicitudes en formato tabla
+- Asignación rápida de colaboradores con información de especialidad
+- Gestión de carga de trabajo de colaboradores
+- Diálogos para asignación y visualización de detalles
+- Estados visuales con chips de colores
+- Indicadores de urgencia y prioridad
+- Interfaz responsive y moderna
+
+#### Uso:
+```razor
+<AsignacionSolicitudesForm OnSolicitudAsignada="@HandleSolicitudAsignada"
+                          OnSolicitudDesasignada="@HandleSolicitudDesasignada"
+                          SolicitudesIniciales="@solicitudes"
+                          ColaboradoresIniciales="@colaboradores" />
+```
+
+#### Propiedades:
+- `OnSolicitudAsignada`: Callback ejecutado cuando se asigna un colaborador
+- `OnSolicitudDesasignada`: Callback ejecutado cuando se desasigna un colaborador
+- `SolicitudesIniciales`: Lista inicial de solicitudes (opcional)
+- `ColaboradoresIniciales`: Lista inicial de colaboradores (opcional)
+
+#### Modelos de Datos:
+```csharp
+public class SolicitudAcademica
+{
+    // Propiedades básicas
+    public int Id { get; set; }
+    public string Tema { get; set; }
+    public string NivelAcademico { get; set; }
+    public string TipoTrabajo { get; set; }
+    public string AreaConocimiento { get; set; }
+    public DateTime FechaEntrega { get; set; }
+    public string Estado { get; set; }
+    public bool EsUrgente { get; set; }
+    
+    // Propiedades de asignación
+    public string ColaboradorAsignadoId { get; set; }
+    public string ColaboradorAsignadoNombre { get; set; }
+    public DateTime? FechaAsignacion { get; set; }
+    public string NotasAsignacion { get; set; }
+}
+
+public class Usuario
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Rol { get; set; }
+    public string Especialidad { get; set; }
+    public int CargaTrabajo { get; set; }
+    public bool Activo { get; set; }
+    public DateTime FechaCreacion { get; set; }
+}
+```
+
+#### Estados de Solicitud:
+- **Pendiente**: Solicitud recién creada, sin asignar
+- **Asignada**: Solicitud asignada a un colaborador
+- **En Progreso**: Colaborador trabajando en la solicitud
+- **En Revisión**: Solicitud en proceso de revisión
+- **Completada**: Trabajo finalizado y entregado
+- **Cancelada**: Solicitud cancelada por el cliente
+- **Rechazada**: Solicitud rechazada por criterios internos
+
+#### Funcionalidades del Dashboard:
+- **Estadísticas**: Contadores de total, pendientes, asignadas y completadas
+- **Filtros**: Por estado, nivel académico, colaborador asignado y búsqueda por tema
+- **Tabla de Datos**: Visualización completa con ordenamiento y paginación
+- **Asignación**: Selección de colaborador con información de especialidad y carga
+- **Desasignación**: Remoción rápida de asignaciones
+- **Detalles**: Vista completa de información de cada solicitud
+
 ## Páginas de Ejemplo
 
 ### GrupoXpert.Maui
 - `Pages/SolicitudAcademica.razor`: Página de ejemplo para solicitudes académicas
 - `Pages/CotizacionPago.razor`: Página de ejemplo para cotización y pago
+- `Pages/AsignacionSolicitudes.razor`: Página de ejemplo para dashboard de asignación
 
 ### GrupoXpert.Web
 - `Pages/SolicitudAcademica.razor`: Página de ejemplo para solicitudes académicas
 - `Pages/CotizacionPago.razor`: Página de ejemplo para cotización y pago
+- `Pages/AsignacionSolicitudes.razor`: Página de ejemplo para dashboard de asignación
 
 ## Dependencias
 
@@ -155,6 +237,7 @@ public class CotizacionPago
 Cada componente incluye su archivo CSS correspondiente:
 - `SolicitudAcademicaForm.razor.css`
 - `CotizacionPagoForm.razor.css`
+- `AsignacionSolicitudesForm.razor.css`
 
 ### Tarifas y Configuración
 Las tarifas y configuraciones se pueden personalizar en las clases estáticas:

@@ -10,6 +10,7 @@
     <Compile Remove="Models\CotizacionPago.cs" />
     <Compile Remove="Models\Servicio.cs" />
     <Compile Remove="Models\SolicitudAcademica.cs" />
+    <Compile Remove="Models\Usuario.cs" />
   </ItemGroup>
 
 

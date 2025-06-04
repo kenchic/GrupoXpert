@@ -1,0 +1,338 @@
+/* Estilos para el Dashboard de Asignación de Solicitudes */
+
+.asignacion-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.stats-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius: 12px;
+    border: none;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stats-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.stats-icon.info {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+}
+
+.stats-icon.warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+}
+
+.stats-icon.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+.stats-icon.primary {
+    background-color: rgba(103, 58, 183, 0.1);
+    color: #673ab7;
+}
+
+.filters-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.data-grid-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Estilos para la tabla */
+::deep .mud-table {
+    border-radius: 12px;
+}
+
+::deep .mud-table-head {
+    background-color: #f8f9fa;
+}
+
+::deep .mud-table-row:hover {
+    background-color: rgba(103, 58, 183, 0.04);
+}
+
+::deep .mud-table-row.selected {
+    background-color: rgba(103, 58, 183, 0.08);
+}
+
+/* Chips de estado */
+.estado-chip {
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+.estado-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.estado-asignada {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.estado-progreso {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.estado-revision {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.estado-completada {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.estado-cancelada {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Indicadores de urgencia */
+.urgente-indicator {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Estilos para diálogos */
+.dialog-content {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.solicitud-info-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.colaborador-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.colaborador-name {
+    font-weight: 500;
+}
+
+.carga-trabajo {
+    font-size: 0.875rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+.carga-baja {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.carga-media {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.carga-alta {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.action-button {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.action-button:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-header {
+        text-align: center;
+        padding: 16px;
+    }
+    
+    .stats-card {
+        margin-bottom: 16px;
+    }
+    
+    .filters-section {
+        padding: 16px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .action-button {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header h4 {
+        font-size: 1.25rem;
+    }
+    
+    .stats-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+    }
+    
+    .filters-section {
+        padding: 12px;
+    }
+}
+
+/* Animaciones */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mejoras de accesibilidad */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Estados de carga */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #673ab7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tooltips personalizados */
+.custom-tooltip {
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    max-width: 200px;
+    text-align: center;
+}
+
+/* Estilos para elementos destacados */
+.highlight {
+    background-color: rgba(255, 235, 59, 0.3);
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background-color 0.3s ease;
+}
+
+.highlight.fade-out {
+    background-color: transparent;
+}
