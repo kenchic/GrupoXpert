@@ -13,11 +13,3 @@ Update-Database -Context GrupoXpertDbContext
 dotnet tool install -g dotnet-aspnet-codegenerator
 dotnet add Lineup.Api package Microsoft.VisualStudio.Web.CodeGeneration.Design
 dotnet-aspnet-codegenerator controller -p Lineup.Api -name ElementoController -m Elemento -outDir Controllers --no-build -api -actions -dc SphericalContext    (ApiControllerWithContext)
-
-
-FD-10 - completar endpoints
-todo desarrollo - ficha tecnica
-- cambio formato
-
-
-- regla que disparamos textchange si se asigna valor
