@@ -1,0 +1,43 @@
+@page "/login"
+@layout GrupoXpert.Maui.Components.Layout.LoginLayout
+@inject NavigationManager Navegador
+@inject NotificationService Notificaciones
+@inject HttpClient Http
+@using System.Net.Http.Json
+
+<PageTitle>Iniciar Sesión - GradoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
+    <FormularioLogin OnLogin="@ManejarLogin" />
+</div>
+
+@code {
+    private async Task ManejarLogin(FormularioLogin.LoginModelo modelo)
+    {
+        try 
+        {
+            var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
+            { 
+                NombreUsuario = modelo.NombreUsuario, 
+                Clave = modelo.Clave 
+            });
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Hola, {modelo.NombreUsuario}");
+                
+                // TODO: En MAUI se recomienda usar SecureStorage para el token
+                await Task.Delay(1000);
+                Navegador.NavigateTo("/");
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error de Acceso", "Usuario o clave incorrectos.");
+            }
+        }
+        catch (Exception)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error de Conexión", "No se pudo contactar con el servidor. Verifique su conexión.");
+        }
+    }
+}

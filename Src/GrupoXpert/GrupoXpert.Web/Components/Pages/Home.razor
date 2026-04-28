@@ -1,0 +1,11 @@
+@page "/"
+@inject NavigationManager Navegador
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Redirigir al login por defecto (simulando que no hay sesión)
+        Navegador.NavigateTo("/login");
+    }
+}
+

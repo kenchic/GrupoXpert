@@ -1,0 +1,76 @@
+@inject NotificationService Notificaciones
+
+<RadzenPanel class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12 rz-shadow-6" style="max-width: 500px; border-radius: 12px; background-color: var(--color-fondo, #ffffff);">
+    <RadzenStack AlignItems="AlignItems.Center" class="rz-mb-8">
+        <RadzenIcon Icon="account_circle" Style="font-size: 4rem; color: var(--color-primario);" />
+        <RadzenText TextStyle="TextStyle.H3" TextAlign="TextAlign.Center" Style="color: var(--color-texto); font-weight: 700;">Iniciar Sesión</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center" class="rz-color-base-500">Ingrese sus credenciales para acceder</RadzenText>
+    </RadzenStack>
+    
+    <RadzenTemplateForm TItem="LoginModelo" Data="@modelo" Submit="@AlEnviar">
+        <RadzenStack Gap="1.5rem">
+            
+            <div>
+                <RadzenFormField Text="Usuario" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenTextBox Name="Usuario" @bind-Value="modelo.NombreUsuario" Placeholder="Ej. admin" />
+                </RadzenFormField>
+                <RadzenRequiredValidator Component="Usuario" Text="El usuario es obligatorio." Style="display: block;" />
+            </div>
+
+            <div>
+                <RadzenFormField Text="Clave" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenPassword Name="Clave" @bind-Value="modelo.Clave" Placeholder="********" />
+                </RadzenFormField>
+                <RadzenRequiredValidator Component="Clave" Text="La clave es obligatoria." Style="display: block;" />
+            </div>
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" class="rz-mt-4">
+                <RadzenButton ButtonType="ButtonType.Submit" 
+                              Text="Ingresar" 
+                              ButtonStyle="ButtonStyle.Primary" 
+                              Style="width: 100%; border-radius: 8px; font-weight: bold; background-color: var(--color-primario);" 
+                              IsBusy="@estaCargando" 
+                              BusyText="Iniciando..." />
+            </RadzenStack>
+
+        </RadzenStack>
+    </RadzenTemplateForm>
+</RadzenPanel>
+
+@code {
+    private LoginModelo modelo = new();
+    private bool estaCargando = false;
+
+    [Parameter]
+    public EventCallback<LoginModelo> OnLogin { get; set; }
+
+    private async Task AlEnviar()
+    {
+        estaCargando = true;
+        try
+        {
+            if (OnLogin.HasDelegate)
+            {
+                await OnLogin.InvokeAsync(modelo);
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Warning, "Atención", "Acción de login no configurada en la página padre.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", $"Error al iniciar sesión: {ex.Message}");
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    public class LoginModelo
+    {
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string Clave { get; set; } = string.Empty;
+    }
+}

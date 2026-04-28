@@ -1,0 +1,36 @@
+@inherits LayoutComponentBase
+
+<RadzenLayout>
+    <RadzenHeader Style="background-color: var(--color-secundario); color: white; display: flex; align-items: center; padding: 0 1rem; height: 60px; justify-content: space-between;">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenImage Path="images/logo.jpg" Style="width: 35px; border-radius: 50%; border: 1px solid white;" />
+            <RadzenText TextStyle="TextStyle.H6" class="rz-color-white rz-m-0" Style="font-weight: bold; font-size: 1.1rem;">GradoXpert</RadzenText>
+        </RadzenStack>
+        <RadzenProfileMenu>
+            <Template>
+                <RadzenIcon Icon="account_circle" />
+            </Template>
+            <ChildContent>
+                <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" />
+                <RadzenProfileMenuItem Text="Salir" Icon="logout" Path="/login" />
+            </ChildContent>
+        </RadzenProfileMenu>
+    </RadzenHeader>
+
+    <RadzenSidebar @bind-Expanded="@sidebarExpanded" Responsive="true" Style="background-color: white;">
+        <NavMenu />
+    </RadzenSidebar>
+
+    <RadzenBody>
+        <div class="rz-p-4" style="height: calc(100vh - 60px); overflow-y: auto;">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
+
+<RadzenComponents />
+
+@code {
+    bool sidebarExpanded = false; // Por defecto cerrado en móvil
+}

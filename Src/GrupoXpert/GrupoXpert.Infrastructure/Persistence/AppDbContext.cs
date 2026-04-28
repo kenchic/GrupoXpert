@@ -1,0 +1,30 @@
+using GrupoXpert.Application.Common.Interfaces;
+using GrupoXpert.Domain.Identidad;
+using Microsoft.EntityFrameworkCore;
+
+namespace GrupoXpert.Infrastructure.Persistence;
+
+/// <summary>
+/// Contexto de base de datos para GrupoXpert.
+/// Implementa IUnidadDeTrabajo para coordinar transacciones.
+/// </summary>
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options) 
+    : DbContext(options), IUnidadDeTrabajo
+{
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("Identidad");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        
+        base.OnModelCreating(modelBuilder);
+    }
+
+    public async Task<int> GuardarCambiosAsync(CancellationToken cancelacion = default)
+    {
+        // Aquí se podrían publicar eventos de dominio antes o después de guardar
+        return await SaveChangesAsync(cancelacion);
+    }
+}
+
