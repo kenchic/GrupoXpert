@@ -4,23 +4,23 @@ namespace GrupoXpert.Domain.Common;
 /// Clase base abstracta para todas las Entidades del dominio.
 /// Proporciona identidad (Id) e igualdad basada en identidad.
 /// </summary>
-public abstract class Entidad
+public abstract class Entity
 {
     public Guid Id { get; protected set; }
 
-    protected Entidad()
+    protected Entity()
     {
         Id = Guid.NewGuid();
     }
 
-    protected Entidad(Guid id)
+    protected Entity(Guid id)
     {
         Id = id;
     }
 
     public override bool Equals(object? obj)
     {
-        if (obj is not Entidad otra)
+        if (obj is not Entity otra)
             return false;
 
         if (ReferenceEquals(this, otra))
@@ -34,7 +34,7 @@ public abstract class Entidad
 
     public override int GetHashCode() => Id.GetHashCode();
 
-    public static bool operator ==(Entidad? izquierda, Entidad? derecha)
+    public static bool operator ==(Entity? izquierda, Entity? derecha)
     {
         if (izquierda is null && derecha is null)
             return true;
@@ -45,5 +45,5 @@ public abstract class Entidad
         return izquierda.Equals(derecha);
     }
 
-    public static bool operator !=(Entidad? izquierda, Entidad? derecha) => !(izquierda == derecha);
+    public static bool operator !=(Entity? izquierda, Entity? derecha) => !(izquierda == derecha);
 }

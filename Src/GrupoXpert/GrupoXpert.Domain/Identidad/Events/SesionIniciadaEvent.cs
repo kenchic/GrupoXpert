@@ -5,17 +5,16 @@ namespace GrupoXpert.Domain.Identidad.Events;
 /// <summary>
 /// Evento de dominio emitido cuando un usuario inicia sesión exitosamente.
 /// </summary>
-public sealed class SesionIniciadaEvento : IEventoDominio
+public sealed class SesionIniciadaEvent : IDomainEvent
 {
     public Guid UsuarioId { get; }
-    public string NombreUsuario { get; }
+    public string Email { get; }
     public DateTime FechaOcurrencia { get; }
 
-    public SesionIniciadaEvento(Guid usuarioId, string nombreUsuario)
+    public SesionIniciadaEvent(Guid usuarioId, string email)
     {
         UsuarioId = usuarioId;
-        NombreUsuario = nombreUsuario;
+        Email = email;
         FechaOcurrencia = DateTime.UtcNow;
     }
 }
-

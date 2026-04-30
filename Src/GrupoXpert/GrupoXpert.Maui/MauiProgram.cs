@@ -20,7 +20,7 @@ namespace GrupoXpert.Maui
             // Configuración de HttpClient para el Backend (Ajustar IP según entorno móvil)
             builder.Services.AddScoped(sp => new HttpClient 
             { 
-                BaseAddress = new Uri("https://localhost:7298/") 
+                BaseAddress = new Uri("http://localhost:5237/") 
             });
 
 #if DEBUG

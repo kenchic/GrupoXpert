@@ -12,14 +12,19 @@ public interface IUsuarioRepository
     Task<Usuario?> ObtenerPorIdAsync(Guid id, CancellationToken cancelacion = default);
 
     /// <summary>
-    /// Obtiene un usuario por su nombre de usuario (normalizado a minúsculas).
+    /// Obtiene un usuario por su correo electrónico (normalizado a minúsculas).
     /// </summary>
-    Task<Usuario?> ObtenerPorNombreUsuarioAsync(string nombreUsuario, CancellationToken cancelacion = default);
+    Task<Usuario?> ObtenerPorEmailAsync(string email, CancellationToken cancelacion = default);
 
     /// <summary>
-    /// Verifica si un nombre de usuario ya está registrado.
+    /// Obtiene un usuario por su token de activación de cuenta.
     /// </summary>
-    Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, CancellationToken cancelacion = default);
+    Task<Usuario?> ObtenerPorTokenActivacionAsync(string token, CancellationToken cancelacion = default);
+
+    /// <summary>
+    /// Verifica si un correo electrónico ya está registrado en el sistema.
+    /// </summary>
+    Task<bool> ExisteEmailAsync(string email, CancellationToken cancelacion = default);
 
     /// <summary>
     /// Agrega un nuevo usuario al repositorio.
@@ -31,4 +36,3 @@ public interface IUsuarioRepository
     /// </summary>
     Task ActualizarAsync(Usuario usuario, CancellationToken cancelacion = default);
 }
-

@@ -6,7 +6,7 @@ namespace GrupoXpert.Domain.Identidad;
 /// Objeto de Valor que encapsula las credenciales de acceso del usuario.
 /// Contiene el hash de la clave, nunca la clave en texto plano.
 /// </summary>
-public sealed class ClaveAcceso : ObjetoValor
+public sealed class ClaveAcceso : ValueObject
 {
     /// <summary>
     /// Hash de la clave (generado con BCrypt, Argon2 o similar en la capa de Infraestructura).

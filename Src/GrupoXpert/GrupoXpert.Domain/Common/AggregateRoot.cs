@@ -2,25 +2,25 @@ namespace GrupoXpert.Domain.Common;
 
 /// <summary>
 /// Clase base para las Raíces de Agregado.
-/// Extiende Entidad con soporte para eventos de dominio.
+/// Extiende Entity con soporte para eventos de dominio.
 /// </summary>
-public abstract class RaizAgregado : Entidad
+public abstract class AggregateRoot : Entity
 {
-    private readonly List<IEventoDominio> _eventosDominio = [];
+    private readonly List<IDomainEvent> _eventosDominio = [];
 
     /// <summary>
     /// Eventos de dominio pendientes de publicar.
     /// </summary>
-    public IReadOnlyList<IEventoDominio> EventosDominio => _eventosDominio.AsReadOnly();
+    public IReadOnlyList<IDomainEvent> EventosDominio => _eventosDominio.AsReadOnly();
 
-    protected RaizAgregado() : base() { }
+    protected AggregateRoot() : base() { }
 
-    protected RaizAgregado(Guid id) : base(id) { }
+    protected AggregateRoot(Guid id) : base(id) { }
 
     /// <summary>
     /// Registra un nuevo evento de dominio.
     /// </summary>
-    protected void AgregarEventoDominio(IEventoDominio evento)
+    protected void AgregarEventoDominio(IDomainEvent evento)
     {
         _eventosDominio.Add(evento);
     }

@@ -33,6 +33,9 @@ public static class DependencyInjection
         // 3. Servicios
         servicios.AddSingleton<IHashClaveService, HashClaveService>();
         servicios.AddScoped<ITokenService, TokenService>();
+        servicios.AddScoped<IGeneradorTokenService, GeneradorTokenService>();
+        servicios.AddScoped<IUrlActivacionService, UrlActivacionService>();
+        servicios.AddScoped<ICorreoElectronicoService, CorreoElectronicoService>();
 
         return servicios;
     }

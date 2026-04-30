@@ -3,7 +3,7 @@
 ## 👥 Perspectiva Funcional (Manual de Usuario)
 
 ### Objetivo
-Permitir que un usuario acceda de forma segura a la aplicación GradoXpert validando su identidad mediante un nombre de usuario y una contraseña secreta.
+Permitir que un usuario acceda de forma segura a la aplicación GrupoXpert validando su identidad mediante un nombre de usuario y una contraseña secreta.
 
 ### Actores
 - **Usuario**: Cualquier persona registrada con una cuenta activa en el sistema.

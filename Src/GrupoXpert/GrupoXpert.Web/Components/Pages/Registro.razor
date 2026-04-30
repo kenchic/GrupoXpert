@@ -1,0 +1,53 @@
+@page "/registro"
+@rendermode InteractiveServer
+@layout GrupoXpert.Web.Components.Layout.LoginLayout
+@using GrupoXpert.Shared.UI.Componentes.Identidad
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject IAutenticacionService AuthService
+@inject NotificationService Notificaciones
+@inject NavigationManager Navegador
+
+<PageTitle>Registro - GrupoXpert</PageTitle>
+
+<RadzenStack JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Style="min-height: 80vh;">
+    <FormularioRegistro AlRegistrar="@ProcesarRegistro" estaCargando="@estaCargando" />
+</RadzenStack>
+
+@code {
+    private bool estaCargando = false;
+
+    private async Task ProcesarRegistro(FormularioRegistro.ModeloRegistro modelo)
+    {
+        estaCargando = true;
+        try
+        {
+            await AuthService.RegistrarAsync(modelo);
+            
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Registro Exitoso",
+                Detail = "Usuario creado exitosamente. Ya puedes iniciar sesión.",
+                Duration = 6000
+            });
+
+            // Redirigir al login después de un breve retraso
+            await Task.Delay(2000);
+            Navegador.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error en Registro",
+                Detail = ex.Message,
+                Duration = 4000
+            });
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+}

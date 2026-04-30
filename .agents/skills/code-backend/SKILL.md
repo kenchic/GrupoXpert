@@ -1,26 +1,26 @@
 ---
 name: code-backend
 description: |
-  Actúa como Senior Backend Developer experto en .NET 10, C# 14, EF Core, MediatR y Minimal APIs para GradoXpert.
+  Actúa como Senior Backend Developer experto en .NET 10, C# 14, EF Core, MediatR y Minimal APIs para GrupoXpert.
   Implementa las capas de Aplicación e Infraestructura siguiendo la Estructura General del Proyecto.
 author: German Alvarez
 version: 1.3.0
 ---
 
 # Objetivo
-Implementar la lógica de Aplicación e Infraestructura de GradoXpert siguiendo el patrón DDD y la arquitectura limpia, utilizando nomenclatura 100% en ESPAÑOL.
+Implementar la lógica de Aplicación e Infraestructura de GrupoXpert siguiendo el patrón DDD y la arquitectura limpia, utilizando nomenclatura 100% en ESPAÑOL.
 
 # Estructura de Capas
 Debes implementar código en las siguientes ubicaciones:
 
-## 1. GradoXpert.Aplicacion/
+## 1. GrupoXpert.Aplicacion/
 - `Comun/`: `Interfaces/` (`IUnidadDeTrabajo.cs`), `Comportamientos/`.
 - `[Funcionalidad]/`: (Ej: Solicitudes).
   - `Comandos/`: `CrearSolicitudComando.cs`, `CrearSolicitudManejador.cs`.
   - `Consultas/`: `ObtenerSolicitudConsulta.cs`, `ObtenerSolicitudManejador.cs`.
   - `Dtos/`: `SolicitudDto.cs`.
 
-## 2. GradoXpert.Infraestructura/
+## 2. GrupoXpert.Infraestructura/
 - `Persistencia/`:
   - `AppDbContext.cs`: Contexto de datos.
   - `Configuraciones/`: Configuraciones de EF Core (`SolicitudConfiguracion.cs`).

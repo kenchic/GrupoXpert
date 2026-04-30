@@ -11,10 +11,11 @@
         <RadzenStack Gap="1.5rem">
             
             <div>
-                <RadzenFormField Text="Usuario" Variant="Variant.Outlined" Style="width: 100%;">
-                    <RadzenTextBox Name="Usuario" @bind-Value="modelo.NombreUsuario" Placeholder="Ej. admin" />
+                <RadzenFormField Text="Correo Electrónico" Variant="Variant.Outlined" Style="width: 100%;">
+                    <RadzenTextBox Name="Email" @bind-Value="modelo.Email" Placeholder="ejemplo@correo.com" />
                 </RadzenFormField>
-                <RadzenRequiredValidator Component="Usuario" Text="El usuario es obligatorio." Style="display: block;" />
+                <RadzenRequiredValidator Component="Email" Text="El correo es obligatorio." Style="display: block;" />
+                <RadzenEmailValidator Component="Email" Text="Ingrese un correo válido." Style="display: block;" />
             </div>
 
             <div>
@@ -31,6 +32,12 @@
                               Style="width: 100%; border-radius: 8px; font-weight: bold; background-color: var(--color-primario);" 
                               IsBusy="@estaCargando" 
                               BusyText="Iniciando..." />
+            </RadzenStack>
+
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="0.3rem" class="rz-mt-2">
+                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="margin: 0;">¿No tienes cuenta?</RadzenText>
+                <RadzenLink Path="/registro" Text="Regístrate aquí" 
+                            Style="color: var(--color-primario); font-weight: 600; font-size: 0.875rem; text-decoration: none;" />
             </RadzenStack>
 
         </RadzenStack>
@@ -70,7 +77,7 @@
 
     public class LoginModelo
     {
-        public string NombreUsuario { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Clave { get; set; } = string.Empty;
     }
 }

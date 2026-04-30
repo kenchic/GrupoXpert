@@ -4,7 +4,7 @@ namespace GrupoXpert.Domain.Common;
 /// Clase base abstracta para Objetos de Valor.
 /// La igualdad se determina por la comparación de todos sus componentes.
 /// </summary>
-public abstract class ObjetoValor
+public abstract class ValueObject
 {
     /// <summary>
     /// Obtiene los componentes que definen la igualdad del objeto de valor.
@@ -16,7 +16,7 @@ public abstract class ObjetoValor
         if (obj is null || obj.GetType() != GetType())
             return false;
 
-        var otro = (ObjetoValor)obj;
+        var otro = (ValueObject)obj;
 
         return ObtenerComponentesIgualdad()
             .SequenceEqual(otro.ObtenerComponentesIgualdad());
@@ -34,7 +34,7 @@ public abstract class ObjetoValor
             });
     }
 
-    public static bool operator ==(ObjetoValor? izquierda, ObjetoValor? derecha)
+    public static bool operator ==(ValueObject? izquierda, ValueObject? derecha)
     {
         if (izquierda is null && derecha is null)
             return true;
@@ -45,5 +45,5 @@ public abstract class ObjetoValor
         return izquierda.Equals(derecha);
     }
 
-    public static bool operator !=(ObjetoValor? izquierda, ObjetoValor? derecha) => !(izquierda == derecha);
+    public static bool operator !=(ValueObject? izquierda, ValueObject? derecha) => !(izquierda == derecha);
 }

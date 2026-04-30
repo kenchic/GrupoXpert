@@ -18,8 +18,8 @@ public sealed class TokenService(IConfiguration configuracion) : ITokenService
     public string GenerarToken(Usuario usuario)
     {
         var secreto = _configuracion["Jwt:Secreto"] ?? throw new InvalidOperationException("Configuración Jwt:Secreto no encontrada.");
-        var emisor = _configuracion["Jwt:Emisor"] ?? "GradoXpert";
-        var audiencia = _configuracion["Jwt:Audiencia"] ?? "GradoXpertUsers";
+        var emisor = _configuracion["Jwt:Emisor"] ?? "GrupoXpert";
+        var audiencia = _configuracion["Jwt:Audiencia"] ?? "GrupoXpertUsers";
         var expiracionMinutos = int.Parse(_configuracion["Jwt:ExpiracionMinutos"] ?? "60");
 
         var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secreto));
@@ -28,7 +28,7 @@ public sealed class TokenService(IConfiguration configuracion) : ITokenService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, usuario.NombreUsuario),
+            new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email.Valor),
             new Claim("nombre", usuario.Nombre),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

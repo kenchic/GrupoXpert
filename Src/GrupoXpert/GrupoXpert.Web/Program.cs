@@ -8,11 +8,13 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddRadzenComponents();
 
-// Configuración de HttpClient para el Backend
+// Configurar HttpClient para el servidor Blazor (llamadas server-to-api)
 builder.Services.AddScoped(sp => new HttpClient 
 { 
     BaseAddress = new Uri("https://localhost:7298/") 
 });
+
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAutenticacionService, GrupoXpert.Web.Services.AutenticacionService>();
 
 var app = builder.Build();
 

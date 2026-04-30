@@ -5,7 +5,7 @@
 @inject HttpClient Http
 @using System.Net.Http.Json
 
-<PageTitle>Iniciar Sesión - GradoXpert</PageTitle>
+<PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
 
 <div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
     <FormularioLogin OnLogin="@ManejarLogin" />
@@ -18,13 +18,13 @@
         {
             var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
             { 
-                NombreUsuario = modelo.NombreUsuario, 
+                Email = modelo.Email, 
                 Clave = modelo.Clave 
             });
 
             if (respuesta.IsSuccessStatusCode)
             {
-                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Hola, {modelo.NombreUsuario}");
+                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Email}");
                 
                 // TODO: En MAUI se recomienda usar SecureStorage para el token
                 await Task.Delay(1000);

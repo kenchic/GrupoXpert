@@ -5,6 +5,6 @@ namespace GrupoXpert.Application.Identidad.Dtos;
 /// </summary>
 public record ResultadoSesionDto(
     string Token,
-    string NombreUsuario,
+    string Email,
     string Nombre,
     string? Imagen);

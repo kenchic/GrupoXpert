@@ -14,17 +14,17 @@ public sealed class IniciarSesionHandler(
     IUsuarioRepository UsuarioRepository,
     IHashClaveService HashClaveService,
     ITokenService TokenService,
-    IUnidadDeTrabajo unidadDeTrabajo) : IRequestHandler<IniciarSesionComando, ResultadoSesionDto>
+    IUnidadDeTrabajo unidadDeTrabajo) : IRequestHandler<IniciarSesionCommand, ResultadoSesionDto>
 {
     private readonly IUsuarioRepository _usuarioRepositorio = UsuarioRepository;
     private readonly IHashClaveService _servicioHashClave = HashClaveService;
     private readonly ITokenService _servicioToken = TokenService;
     private readonly IUnidadDeTrabajo _unidadDeTrabajo = unidadDeTrabajo;
 
-    public async Task<ResultadoSesionDto> Handle(IniciarSesionComando solicitud, CancellationToken cancelacion)
+    public async Task<ResultadoSesionDto> Handle(IniciarSesionCommand solicitud, CancellationToken cancelacion)
     {
         // 1. Obtener usuario del repositorio
-        var usuario = await _usuarioRepositorio.ObtenerPorNombreUsuarioAsync(solicitud.NombreUsuario, cancelacion);
+        var usuario = await _usuarioRepositorio.ObtenerPorEmailAsync(solicitud.Email, cancelacion);
 
         if (usuario is null)
         {
@@ -35,6 +35,12 @@ public sealed class IniciarSesionHandler(
         if (!_servicioHashClave.Verificar(solicitud.Clave, usuario.Clave.HashClave))
         {
             throw new ExcepcionDominio("Credenciales inválidas.");
+        }
+
+        // 3. Verificar que la cuenta esté activa
+        if (!usuario.EstaActivo)
+        {
+            throw new ExcepcionDominio("La cuenta no está activada. Por favor revisa tu correo y haz clic en el enlace de activación.");
         }
 
         // 3. Lógica de negocio del dominio (marcar inicio de sesión)
@@ -49,7 +55,7 @@ public sealed class IniciarSesionHandler(
         // 6. Retornar DTO de resultado
         return new ResultadoSesionDto(
             token,
-            usuario.NombreUsuario,
+            usuario.Email.Valor,
             usuario.Nombre,
             usuario.Imagen);
     }

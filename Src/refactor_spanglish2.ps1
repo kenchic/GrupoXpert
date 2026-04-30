@@ -1,4 +1,4 @@
-$baseDir = "e:\Documentos\Proyectos\GradoXpert\Src\GrupoXpert"
+$baseDir = "e:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert"
 
 function Move-OrRenameDir($source, $dest) {
     if (Test-Path $source) {

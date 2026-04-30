@@ -1,0 +1,78 @@
+@using System.ComponentModel.DataAnnotations
+@inject NotificationService Notificaciones
+
+<RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" Style="max-width: 600px; box-shadow: var(--rz-shadow-6);">
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-mb-6 rz-text-align-center" Style="color: var(--color-primario);">
+        Crear Cuenta
+    </RadzenText>
+
+    <RadzenTemplateForm TItem="ModeloRegistro" Data="@modelo" Submit="@ManejarRegistroAsync">
+        <RadzenStack Gap="1.5rem">
+            
+            <RadzenFormField Text="Nombre Completo" Variant="Variant.Outlined">
+                <RadzenTextBox @bind-Value="modelo.Nombre" Name="Nombre" Placeholder="Ej: Juan Pérez" class="rz-w-100" />
+                <RadzenRequiredValidator Component="Nombre" Text="El nombre es obligatorio" />
+            </RadzenFormField>
+
+            <RadzenFormField Text="Correo Electrónico" Variant="Variant.Outlined">
+                <RadzenTextBox @bind-Value="modelo.Email" Name="Email" Placeholder="ejemplo@correo.com" class="rz-w-100" />
+                <RadzenRequiredValidator Component="Email" Text="El correo es obligatorio" />
+                <RadzenEmailValidator Component="Email" Text="Ingrese un correo válido" />
+            </RadzenFormField>
+
+            <RadzenFormField Text="Contraseña" Variant="Variant.Outlined">
+                <RadzenPassword @bind-Value="modelo.Clave" Name="Clave" Placeholder="********" class="rz-w-100" />
+                <RadzenRequiredValidator Component="Clave" Text="La contraseña es obligatoria" />
+                <RadzenLengthValidator Component="Clave" Min="6" Text="Mínimo 6 caracteres" />
+            </RadzenFormField>
+
+            <RadzenFormField Text="Confirmar Contraseña" Variant="Variant.Outlined">
+                <RadzenPassword @bind-Value="modelo.ConfirmarClave" Name="ConfirmarClave" Placeholder="********" class="rz-w-100" />
+                <RadzenRequiredValidator Component="ConfirmarClave" Text="Debe confirmar la contraseña" />
+                <RadzenCompareValidator Component="ConfirmarClave" Value="@modelo.Clave" Text="Las contraseñas no coinciden" />
+            </RadzenFormField>
+
+            <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-4">
+                <RadzenButton ButtonType="ButtonType.Submit" 
+                              Text="Registrarse" 
+                              ButtonStyle="ButtonStyle.Primary" 
+                              class="rz-w-100" 
+                              Icon="person_add"
+                              IsBusy="@estaCargando" 
+                              BusyText="Procesando..." />
+            </RadzenStack>
+
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-text-align-center rz-mt-4">
+                ¿Ya tienes una cuenta? <a href="/login" style="color: var(--color-secundario); text-decoration: none; font-weight: bold;">Inicia sesión</a>
+            </RadzenText>
+
+        </RadzenStack>
+    </RadzenTemplateForm>
+</RadzenCard>
+
+@code {
+    [Parameter] public EventCallback<ModeloRegistro> AlRegistrar { get; set; }
+    [Parameter] public bool estaCargando { get; set; }
+
+    private ModeloRegistro modelo = new();
+
+    private async Task ManejarRegistroAsync()
+    {
+        await AlRegistrar.InvokeAsync(modelo);
+    }
+
+    public class ModeloRegistro
+    {
+        [Required]
+        public string Nombre { get; set; } = string.Empty;
+
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [Required, MinLength(6)]
+        public string Clave { get; set; } = string.Empty;
+
+        [Required]
+        public string ConfirmarClave { get; set; } = string.Empty;
+    }
+}

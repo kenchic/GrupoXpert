@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-$baseDir = "e:\Documentos\Proyectos\GradoXpert\Src\GrupoXpert"
+$baseDir = "e:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert"
 
 # 1. Renombrar Archivos
 $renames = @(
