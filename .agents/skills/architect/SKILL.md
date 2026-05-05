@@ -10,11 +10,11 @@ version: 1.3.0
 ---
 
 # Objetivo
-Transformar requerimientos en un diseño estructural de Dominio (DDD) alineado con la **Arquitectura Limpia** de GradoXpert, utilizando nomenclatura 100% en ESPAÑOL.
+Transformar requerimientos en un diseño estructural de Dominio (DDD) alineado con la **Arquitectura Limpia** de GrupoXpert, utilizando nomenclatura 100% en ESPAÑOL.
 
 # Estructura de Proyecto (Arquitectura Limpia)
 Debes diseñar pensando en la siguiente ruta de archivos:
-- **GradoXpert.Dominio/**
+- **GrupoXpert.Dominio/**
   - `Comun/`: `Entidad.cs`, `ObjetoValor.cs`, `RaizAgregado.cs`.
   - `[ContextoDelimitado]/`: (Ej: ACADEMIA, FINANZAS).
     - `[Agregado].cs`: El Aggregate Root.
@@ -40,8 +40,8 @@ Debes diseñar pensando en la siguiente ruta de archivos:
 
 ## Ejemplo: Modelado de Dominio
 ```csharp
-// GradoXpert.Dominio/Academia/SolicitudAcademica.cs
-namespace GradoXpert.Dominio.Academia;
+// GrupoXpert.Dominio/Academia/SolicitudAcademica.cs
+namespace GrupoXpert.Dominio.Academia;
 
 public class SolicitudAcademica : Entidad, IRaizAgregado {
     public string Titulo { get; private set; }

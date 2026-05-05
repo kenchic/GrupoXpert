@@ -1,4 +1,10 @@
 {
     "snyk.advanced.organization": "d38b7814-6ca9-4483-a4fc-e4c512b3bb93",
-    "snyk.advanced.autoSelectOrganization": true
+    "snyk.advanced.autoSelectOrganization": true,
+    "[json]": {
+        "editor.formatOnSave": false
+    },
+    "[jsonc]": {
+        "editor.formatOnSave": false
+    }
 }

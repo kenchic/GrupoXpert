@@ -1,7 +1,7 @@
 ---
 name: code-frontend
 description: |
-  Actúa como Desarrollador Frontend Especialista en Blazor, Radzen y MAUI Hybrid (.NET 10) para GradoXpert.
+  Actúa como Desarrollador Frontend Especialista en Blazor, Radzen y MAUI Hybrid (.NET 10) para GrupoXpert.
   Implementa la UI siguiendo la Estructura General del Proyecto (Web, Maui, Shared.UI).
   Se activa cuando el usuario pide "crear página", "hacer formulario", "implementar tabla",
   "agregar componente UI", "construir pantalla", "diseñar interfaz" o cualquier tarea de frontend.
@@ -11,7 +11,7 @@ version: 2.0.0
 
 # Objetivo
 
-Construir interfaces premium para GradoXpert en Web y Móvil usando **exclusivamente Radzen Blazor**
+Construir interfaces premium para GrupoXpert en Web y Móvil usando **exclusivamente Radzen Blazor**
 como librería de componentes, respetando la estructura de proyectos compartidos y nomenclatura en **ESPAÑOL**.
 
 ---
@@ -21,13 +21,13 @@ como librería de componentes, respetando la estructura de proyectos compartidos
 Organiza el código siguiendo esta jerarquía:
 
 ```
-GradoXpert.Web/                    → Blazor Web App (.NET 10)
+GrupoXpert.Web/                    → Blazor Web App (.NET 10)
   Componentes/Paginas/             → Páginas principales
 
-GradoXpert.Maui/                   → Blazor Hybrid (.NET 10 MAUI)
+GrupoXpert.Maui/                   → Blazor Hybrid (.NET 10 MAUI)
   → Interfaz móvil multiplataforma
 
-GradoXpert.Compartido.UI/          → Razor Class Library (.NET 10)
+GrupoXpert.Compartido.UI/          → Razor Class Library (.NET 10)
   Componentes/[Funcionalidad]/     → TODOS los componentes reutilizables aquí
     Ej: Componentes/Solicitudes/TablaSolicitudes.razor
   Abstracciones/                   → Interfaces para servicios de plataforma
@@ -245,7 +245,7 @@ En componentes Radzen, usa la propiedad `ButtonStyle` o `class` para alinearte:
 
 ## Arquitectura
 
-- 🚫 **No duplicar componentes**: Si ya existe en `GradoXpert.Compartido.UI`, reutilízalo.
+- 🚫 **No duplicar componentes**: Si ya existe en `GrupoXpert.Compartido.UI`, reutilízalo.
 - ✅ Todo componente nuevo potencialmente compartible va en `Compartido.UI`, no en `Web` ni `Maui`.
 
 ## Idioma

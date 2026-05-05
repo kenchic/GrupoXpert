@@ -29,7 +29,7 @@ Debes implementar código en las siguientes ubicaciones:
 - `Servicios/`: Integraciones externas (Stripe, Turnitin).
 - `InyeccionDependencia.cs`: Registro de servicios (lee la cadena de conexión de WebApi).
 
-## 3. GradoXpert.WebApi/
+## 3. GrupoXpert.WebApi/
 - `Controladores/`: Endpoints de la API.
 - `appsettings.json`: Configuración principal de la app. Aquí reside la clave `CadenaConexion` (credenciales de la app, sin permisos de DDL).
 
