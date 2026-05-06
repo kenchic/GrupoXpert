@@ -1,0 +1,16 @@
+@page "/notfound"
+@layout GrupoXpert.Maui.Components.Layout.MainLayout
+
+<PageTitle>No Encontrado - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 3rem;">
+        <RadzenIcon Icon="warning" Style="font-size: 4rem; color: var(--color-acento);" />
+        <RadzenText TextStyle="TextStyle.H1" Style="color: var(--color-acento);">404</RadzenText>
+        <RadzenText TextStyle="TextStyle.H4">Página No Encontrada</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center">
+            Lo sentimos, la página que buscas no existe o fue removida.
+        </RadzenText>
+        <RadzenButton Text="Volver al Inicio" ButtonStyle="ButtonStyle.Primary" Path="/" Icon="home" />
+    </RadzenStack>
+</div>

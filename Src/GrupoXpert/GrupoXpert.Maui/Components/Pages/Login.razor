@@ -1,0 +1,42 @@
+@page "/login"
+@layout GrupoXpert.Maui.Components.Layout.LoginLayout
+@inject NavigationManager Navegador
+@inject NotificationService Notificaciones
+@inject HttpClient Http
+@using System.Net.Http.Json
+
+<PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
+    <FormularioLogin AlIniciarSesion="@ManejarLogin" />
+</div>
+
+@code {
+    private async Task ManejarLogin(FormularioLogin.LoginModelo modelo)
+    {
+        try 
+        {
+            var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
+            { 
+                Email = modelo.Correo, 
+                Clave = modelo.Clave 
+            });
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Correo}");
+                
+                await Task.Delay(1000);
+                Navegador.NavigateTo("/");
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error de Acceso", "Usuario o clave incorrectos.");
+            }
+        }
+        catch (Exception)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error de Conexión", "No se pudo contactar con el servidor. Verifique su conexión.");
+        }
+    }
+}

@@ -1,21 +1,20 @@
-using GrupoXpert.Authentication;
-using GrupoXpert.Web;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using MudBlazor.Services;
+using GrupoXpert.Web.Components;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddRadzenComponents();
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<ProtectedLocalStorage>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddMudServices();
+// Configurar HttpClient para el servidor Blazor (llamadas server-to-api)
+builder.Services.AddScoped(sp => new HttpClient 
+{ 
+    BaseAddress = new Uri("https://localhost:7298/") 
+});
+
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAutenticacionService, GrupoXpert.Web.Services.AutenticacionService>();
 
 var app = builder.Build();
 
@@ -26,13 +25,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
-app.UseAntiforgery();
-app.UseStaticFiles();
-app.UseAuthentication();
-app.UseAuthorization();
 
+app.UseAntiforgery();
+
+app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

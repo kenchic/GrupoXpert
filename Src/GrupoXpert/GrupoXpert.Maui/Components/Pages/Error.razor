@@ -1,0 +1,16 @@
+@page "/error"
+@layout GrupoXpert.Maui.Components.Layout.MainLayout
+
+<PageTitle>Error - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 3rem;">
+        <RadzenIcon Icon="error" Style="font-size: 4rem; color: var(--color-primario);" />
+        <RadzenText TextStyle="TextStyle.H1" Style="color: var(--color-primario);">Error</RadzenText>
+        <RadzenText TextStyle="TextStyle.H5">Ocurrió un error inesperado.</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center">
+            Por favor, intenta nuevamente más tarde. Si el problema persiste, contacta al soporte técnico.
+        </RadzenText>
+        <RadzenButton Text="Volver al Inicio" ButtonStyle="ButtonStyle.Primary" Path="/" Icon="home" />
+    </RadzenStack>
+</div>

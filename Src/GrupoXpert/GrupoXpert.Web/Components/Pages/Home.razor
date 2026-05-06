@@ -1,0 +1,53 @@
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Inicio - GrupoXpert</PageTitle>
+
+<RadzenStack Gap="2rem" class="rz-p-4 rz-p-md-12">
+    <RadzenCard Variant="Variant.Flat" Style="background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%); color: white; border-radius: 16px; overflow: hidden; position: relative;">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="2rem" class="rz-p-8">
+            <RadzenIcon Icon="dashboard" Style="font-size: 5rem; opacity: 0.2; position: absolute; right: -10px; bottom: -10px;" />
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.H3" class="rz-color-white" Style="font-weight: 800; margin: 0;">¡Bienvenido a GrupoXpert!</RadzenText>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-color-white" Style="opacity: 0.9;">Plataforma Integral de Gestión Académica y Profesional</RadzenText>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4">
+            <RadzenCard class="rz-h-100" Style="border-top: 4px solid var(--color-primario);">
+                <RadzenStack AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenIcon Icon="people" Style="font-size: 3rem; color: var(--color-primario);" />
+                    <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center">Gestión de Usuarios</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">Administre perfiles, roles y permisos de acceso al sistema.</RadzenText>
+                    <RadzenButton Text="Ir a Usuarios" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Text" Icon="arrow_forward" />
+                </RadzenStack>
+            </RadzenCard>
+        </div>
+        <div class="col-12 col-md-4">
+            <RadzenCard class="rz-h-100" Style="border-top: 4px solid var(--color-secundario);">
+                <RadzenStack AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenIcon Icon="school" Style="font-size: 3rem; color: var(--color-secundario);" />
+                    <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center">Grados y Cursos</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">Organice la oferta académica, contenidos y cronogramas.</RadzenText>
+                    <RadzenButton Text="Ver Cursos" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Text" Icon="arrow_forward" />
+                </RadzenStack>
+            </RadzenCard>
+        </div>
+        <div class="col-12 col-md-4">
+            <RadzenCard class="rz-h-100" Style="border-top: 4px solid #f97316;">
+                <RadzenStack AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenIcon Icon="assignment" Style="font-size: 3rem; color: #f97316;" />
+                    <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center">Reportes</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">Genere informes detallados sobre el progreso y actividad.</RadzenText>
+                    <RadzenButton Text="Ver Reportes" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Text" Icon="arrow_forward" />
+                </RadzenStack>
+            </RadzenCard>
+        </div>
+    </div>
+</RadzenStack>
+
+@code {
+    // Aquí implementaremos la lógica de verificación de sesión real más adelante
+}

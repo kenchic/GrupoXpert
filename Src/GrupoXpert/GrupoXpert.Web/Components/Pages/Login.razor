@@ -1,0 +1,52 @@
+@page "/login"
+@rendermode InteractiveServer
+@layout GrupoXpert.Web.Components.Layout.LoginLayout
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject NavigationManager Navegador
+@inject NotificationService Notificaciones
+@inject IAutenticacionService AuthService
+
+<PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
+    <FormularioLogin AlIniciarSesion="@ManejarLogin" />
+</div>
+
+@code {
+    private async Task ManejarLogin(FormularioLogin.LoginModelo modelo)
+    {
+        try 
+        {
+            var token = await AuthService.IniciarSesionAsync(modelo.Correo, modelo.Clave);
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Acceso Correcto",
+                    Detail = "Bienvenido al sistema.",
+                    Duration = 4000
+                });
+                
+                // Forzar la navegación a la raíz
+                await Task.Delay(500);
+                Navegador.NavigateTo("/", forceLoad: true);
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se recibió un token válido.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error de Acceso",
+                Detail = ex.Message,
+                Duration = 4000
+            });
+        }
+    }
+}

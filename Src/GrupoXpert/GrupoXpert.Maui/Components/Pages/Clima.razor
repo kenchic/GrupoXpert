@@ -1,0 +1,46 @@
+@page "/clima"
+@layout GrupoXpert.Maui.Components.Layout.MainLayout
+@inject HttpClient Http
+
+<PageTitle>Clima - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H1">Clima</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">Este componente muestra datos climáticos de ejemplo.</RadzenText>
+
+        @if (pronosticos == null)
+        {
+            <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            <RadzenText TextStyle="TextStyle.Body2">Cargando...</RadzenText>
+        }
+        else
+        {
+            <RadzenDataGrid Data="@pronosticos" TItem="PronosticoClima" AllowPaging="true" PageSize="5" AllowSorting="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PronosticoClima" Property="Fecha" Title="Fecha" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn TItem="PronosticoClima" Property="TemperaturaC" Title="Temp. (°C)" />
+                    <RadzenDataGridColumn TItem="PronosticoClima" Property="TemperaturaF" Title="Temp. (°F)" />
+                    <RadzenDataGridColumn TItem="PronosticoClima" Property="Resumen" Title="Resumen" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </RadzenStack>
+</div>
+
+@code {
+    private PronosticoClima[]? pronosticos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pronosticos = await Http.GetFromJsonAsync<PronosticoClima[]>("weatherforecast");
+    }
+
+    public class PronosticoClima
+    {
+        public DateOnly Fecha { get; set; }
+        public int TemperaturaC { get; set; }
+        public int TemperaturaF => 32 + (int)(TemperaturaC / 0.5556);
+        public string? Resumen { get; set; }
+    }
+}

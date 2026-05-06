@@ -1,0 +1,91 @@
+@page "/registro"
+@layout GrupoXpert.Maui.Components.Layout.LoginLayout
+@using GrupoXpert.Shared.UI.Componentes.Identidad
+@using System.Net.Http.Json
+@using System.Text.Json
+@inject NavigationManager Navegador
+@inject NotificationService Notificaciones
+@inject HttpClient Http
+
+<PageTitle>Registro - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
+    <FormularioRegistro AlRegistrar="@ProcesarRegistro" estaCargando="@estaCargando" />
+</div>
+
+@code {
+    private bool estaCargando = false;
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+
+    private async Task ProcesarRegistro(FormularioRegistro.ModeloRegistro modelo)
+    {
+        estaCargando = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/autenticacion/registrar", new
+            {
+                Email = modelo.Correo,
+                Clave = modelo.Clave,
+                Nombre = modelo.Nombre,
+                Tipo = modelo.Tipo,
+                Imagen = (string?)null,
+                ActivacionAutomatica = true
+            });
+
+            if (response.IsSuccessStatusCode)
+            {
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Registro Exitoso",
+                    Detail = "Usuario creado exitosamente. Ya puedes iniciar sesión.",
+                    Duration = 6000
+                });
+
+                await Task.Delay(2000);
+                Navegador.NavigateTo("/login");
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    var error = JsonSerializer.Deserialize<ApiError>(content, _jsonOptions);
+                    Notificaciones.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error en Registro",
+                        Detail = error?.Mensaje ?? "Error al registrar el usuario.",
+                        Duration = 4000
+                    });
+                }
+                catch
+                {
+                    Notificaciones.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error en Registro",
+                        Detail = $"Error del servidor: {content}",
+                        Duration = 4000
+                    });
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error de Conexión",
+                Detail = "No se pudo contactar con el servidor. Verifique su conexión.",
+                Duration = 4000
+            });
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    private record ApiError(string Mensaje);
+}

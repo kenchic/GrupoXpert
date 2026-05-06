@@ -1,6 +1,0 @@
-@GrupoXpert.API_HostAddress = http://localhost:5015
-
-GET {{GrupoXpert.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

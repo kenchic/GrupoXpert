@@ -1,0 +1,23 @@
+using GrupoXpert.Domain.Common;
+
+namespace GrupoXpert.Domain.Identidad.Events;
+
+/// <summary>
+/// Evento de dominio emitido cuando se crea un nuevo usuario en el sistema.
+/// Incluye el correo para que los handlers de infraestructura envíen el enlace de activación.
+/// </summary>
+public sealed class UsuarioCreadoEvent : IDomainEvent
+{
+    public Guid UsuarioId { get; }
+    public string Correo { get; }
+    public string TokenActivacion { get; }
+    public DateTime FechaOcurrencia { get; }
+
+    public UsuarioCreadoEvent(Guid usuarioId, string correo, string tokenActivacion)
+    {
+        UsuarioId = usuarioId;
+        Correo = correo;
+        TokenActivacion = tokenActivacion;
+        FechaOcurrencia = DateTime.UtcNow;
+    }
+}

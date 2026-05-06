@@ -1,0 +1,34 @@
+@inherits LayoutComponentBase
+
+<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-body'; grid-template-columns: auto 1fr; height: 100vh;">
+    <RadzenSidebar @bind-Expanded="@sidebarExpanded" Style="background-color: var(--color-secundario);">
+        <RadzenStack AlignItems="AlignItems.Center" class="rz-py-8 rz-px-4">
+            <RadzenImage Path="images/logo.jpg" Style="width: 120px; border-radius: 50%; border: 4px solid white; box-shadow: var(--rz-shadow-6);" />
+            <RadzenText TextStyle="TextStyle.H6" class="rz-color-white rz-mt-4" TextAlign="TextAlign.Center" Style="font-weight: bold; letter-spacing: 1px;">GRUPOXPERT</RadzenText>
+        </RadzenStack>
+        <NavMenu />
+    </RadzenSidebar>
+    <RadzenBody>
+        <RadzenHeader Style="background-color: white; border-bottom: 1px solid var(--rz-base-200); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between;">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-m-0">Gestión Académica Profesional</RadzenText>
+            <RadzenProfileMenu>
+                <Template>
+                    <RadzenIcon Icon="account_circle" />
+                </Template>
+                <ChildContent>
+                    <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/login" />
+                </ChildContent>
+            </RadzenProfileMenu>
+        </RadzenHeader>
+        <div class="rz-p-4 rz-p-md-8">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
+
+<RadzenComponents />
+
+@code {
+    bool sidebarExpanded = true;
+}

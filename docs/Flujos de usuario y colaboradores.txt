@@ -1,0 +1,94 @@
+
+## Flujo de Usuario: Cliente (Estudiante)
+1. Registro/Login
+
+2. Solicitud académica personalizada
+	- Botón: "Nueva solicitud".
+	- Formulario guiado:
+ 	 	- Nivel académico: pregrado, especialización, maestría, doctorado.
+ 		 - Tipo de trabajo: ensayo, artículo, tesis, presentación, etc.
+ 		 - Tema / área del conocimiento.
+ 		- Número de páginas / palabras.
+ 		- Fecha de entrega.
+  		- Adjuntar instrucciones o documentos base.
+  		- Seleccionar norma de citación.
+ 		- Opción: urgencia / entrega por fases.
+
+3. Cotización automática y Pago
+	- Generación automática de presupuesto.
+	- Visualización del detalle del costo.
+	- Opciones de pago: Único (con descuento) + Por fases (por ejemplo: avance, borrador  	  	   final, corrección).
+	- Integración con plataforma de pagos.
+
+5. Notificación: "Solicitud en proceso de asignación"
+6. Asignación de colaborador calificado
+	- Confirmación de recepción de solicitud.
+	- Asignación automática/manual a un asesor.
+	- Notificación al cliente cuando el asesor acepta.
+
+7. Comunicación + avances + entrega final
+	- Chat directo o mensajería interna.
+	- Notificaciones sobre avances.
+	- Solicitud de aclaraciones o más detalles.
+
+8. Entregas y Revisión
+	- Entregas parciales (opcional).
+	- Entrega final descargable desde el panel.
+	- Botón: "Solicitar correcciones" (por un tiempo limitado).
+	- Valoración del servicio y del asesor.
+
+9. Evaluación del colaborador y del servicio
+
+---
+
+## Flujo de Usuario: Colaborador (Asesor Académico)
+
+1. Registro y Validación
+  - Ingreso de información profesional: Nivel académico (licenciatura, maestría, doctorado).
+  - Áreas de conocimiento (e.g. derecho, psicología, ingeniería).
+  - Tipos de trabajo que domina: ensayos, artículos, tesis, análisis estadístico, etc.
+  - Idiomas y normas de citación que maneja.
+  - Disponibilidad horaria semanal.
+  - Carga académica ideal por semana.
+  - Validación documental y evaluación de calidad por el equipo de la plataforma.
+
+2. Asignación Inteligente de Solicitudes
+*** Proceso automatizado (back-end o por moderador):
+    - Cada solicitud enviada por un cliente es clasificada según:
+       - Nivel académico requerido.
+       - Tipo de trabajo.
+       - Área temática.
+       - Urgencia/tiempo de entrega.
+
+*** Criterios de emparejamiento (Matching):
+  - La plataforma filtra los colaboradores disponibles que cumplan todos los criterios:
+        - Coincidencia en nivel de formación.
+        - Área del conocimiento y experiencia documentada.
+        - Historial de calidad/calificaciones anteriores.
+        - Disponibilidad actual (no sobreasignar carga).
+
+*** Asignación o Postulación
+    - Opción A (automática): la plataforma asigna directamente el mejor perfil disponible.
+    - Opción B (postulación): se envía una alerta a los colaboradores elegibles, quienes pueden       "aceptar" la solicitud; el administrador decide entre los postulados si hay varios.
+
+3. Gestión del Proyecto
+     - Acceso completo al brief de solicitud y archivos base.
+     - Panel de control con fases: inicio, desarrollo, entregas parciales, finalización.
+     - Chat con el cliente (moderado por plataforma).
+     - Botones: subir entregable, solicitar aclaración, solicitar extensión.
+
+4. Evaluación y Pago
+   - Cada proyecto entregado es revisado por un revisor académico (interno) antes de ser liberado.
+   - Se emite retroalimentación al colaborador.
+   - Una vez validado y aprobado:
+        - Se libera el pago correspondiente.
+        - Se actualiza el ranking del colaborador (visibilidad, prioridad en nuevos proyectos).
+
+## Panel de Colaborador
+Incluye:
+    - Proyectos en curso.
+    - Historial de entregas y calificaciones.
+    - Ingresos generados.
+    - Reputación académica dentro de la plataforma.
+    - Notificaciones de nuevas solicitudes abiertas a su perfil.
+
