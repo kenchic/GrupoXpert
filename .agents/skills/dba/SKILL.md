@@ -55,9 +55,9 @@ Diseñar un modelo físico de datos robusto, normalizado y optimizado para SQL S
    END
    GO
    ```
-2. Guarda el SQL en `docs/sql/Users.sql`.
+2. Guarda el SQL en `docs/sql/Usuarios.sql`.
 3. Ejecuta la herramienta `run_command` con la configuración de Infraestructura:
-   `powershell -File ".agents\skills\dba\scripts\run_sql.ps1" -ScriptFile "docs\sql\Users.sql" -AppSettingsPath "Src\GrupoXpert\GrupoXpert.Infrastructure\Persistencia\appsettings.json" -ConnectionName "master"`
+   `powershell -File ".agents\skills\dba\scripts\run_sql.ps1" -ScriptFile "docs\sql\Usuarios.sql" -AppSettingsPath "Src\GrupoXpert\GrupoXpert.Infrastructure\Persistencia\appsettings.json" -ConnectionName "master"`
 **Output al usuario:**
 "✅ He utilizado las credenciales administrativas de Infraestructura para ejecutar el script exitosamente en la base de datos GrupoXpert."
 
