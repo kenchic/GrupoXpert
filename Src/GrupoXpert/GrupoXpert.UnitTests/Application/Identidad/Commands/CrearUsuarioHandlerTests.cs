@@ -10,7 +10,7 @@ namespace GrupoXpert.UnitTests.Application.Identidad.Commands;
 
 /// <summary>
 /// Pruebas del handler CrearUsuarioHandler (capa de Aplicación).
-/// Validan la orquestación del flujo: unicidad de email, hashing, persistencia y envío de correo.
+/// Validan la orquestación del flujo: unicidad de correo, hashing, persistencia y envío de correo.
 /// Se usan Mocks (NSubstitute) para todas las dependencias de infraestructura.
 /// </summary>
 public sealed class CrearUsuarioHandlerTests
@@ -25,7 +25,7 @@ public sealed class CrearUsuarioHandlerTests
     private readonly CrearUsuarioHandler   _manejador;
 
     // ── Constantes de prueba ─────────────────────────────────────────────────
-    private const string EmailValido      = "nuevo@grupoxpert.com";
+    private const string CorreoValido       = "nuevo@grupoxpert.com";
     private const string ClaveTextoPlano  = "MiClave.Segura.2026!";
     private const string HashGenerado     = "hash_bcrypt_simulado_$2a$11$...";
     private const string TokenGenerado    = "d4f9a1b2-activacion-uuid-generado";
@@ -58,7 +58,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoDatosSonValidos_DebeRetornarIdDelUsuario()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
         ConfigurarMocksParaFlujoExitoso();
 
         // Act
@@ -72,7 +72,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoDatosSonValidos_DebeHashearLaClave()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
         ConfigurarMocksParaFlujoExitoso();
 
         // Act
@@ -86,7 +86,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoDatosSonValidos_DebeGenerarTokenDeActivacion()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
         ConfigurarMocksParaFlujoExitoso();
 
         // Act
@@ -100,7 +100,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoDatosSonValidos_DebePersistirElUsuario()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
         ConfigurarMocksParaFlujoExitoso();
 
         // Act
@@ -117,7 +117,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoDatosSonValidos_DebeEnviarCorreoDeActivacion()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
         ConfigurarMocksParaFlujoExitoso();
 
         // Act
@@ -126,21 +126,21 @@ public sealed class CrearUsuarioHandlerTests
         // Assert
         _urlActivacionMock.Received(1).Construir(TokenGenerado);
         await _servicioCorreoMock.Received(1).EnviarActivacionCuentaAsync(
-            destinatario: EmailValido,
+            destinatario: CorreoValido,
             nombre:       NombreUsuario,
             enlaceActivacion: EnlaceActivacion,
             cancelacion:  Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task RegistrarUsuario_CuandoEmailTieneEspaciosYMayusculas_DebeNormalizarloAntesDeBuscar()
+    public async Task RegistrarUsuario_CuandoCorreoTieneEspaciosYMayusculas_DebeNormalizarloAntesDeBuscar()
     {
         // Arrange — email con espacios y mayúsculas
-        var emailSinNormalizar = "  NUEVO@GrupoXpert.COM  ";
-        var emailNormalizado   = "nuevo@grupoxpert.com";
-        var comando = new CrearUsuarioCommand(emailSinNormalizar, ClaveTextoPlano, NombreUsuario);
+        var correoSinNormalizar = "  NUEVO@GrupoXpert.COM  ";
+        var correoNormalizado   = "nuevo@grupoxpert.com";
+        var comando = new CrearUsuarioCommand(correoSinNormalizar, ClaveTextoPlano, NombreUsuario, TipoUsuario.Asesor);
 
-        _repositorioMock.ExisteEmailAsync(emailNormalizado, Arg.Any<CancellationToken>())
+        _repositorioMock.ExisteCorreoAsync(correoNormalizado, Arg.Any<CancellationToken>())
             .Returns(false);
         _servicioHashMock.GenerarHash(ClaveTextoPlano).Returns(HashGenerado);
         _generadorTokenMock.GenerarToken().Returns(TokenGenerado);
@@ -151,7 +151,7 @@ public sealed class CrearUsuarioHandlerTests
 
         // Assert — la consulta de unicidad debe realizarse con el email normalizado
         await _repositorioMock.Received(1)
-            .ExisteEmailAsync(emailNormalizado, Arg.Any<CancellationToken>());
+            .ExisteCorreoAsync(correoNormalizado, Arg.Any<CancellationToken>());
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -159,12 +159,12 @@ public sealed class CrearUsuarioHandlerTests
     // ═══════════════════════════════════════════════════════════════════════════
 
     [Fact]
-    public async Task RegistrarUsuario_CuandoEmailYaExiste_DebeLanzarExcepcionDominio()
+    public async Task RegistrarUsuario_CuandoCorreoYaExiste_DebeLanzarExcepcionDominio()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
 
-        _repositorioMock.ExisteEmailAsync(EmailValido, Arg.Any<CancellationToken>())
+        _repositorioMock.ExisteCorreoAsync(CorreoValido, Arg.Any<CancellationToken>())
             .Returns(true); // Email duplicado
 
         // Act
@@ -172,16 +172,16 @@ public sealed class CrearUsuarioHandlerTests
 
         // Assert
         await accion.Should().ThrowAsync<ExcepcionDominio>()
-            .WithMessage($"El correo electrónico '{EmailValido}' ya está registrado.");
+            .WithMessage($"El correo electrónico '{CorreoValido}' ya está registrado.");
     }
 
     [Fact]
-    public async Task RegistrarUsuario_CuandoEmailYaExiste_NoDebeEnviarCorreoNiPersistir()
+    public async Task RegistrarUsuario_CuandoCorreoYaExiste_NoDebeEnviarCorreoNiPersistir()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
 
-        _repositorioMock.ExisteEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _repositorioMock.ExisteCorreoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -206,7 +206,7 @@ public sealed class CrearUsuarioHandlerTests
     {
         // Arrange
         const string urlImagen = "https://cdn.grupoxpert.com/perfiles/avatar.png";
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario, urlImagen);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante, urlImagen);
         ConfigurarMocksParaFlujoExitoso();
 
         Usuario? usuarioPersistido = null;
@@ -225,7 +225,7 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoImagenEsNula_DebeCrearseCorrectamenteSinImagen()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario, Imagen: null);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante, Imagen: null);
         ConfigurarMocksParaFlujoExitoso();
 
         Usuario? usuarioPersistido = null;
@@ -247,8 +247,8 @@ public sealed class CrearUsuarioHandlerTests
     public async Task RegistrarUsuario_CuandoRepositorioFallaAlAgregar_DebePropararLaExcepcion()
     {
         // Arrange
-        var comando = new CrearUsuarioCommand(EmailValido, ClaveTextoPlano, NombreUsuario);
-        _repositorioMock.ExisteEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
+        var comando = new CrearUsuarioCommand(CorreoValido, ClaveTextoPlano, NombreUsuario, TipoUsuario.Estudiante);
+        _repositorioMock.ExisteCorreoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
         _servicioHashMock.GenerarHash(Arg.Any<string>()).Returns(HashGenerado);
         _generadorTokenMock.GenerarToken().Returns(TokenGenerado);
         _urlActivacionMock.Construir(Arg.Any<string>()).Returns(EnlaceActivacion);
@@ -270,7 +270,7 @@ public sealed class CrearUsuarioHandlerTests
     private void ConfigurarMocksParaFlujoExitoso()
     {
         _repositorioMock
-            .ExisteEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .ExisteCorreoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(false);
 
         _servicioHashMock.GenerarHash(ClaveTextoPlano).Returns(HashGenerado);

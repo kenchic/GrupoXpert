@@ -4,7 +4,7 @@ namespace GrupoXpert.Application.Identidad.Dtos;
 /// DTO que representa el resultado de un inicio de sesión exitoso.
 /// </summary>
 public record ResultadoSesionDto(
-    string Token,
-    string Email,
+    string TokenAcceso,
+    string Correo,
     string Nombre,
     string? Imagen);

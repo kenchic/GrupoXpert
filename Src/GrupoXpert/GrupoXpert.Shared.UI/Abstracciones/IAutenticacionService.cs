@@ -15,7 +15,7 @@ public interface IAutenticacionService
     /// <summary>
     /// Envía una solicitud de inicio de sesión.
     /// </summary>
-    Task<string> IniciarSesionAsync(string email, string clave);
+    Task<string> IniciarSesionAsync(string correo, string clave);
 
     /// <summary>
     /// Activa una cuenta usando el token.

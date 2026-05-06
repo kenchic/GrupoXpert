@@ -19,14 +19,14 @@ public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .ValueGeneratedNever();
 
         // Mapeo del Objeto de Valor CorreoElectronico (Owned Entity)
-        builder.OwnsOne(u => u.Email, email =>
+        builder.OwnsOne(u => u.Correo, correo =>
         {
-            email.Property(e => e.Valor)
-                .HasColumnName("Email")
+            correo.Property(c => c.Valor)
+                .HasColumnName("Correo")
                 .HasMaxLength(254)
                 .IsRequired();
 
-            email.HasIndex(e => e.Valor)
+            correo.HasIndex(c => c.Valor)
                 .IsUnique();
         });
 
@@ -36,6 +36,11 @@ public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 
         builder.Property(u => u.Imagen)
             .HasMaxLength(500);
+
+        builder.Property(u => u.Tipo)
+            .HasConversion<string>()
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder.Property(u => u.EstaActivo)
             .IsRequired();

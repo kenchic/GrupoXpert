@@ -13,7 +13,7 @@ namespace GrupoXpert.UnitTests.Domain.Identidad;
 public sealed class UsuarioTests
 {
     // ── Constantes de prueba ─────────────────────────────────────────────────
-    private const string EmailValido          = "admin@grupoxpert.com";
+    private const string CorreoValido         = "admin@grupoxpert.com";
     private const string HashClaveValida      = "hash_seguro_bcrypt_ejemplo";
     private const string NombreValido         = "Germán Álvarez";
     private const string TokenActivacion      = "token-uuid-v4-activacion-123";
@@ -21,7 +21,7 @@ public sealed class UsuarioTests
     // ── Fábrica auxiliar ─────────────────────────────────────────────────────
 
     private static Usuario CrearUsuarioPorDefecto() =>
-        Usuario.Crear(EmailValido, HashClaveValida, NombreValido, TokenActivacion);
+        Usuario.Crear(CorreoValido, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
     // ═══════════════════════════════════════════════════════════════════════════
     // CREACIÓN DEL AGREGADO
@@ -36,7 +36,7 @@ public sealed class UsuarioTests
         // Assert
         usuario.Should().NotBeNull();
         usuario.Id.Should().NotBeEmpty();
-        usuario.Email.Valor.Should().Be(EmailValido);
+        usuario.Correo.Valor.Should().Be(CorreoValido);
         usuario.Nombre.Should().Be(NombreValido);
         usuario.EstaActivo.Should().BeFalse("la cuenta debe iniciar inactiva hasta confirmar el correo");
         usuario.TokenActivacion.Should().Be(TokenActivacion);
@@ -45,16 +45,16 @@ public sealed class UsuarioTests
     }
 
     [Fact]
-    public void Crear_CuandoDatosValidos_DebeNormalizarEmailAMinusculas()
+    public void Crear_CuandoDatosValidos_DebeNormalizarCorreoAMinusculas()
     {
         // Arrange
-        const string emailConMayusculas = "Admin@GrupoXpert.COM";
+        const string correoConMayusculas = "Admin@GrupoXpert.COM";
 
         // Act
-        var usuario = Usuario.Crear(emailConMayusculas, HashClaveValida, NombreValido, TokenActivacion);
+        var usuario = Usuario.Crear(correoConMayusculas, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
         // Assert
-        usuario.Email.Valor.Should().Be("admin@grupoxpert.com");
+        usuario.Correo.Valor.Should().Be("admin@grupoxpert.com");
     }
 
     [Fact]
@@ -70,10 +70,10 @@ public sealed class UsuarioTests
     }
 
     [Fact]
-    public void Crear_CuandoEmailEsVacio_DebeLanzarExcepcionDominio()
+    public void Crear_CuandoCorreoEsVacio_DebeLanzarExcepcionDominio()
     {
         // Act
-        var accion = () => Usuario.Crear(string.Empty, HashClaveValida, NombreValido, TokenActivacion);
+        var accion = () => Usuario.Crear(string.Empty, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>()
@@ -81,24 +81,24 @@ public sealed class UsuarioTests
     }
 
     [Fact]
-    public void Crear_CuandoEmailTieneFormatoInvalido_DebeLanzarExcepcionDominio()
+    public void Crear_CuandoCorreoTieneFormatoInvalido_DebeLanzarExcepcionDominio()
     {
         // Arrange
-        const string emailMalformado = "no-es-un-email";
+        const string correoMalformado = "no-es-un-email";
 
         // Act
-        var accion = () => Usuario.Crear(emailMalformado, HashClaveValida, NombreValido, TokenActivacion);
+        var accion = () => Usuario.Crear(correoMalformado, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>()
-            .WithMessage($"El formato del correo electrónico '{emailMalformado}' no es válido.");
+            .WithMessage($"El formato del correo electrónico '{correoMalformado}' no es válido.");
     }
 
     [Fact]
     public void Crear_CuandoNombreEsVacio_DebeLanzarExcepcionDominio()
     {
         // Act
-        var accion = () => Usuario.Crear(EmailValido, HashClaveValida, string.Empty, TokenActivacion);
+        var accion = () => Usuario.Crear(CorreoValido, HashClaveValida, string.Empty, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>()
@@ -112,7 +112,7 @@ public sealed class UsuarioTests
         var nombreMuyLargo = new string('A', 151);
 
         // Act
-        var accion = () => Usuario.Crear(EmailValido, HashClaveValida, nombreMuyLargo, TokenActivacion);
+        var accion = () => Usuario.Crear(CorreoValido, HashClaveValida, nombreMuyLargo, TokenActivacion, tipo: TipoUsuario.Estudiante);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>()
@@ -123,10 +123,30 @@ public sealed class UsuarioTests
     public void Crear_CuandoImagenEsNula_DebeCrearseCorrectamente()
     {
         // Act
-        var usuario = Usuario.Crear(EmailValido, HashClaveValida, NombreValido, TokenActivacion, imagen: null);
+        var usuario = Usuario.Crear(CorreoValido, HashClaveValida, NombreValido, TokenActivacion, imagen: null, tipo: TipoUsuario.Estudiante);
 
         // Assert
         usuario.Imagen.Should().BeNull();
+    }
+
+    [Fact]
+    public void Crear_CuandoTipoEsEstudiante_DebeAsignarTipoCorrectamente()
+    {
+        // Act
+        var usuario = Usuario.Crear(CorreoValido, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Estudiante);
+
+        // Assert
+        usuario.Tipo.Should().Be(TipoUsuario.Estudiante);
+    }
+
+    [Fact]
+    public void Crear_CuandoTipoEsAsesor_DebeAsignarTipoCorrectamente()
+    {
+        // Act
+        var usuario = Usuario.Crear(CorreoValido, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Asesor);
+
+        // Assert
+        usuario.Tipo.Should().Be(TipoUsuario.Asesor);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════

@@ -9,7 +9,7 @@
 <PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
 
 <div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
-    <FormularioLogin OnLogin="@ManejarLogin" />
+    <FormularioLogin AlIniciarSesion="@ManejarLogin" />
 </div>
 
 @code {
@@ -17,7 +17,7 @@
     {
         try 
         {
-            var token = await AuthService.IniciarSesionAsync(modelo.Email, modelo.Clave);
+            var token = await AuthService.IniciarSesionAsync(modelo.Correo, modelo.Clave);
 
             if (!string.IsNullOrEmpty(token))
             {

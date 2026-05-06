@@ -1,0 +1,79 @@
+@page "/activar"
+@layout GrupoXpert.Maui.Components.Layout.LoginLayout
+@inject NavigationManager Navegador
+@inject HttpClient Http
+@inject NotificationService Notificaciones
+
+<PageTitle>Activar Cuenta - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
+    <RadzenCard Style="max-width: 500px; width: 100%;">
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenIcon Icon="verified" Style="font-size: 4rem; color: var(--color-secundario);" />
+            <RadzenText TextStyle="TextStyle.H4">Activación de Cuenta</RadzenText>
+
+            @if (estaCargando)
+            {
+                <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="width: 60px; height: 60px;" />
+                <RadzenText TextStyle="TextStyle.Body2">Procesando activación...</RadzenText>
+            }
+            else if (activacionExitosa)
+            {
+                <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center">
+                    ¡Tu cuenta ha sido activada exitosamente!
+                </RadzenText>
+                <RadzenButton Text="Iniciar Sesión" ButtonStyle="ButtonStyle.Primary" Path="/login" Icon="login" />
+            }
+            else
+            {
+                <RadzenText TextStyle="TextStyle.H5" Style="color: var(--color-primario);">Error de Activación</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">
+                    @mensajeError
+                </RadzenText>
+                <RadzenButton Text="Volver al Inicio" ButtonStyle="ButtonStyle.Light" Path="/" Icon="home" />
+            }
+        </RadzenStack>
+    </RadzenCard>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "token")]
+    public string? Token { get; set; }
+
+    private bool estaCargando = true;
+    private bool activacionExitosa;
+    private string mensajeError = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Token))
+        {
+            estaCargando = false;
+            mensajeError = "El token de activación no fue proporcionado.";
+            return;
+        }
+
+        try
+        {
+            var response = await Http.GetAsync($"api/autenticacion/activar?token={Token}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                activacionExitosa = true;
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                mensajeError = $"No se pudo activar la cuenta: {content}";
+            }
+        }
+        catch (Exception)
+        {
+            mensajeError = "Error de conexión. Verifica tu red e intenta nuevamente.";
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+}

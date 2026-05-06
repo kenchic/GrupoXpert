@@ -14,7 +14,7 @@ public sealed class Usuario : AggregateRoot
     /// <summary>
     /// Correo electrónico único del usuario (identificador principal de login).
     /// </summary>
-    public CorreoElectronico Email { get; private set; }
+    public CorreoElectronico Correo { get; private set; }
 
     /// <summary>
     /// Credenciales de acceso (hash de la clave).
@@ -30,6 +30,11 @@ public sealed class Usuario : AggregateRoot
     /// Ruta o URL de la imagen de perfil del usuario (puede ser nula).
     /// </summary>
     public string? Imagen { get; private set; }
+
+    /// <summary>
+    /// Tipo de usuario en la plataforma (Estudiante o Asesor).
+    /// </summary>
+    public TipoUsuario Tipo { get; private set; }
 
     /// <summary>
     /// Indica si la cuenta del usuario ha sido activada mediante el enlace de correo.
@@ -63,45 +68,50 @@ public sealed class Usuario : AggregateRoot
 #pragma warning restore CS8618
 
     private Usuario(
-        CorreoElectronico email,
+        CorreoElectronico correo,
         ClaveAcceso clave,
         string nombre,
         string? imagen,
+        TipoUsuario tipo,
         string tokenActivacion) : base()
     {
         ValidarNombre(nombre);
+        ValidarTipo(tipo);
 
-        Email = email;
+        Correo = correo;
         Clave = clave;
         Nombre = nombre.Trim();
         Imagen = imagen;
-        EstaActivo = false; // La cuenta inicia inactiva hasta confirmar el email
+        Tipo = tipo;
+        EstaActivo = false;
         TokenActivacion = tokenActivacion;
         TokenActivacionExpira = DateTimeOffset.UtcNow.AddHours(24);
         FechaCreacion = DateTimeOffset.UtcNow;
         UltimoInicioSesion = null;
 
-        AgregarEventoDominio(new UsuarioCreadoEvent(Id, email.Valor, tokenActivacion));
+        AgregarEventoDominio(new UsuarioCreadoEvent(Id, correo.Valor, tokenActivacion));
     }
 
     /// <summary>
     /// Crea un nuevo usuario del sistema con la cuenta pendiente de activación.
     /// </summary>
-    /// <param name="email">Correo electrónico único (se normaliza a minúsculas).</param>
+    /// <param name="correo">Correo electrónico único (se normaliza a minúsculas).</param>
     /// <param name="hashClave">Hash de la clave generado en la capa de Infraestructura.</param>
     /// <param name="nombre">Nombre completo del usuario.</param>
     /// <param name="tokenActivacion">Token único generado para el enlace de activación.</param>
     /// <param name="imagen">Ruta o URL de la imagen de perfil (opcional).</param>
+    /// <param name="tipo">Tipo de usuario (Estudiante o Asesor).</param>
     public static Usuario Crear(
-        string email,
+        string correo,
         string hashClave,
         string nombre,
         string tokenActivacion,
-        string? imagen = null)
+        string? imagen = null,
+        TipoUsuario tipo = TipoUsuario.Estudiante)
     {
-        var correo = CorreoElectronico.Crear(email);
+        var correoElectronico = CorreoElectronico.Crear(correo);
         var clave = ClaveAcceso.Crear(hashClave);
-        return new Usuario(correo, clave, nombre, imagen, tokenActivacion);
+        return new Usuario(correoElectronico, clave, nombre, imagen, tipo, tokenActivacion);
     }
 
     /// <summary>
@@ -124,7 +134,7 @@ public sealed class Usuario : AggregateRoot
         TokenActivacion = null;       // Invalidar el token tras usarlo
         TokenActivacionExpira = null;
 
-        AgregarEventoDominio(new CuentaActivadaEvent(Id, Email.Valor));
+        AgregarEventoDominio(new CuentaActivadaEvent(Id, Correo.Valor));
     }
 
     /// <summary>
@@ -136,7 +146,7 @@ public sealed class Usuario : AggregateRoot
             throw new ExcepcionDominio("La cuenta no está activa. Por favor verifica tu correo para activarla.");
 
         UltimoInicioSesion = DateTimeOffset.UtcNow;
-        AgregarEventoDominio(new SesionIniciadaEvent(Id, Email.Valor));
+        AgregarEventoDominio(new SesionIniciadaEvent(Id, Correo.Valor));
     }
 
     /// <summary>
@@ -181,5 +191,11 @@ public sealed class Usuario : AggregateRoot
 
         if (nombre.Trim().Length > 150)
             throw new ExcepcionDominio("El nombre no puede exceder 150 caracteres.");
+    }
+
+    private static void ValidarTipo(TipoUsuario tipo)
+    {
+        if (tipo != TipoUsuario.Estudiante && tipo != TipoUsuario.Asesor)
+            throw new ExcepcionDominio("El tipo de usuario debe ser Estudiante o Asesor.");
     }
 }

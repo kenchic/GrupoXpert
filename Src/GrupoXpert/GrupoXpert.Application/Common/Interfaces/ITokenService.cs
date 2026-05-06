@@ -5,7 +5,7 @@ namespace GrupoXpert.Application.Common.Interfaces;
 /// <summary>
 /// Define los métodos para la generación de tokens de seguridad (JWT).
 /// </summary>
-public interface ITokenService
+public interface ITokenAccesoService
 {
     /// <summary>
     /// Genera un token de acceso para un usuario autenticado.

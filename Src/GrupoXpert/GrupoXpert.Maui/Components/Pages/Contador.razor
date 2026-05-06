@@ -1,0 +1,22 @@
+@page "/contador"
+@layout GrupoXpert.Maui.Components.Layout.MainLayout
+
+<PageTitle>Contador - GrupoXpert</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H1">Contador</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">Este componente demuestra el manejo de estado reactivo.</RadzenText>
+        <RadzenButton Text="Haz clic aquí" ButtonStyle="ButtonStyle.Primary" Click="@IncrementarContador" />
+        <RadzenText TextStyle="TextStyle.H5">Conteo actual: @conteoActual</RadzenText>
+    </RadzenStack>
+</div>
+
+@code {
+    private int conteoActual = 0;
+
+    private void IncrementarContador()
+    {
+        conteoActual++;
+    }
+}

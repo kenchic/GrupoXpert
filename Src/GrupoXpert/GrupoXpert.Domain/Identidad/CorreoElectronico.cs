@@ -10,7 +10,7 @@ namespace GrupoXpert.Domain.Identidad;
 /// </summary>
 public sealed class CorreoElectronico : ValueObject
 {
-    private static readonly Regex PatronEmail =
+    private static readonly Regex PatronCorreo =
         new(@"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -27,20 +27,20 @@ public sealed class CorreoElectronico : ValueObject
     /// <summary>
     /// Crea un nuevo CorreoElectronico validando el formato y normalizando a minúsculas.
     /// </summary>
-    /// <param name="email">Dirección de correo electrónico a validar.</param>
+    /// <param name="correo">Dirección de correo electrónico a validar.</param>
     /// <exception cref="ExcepcionDominio">Si el formato es inválido o está vacío.</exception>
-    public static CorreoElectronico Crear(string email)
+    public static CorreoElectronico Crear(string correo)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(correo))
             throw new ExcepcionDominio("El correo electrónico es obligatorio.");
 
-        var normalizado = email.Trim().ToLowerInvariant();
+        var normalizado = correo.Trim().ToLowerInvariant();
 
         if (normalizado.Length > 254)
             throw new ExcepcionDominio("El correo electrónico no puede exceder 254 caracteres.");
 
-        if (!PatronEmail.IsMatch(normalizado))
-            throw new ExcepcionDominio($"El formato del correo electrónico '{email}' no es válido.");
+        if (!PatronCorreo.IsMatch(normalizado))
+            throw new ExcepcionDominio($"El formato del correo electrónico '{correo}' no es válido.");
 
         return new CorreoElectronico(normalizado);
     }

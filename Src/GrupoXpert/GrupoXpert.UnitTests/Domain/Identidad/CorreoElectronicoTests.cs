@@ -20,14 +20,14 @@ public sealed class CorreoElectronicoTests
     [InlineData("ADMIN@GRUPOXPERT.COM")]
     [InlineData("nombre.apellido+tag@empresa.co")]
     [InlineData("test_123@sub.dominio.org")]
-    public void Crear_CuandoEmailTieneFormatoValido_DebeCrearseCorrectamente(string email)
+    public void Crear_CuandoCorreoTieneFormatoValido_DebeCrearseCorrectamente(string correo)
     {
         // Act
-        var correo = CorreoElectronico.Crear(email);
+        var correoElectronico = CorreoElectronico.Crear(correo);
 
         // Assert
-        correo.Should().NotBeNull();
-        correo.Valor.Should().Be(email.Trim().ToLowerInvariant(),
+        correoElectronico.Should().NotBeNull();
+        correoElectronico.Valor.Should().Be(correo.Trim().ToLowerInvariant(),
             "el correo debe normalizarse a minúsculas");
     }
 
@@ -36,7 +36,7 @@ public sealed class CorreoElectronicoTests
     // ═══════════════════════════════════════════════════════════════════════════
 
     [Fact]
-    public void Crear_CuandoEmailEsVacio_DebeLanzarExcepcionDominio()
+    public void Crear_CuandoCorreoEsVacio_DebeLanzarExcepcionDominio()
     {
         // Act
         var accion = () => CorreoElectronico.Crear(string.Empty);
@@ -47,7 +47,7 @@ public sealed class CorreoElectronicoTests
     }
 
     [Fact]
-    public void Crear_CuandoEmailEsSoloEspacios_DebeLanzarExcepcionDominio()
+    public void Crear_CuandoCorreoEsSoloEspacios_DebeLanzarExcepcionDominio()
     {
         // Act
         var accion = () => CorreoElectronico.Crear("   ");
@@ -63,32 +63,32 @@ public sealed class CorreoElectronicoTests
     [InlineData("usuario@")]
     [InlineData("usuario@dominio")]
     [InlineData("usuario @dominio.com")]
-    public void Crear_CuandoEmailTieneFormatoInvalido_DebeLanzarExcepcionDominio(string emailInvalido)
+    public void Crear_CuandoCorreoTieneFormatoInvalido_DebeLanzarExcepcionDominio(string correoInvalido)
     {
         // Act
-        var accion = () => CorreoElectronico.Crear(emailInvalido);
+        var accion = () => CorreoElectronico.Crear(correoInvalido);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>();
     }
 
     [Fact]
-    public void Crear_CuandoEmailExcede254Caracteres_DebeLanzarExcepcionDominio()
+    public void Crear_CuandoCorreoExcede254Caracteres_DebeLanzarExcepcionDominio()
     {
-        // Arrange — genera un email de 255 chars
+        // Arrange — genera un correo de 255 chars
         var nombreLargo = new string('a', 243);
-        var emailLargo = $"{nombreLargo}@test.com"; // 243 + 9 = 252... ajustemos
-        emailLargo = new string('a', 246) + "@t.co"; // 251 chars
+        var correoLargo = $"{nombreLargo}@test.com"; // 243 + 9 = 252... ajustemos
+        correoLargo = new string('a', 246) + "@t.co"; // 251 chars
         // Forzar uno de exactamente 255 caracteres
         var parteLocal = new string('x', 244);
-        var emailDe255 = $"{parteLocal}@t.co"; // 244+5 = 249, añadir más
-        var emailSuperLargo = new string('a', 248) + "@a.co"; // 253
+        var correoDe255 = $"{parteLocal}@t.co"; // 244+5 = 249, añadir más
+        var correoSuperLargo = new string('a', 248) + "@a.co"; // 253
         // Construir 255 chars netos
-        emailSuperLargo = new string('b', 249) + "@b.co"; // 254, necesitamos 255
-        var emailDe255Chars = new string('c', 250) + "@c.co"; // 255
+        correoSuperLargo = new string('b', 249) + "@b.co"; // 254, necesitamos 255
+        var correoDe255Chars = new string('c', 250) + "@c.co"; // 255
 
         // Act
-        var accion = () => CorreoElectronico.Crear(emailDe255Chars);
+        var accion = () => CorreoElectronico.Crear(correoDe255Chars);
 
         // Assert
         accion.Should().Throw<ExcepcionDominio>()

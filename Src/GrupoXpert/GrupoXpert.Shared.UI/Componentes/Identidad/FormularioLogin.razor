@@ -12,10 +12,10 @@
             
             <div>
                 <RadzenFormField Text="Correo Electrónico" Variant="Variant.Outlined" Style="width: 100%;">
-                    <RadzenTextBox Name="Email" @bind-Value="modelo.Email" Placeholder="ejemplo@correo.com" />
+                    <RadzenTextBox Name="Correo" @bind-Value="modelo.Correo" Placeholder="ejemplo@correo.com" />
                 </RadzenFormField>
-                <RadzenRequiredValidator Component="Email" Text="El correo es obligatorio." Style="display: block;" />
-                <RadzenEmailValidator Component="Email" Text="Ingrese un correo válido." Style="display: block;" />
+                <RadzenRequiredValidator Component="Correo" Text="El correo es obligatorio." Style="display: block;" />
+                <RadzenEmailValidator Component="Correo" Text="Ingrese un correo válido." Style="display: block;" />
             </div>
 
             <div>
@@ -49,16 +49,16 @@
     private bool estaCargando = false;
 
     [Parameter]
-    public EventCallback<LoginModelo> OnLogin { get; set; }
+    public EventCallback<LoginModelo> AlIniciarSesion { get; set; }
 
     private async Task AlEnviar()
     {
         estaCargando = true;
         try
         {
-            if (OnLogin.HasDelegate)
+            if (AlIniciarSesion.HasDelegate)
             {
-                await OnLogin.InvokeAsync(modelo);
+                await AlIniciarSesion.InvokeAsync(modelo);
             }
             else
             {
@@ -77,7 +77,7 @@
 
     public class LoginModelo
     {
-        public string Email { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
         public string Clave { get; set; } = string.Empty;
     }
 }

@@ -9,15 +9,25 @@
     <RadzenTemplateForm TItem="ModeloRegistro" Data="@modelo" Submit="@ManejarRegistroAsync">
         <RadzenStack Gap="1.5rem">
             
+            <RadzenFormField Text="Tipo de Usuario" Variant="Variant.Outlined">
+                <RadzenDropDown @bind-Value="modelo.Tipo" 
+                                Data="@tiposUsuario" 
+                                TextProperty="Texto" 
+                                ValueProperty="Valor"
+                                Placeholder="Selecciona tu tipo de cuenta" 
+                                class="rz-w-100" />
+                <RadzenRequiredValidator Component="Tipo" Text="Debes seleccionar un tipo de usuario" />
+            </RadzenFormField>
+
             <RadzenFormField Text="Nombre Completo" Variant="Variant.Outlined">
                 <RadzenTextBox @bind-Value="modelo.Nombre" Name="Nombre" Placeholder="Ej: Juan Pérez" class="rz-w-100" />
                 <RadzenRequiredValidator Component="Nombre" Text="El nombre es obligatorio" />
             </RadzenFormField>
 
             <RadzenFormField Text="Correo Electrónico" Variant="Variant.Outlined">
-                <RadzenTextBox @bind-Value="modelo.Email" Name="Email" Placeholder="ejemplo@correo.com" class="rz-w-100" />
-                <RadzenRequiredValidator Component="Email" Text="El correo es obligatorio" />
-                <RadzenEmailValidator Component="Email" Text="Ingrese un correo válido" />
+                <RadzenTextBox @bind-Value="modelo.Correo" Name="Correo" Placeholder="ejemplo@correo.com" class="rz-w-100" />
+                <RadzenRequiredValidator Component="Correo" Text="El correo es obligatorio" />
+                <RadzenEmailValidator Component="Correo" Text="Ingrese un correo válido" />
             </RadzenFormField>
 
             <RadzenFormField Text="Contraseña" Variant="Variant.Outlined">
@@ -55,6 +65,11 @@
     [Parameter] public bool estaCargando { get; set; }
 
     private ModeloRegistro modelo = new();
+    private List<TipoOpcion> tiposUsuario = new()
+    {
+        new() { Valor = "Estudiante", Texto = "Estudiante - Busco apoyo académico personalizado" },
+        new() { Valor = "Asesor", Texto = "Asesor - Ofrezco servicios de asesoría académica" }
+    };
 
     private async Task ManejarRegistroAsync()
     {
@@ -64,15 +79,24 @@
     public class ModeloRegistro
     {
         [Required]
+        public string Tipo { get; set; } = string.Empty;
+
+        [Required]
         public string Nombre { get; set; } = string.Empty;
 
         [Required, EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
 
         [Required, MinLength(6)]
         public string Clave { get; set; } = string.Empty;
 
         [Required]
         public string ConfirmarClave { get; set; } = string.Empty;
+    }
+
+    public class TipoOpcion
+    {
+        public string Valor { get; set; } = string.Empty;
+        public string Texto { get; set; } = string.Empty;
     }
 }

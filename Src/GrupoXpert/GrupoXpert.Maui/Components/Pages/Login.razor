@@ -8,7 +8,7 @@
 <PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
 
 <div class="rz-p-4 rz-p-md-12" style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--color-fondo);">
-    <FormularioLogin OnLogin="@ManejarLogin" />
+    <FormularioLogin AlIniciarSesion="@ManejarLogin" />
 </div>
 
 @code {
@@ -18,15 +18,14 @@
         {
             var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
             { 
-                Email = modelo.Email, 
+                Email = modelo.Correo, 
                 Clave = modelo.Clave 
             });
 
             if (respuesta.IsSuccessStatusCode)
             {
-                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Email}");
+                Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Correo}");
                 
-                // TODO: En MAUI se recomienda usar SecureStorage para el token
                 await Task.Delay(1000);
                 Navegador.NavigateTo("/");
             }

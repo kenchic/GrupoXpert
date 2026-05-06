@@ -20,9 +20,10 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
     {
         var response = await _http.PostAsJsonAsync("api/autenticacion/registrar", new 
         { 
-            Email = modelo.Email,
+            Correo = modelo.Correo,
             Clave = modelo.Clave,
             Nombre = modelo.Nombre,
+            Tipo = modelo.Tipo,
             Imagen = (string?)null,
             ActivacionAutomatica = true
         });
@@ -32,7 +33,7 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
             var content = await response.Content.ReadAsStringAsync();
             try 
             {
-                var error = JsonSerializer.Deserialize<ApiError>(content, _jsonOptions);
+                var error = JsonSerializer.Deserialize<ErrorApi>(content, _jsonOptions);
                 throw new Exception(error?.Mensaje ?? "Error al registrar el usuario.");
             }
             catch
@@ -42,11 +43,11 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
         }
     }
 
-    public async Task<string> IniciarSesionAsync(string email, string clave)
+    public async Task<string> IniciarSesionAsync(string correo, string clave)
     {
         var response = await _http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
         { 
-            Email = email,
+            Correo = correo,
             Clave = clave
         });
 
@@ -56,7 +57,7 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
         {
             try 
             {
-                var error = JsonSerializer.Deserialize<ApiError>(content, _jsonOptions);
+                var error = JsonSerializer.Deserialize<ErrorApi>(content, _jsonOptions);
                 throw new Exception(error?.Mensaje ?? "Credenciales inválidas.");
             }
             catch
@@ -67,8 +68,8 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
 
         try 
         {
-            var result = JsonSerializer.Deserialize<LoginResponse>(content, _jsonOptions);
-            return result?.Token ?? string.Empty;
+            var result = JsonSerializer.Deserialize<RespuestaLogin>(content, _jsonOptions);
+            return result?.TokenAcceso ?? string.Empty;
         }
         catch
         {
@@ -83,11 +84,11 @@ public sealed class AutenticacionService(HttpClient http) : IAutenticacionServic
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
-            var error = JsonSerializer.Deserialize<ApiError>(content, _jsonOptions);
+            var error = JsonSerializer.Deserialize<ErrorApi>(content, _jsonOptions);
             throw new Exception(error?.Mensaje ?? "Error al activar la cuenta.");
         }
     }
 
-    private record ApiError(string Mensaje);
-    private record LoginResponse(string Token, string Email, string Nombre);
+    private record ErrorApi(string Mensaje);
+    private record RespuestaLogin(string TokenAcceso, string Correo, string Nombre, string? Imagen);
 }

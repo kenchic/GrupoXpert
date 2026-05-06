@@ -27,44 +27,41 @@ public sealed class CrearUsuarioHandler(
 
     public async Task<Guid> Handle(CrearUsuarioCommand solicitud, CancellationToken cancelacion)
     {
-        // 1. Verificar que el email no esté ya registrado (unicidad)
-        var emailNormalizado = solicitud.Email.Trim().ToLowerInvariant();
+        var correoNormalizado = solicitud.Correo.Trim().ToLowerInvariant();
 
-        if (await _usuarioRepositorio.ExisteEmailAsync(emailNormalizado, cancelacion))
-            throw new ExcepcionDominio($"El correo electrónico '{solicitud.Email}' ya está registrado.");
+        if (await _usuarioRepositorio.ExisteCorreoAsync(correoNormalizado, cancelacion))
+            throw new ExcepcionDominio($"El correo electrónico '{solicitud.Correo}' ya está registrado.");
 
-        // 2. Hashear la clave antes de persistir (nunca guardar texto plano)
         var hashClave = _servicioHashClave.GenerarHash(solicitud.Clave);
 
-        // 3. Generar token de activación único (UUID v4 o similar)
         var tokenActivacion = _generadorToken.GenerarToken();
 
-        // 4. Crear el agregado de dominio (valida invariantes)
         var usuario = Usuario.Crear(
-            email: emailNormalizado,
+            correo: correoNormalizado,
             hashClave: hashClave,
             nombre: solicitud.Nombre,
             tokenActivacion: tokenActivacion,
-            imagen: solicitud.Imagen);
+            imagen: solicitud.Imagen,
+            tipo: solicitud.Tipo);
 
-        // 5. Persistir el usuario
         await _usuarioRepositorio.AgregarAsync(usuario, cancelacion);
 
-        // 5b. ACTIVACIÓN FORZADA (Deshabilitando temporalmente flujo de correo para desarrollo)
-        usuario.ActivarCuenta(tokenActivacion);
+        if (solicitud.ActivacionAutomatica)
+        {
+            usuario.ActivarCuenta(tokenActivacion);
+        }
+        else
+        {
+            var enlaceActivacion = _urlActivacion.Construir(tokenActivacion);
+            
+            await _servicioCorreo.EnviarActivacionCuentaAsync(
+                destinatario: correoNormalizado,
+                nombre: solicitud.Nombre,
+                enlaceActivacion: enlaceActivacion,
+                cancelacion: cancelacion);
+        }
 
         await _unidadDeTrabajo.GuardarCambiosAsync(cancelacion);
-
-        // 6. El envío de correo se deshabilita temporalmente por solicitud del usuario
-        /*
-        var enlace = _urlActivacion.Construir(tokenActivacion);
-
-        await _servicioCorreo.EnviarActivacionCuentaAsync(
-            destinatario: emailNormalizado,
-            nombre: solicitud.Nombre,
-            enlaceActivacion: enlace,
-            cancelacion: cancelacion);
-        */
 
         return usuario.Id;
     }

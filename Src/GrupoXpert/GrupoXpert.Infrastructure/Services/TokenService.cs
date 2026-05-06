@@ -11,7 +11,7 @@ namespace GrupoXpert.Infrastructure.Services;
 /// <summary>
 /// Implementación del servicio de generación de tokens JWT.
 /// </summary>
-public sealed class TokenService(IConfiguration configuracion) : ITokenService
+public sealed class TokenService(IConfiguration configuracion) : ITokenAccesoService
 {
     private readonly IConfiguration _configuracion = configuracion;
 
@@ -28,7 +28,7 @@ public sealed class TokenService(IConfiguration configuracion) : ITokenService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email.Valor),
+            new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Correo.Valor),
             new Claim("nombre", usuario.Nombre),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

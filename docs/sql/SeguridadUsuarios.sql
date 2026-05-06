@@ -15,10 +15,11 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE object_id = OBJECT_ID(N'[Identidad
 BEGIN
     CREATE TABLE [Identidad].[Usuarios] (
         [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-        [Email] NVARCHAR(254) NOT NULL,
+        [Correo] NVARCHAR(254) NOT NULL,
         [HashClave] NVARCHAR(500) NOT NULL,
         [Nombre] NVARCHAR(150) NOT NULL,
         [Imagen] NVARCHAR(500) NULL,
+        [Tipo] NVARCHAR(50) NOT NULL DEFAULT 'Estudiante',
         [EstaActivo] BIT NOT NULL DEFAULT 0,
         [FechaCreacion] DATETIMEOFFSET NOT NULL,
         [UltimoInicioSesion] DATETIMEOFFSET NULL,
@@ -26,7 +27,8 @@ BEGIN
         [TokenActivacionExpira] DATETIMEOFFSET NULL
     );
 
-    CREATE UNIQUE INDEX [UX_Usuarios_Email] ON [Identidad].[Usuarios] ([Email]);
+    CREATE UNIQUE INDEX [UX_Usuarios_Correo] ON [Identidad].[Usuarios] ([Correo]);
+    CREATE INDEX [IX_Usuarios_Tipo] ON [Identidad].[Usuarios] ([Tipo]);
 END
 GO
 

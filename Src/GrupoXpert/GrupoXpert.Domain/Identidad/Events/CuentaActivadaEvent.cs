@@ -8,13 +8,13 @@ namespace GrupoXpert.Domain.Identidad.Events;
 public sealed class CuentaActivadaEvent : IDomainEvent
 {
     public Guid UsuarioId { get; }
-    public string Email { get; }
+    public string Correo { get; }
     public DateTime FechaOcurrencia { get; }
 
-    public CuentaActivadaEvent(Guid usuarioId, string email)
+    public CuentaActivadaEvent(Guid usuarioId, string correo)
     {
         UsuarioId = usuarioId;
-        Email = email;
+        Correo = correo;
         FechaOcurrencia = DateTime.UtcNow;
     }
 }
