@@ -1,0 +1,23 @@
+[
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\AprobarColaboradorHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\CrearUsuarioCommand.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\CrearUsuarioHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\IniciarSesionCommand.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\IniciarSesionHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\RevocarAprobacionCommand.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\RevocarAprobacionHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\ValidarPerfilColaboradorCommand.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\ValidarPerfilColaboradorHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Dtos\\ResultadoSesionDto.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Dtos\\UsuarioListaDto.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Queries\\ObtenerUsuariosPaginadoHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Queries\\ObtenerUsuariosPaginadoQuery.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Common\\AggregateRoot.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Common\\Entity.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Common\\IDomainEvent.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Common\\ValueObject.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Exceptions\\ExcepcionDominio.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\ClaveAcceso.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\CorreoElectronico.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\EstadoVerificacion.cs"
+]

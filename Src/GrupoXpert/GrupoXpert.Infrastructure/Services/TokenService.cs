@@ -30,6 +30,7 @@ public sealed class TokenService(IConfiguration configuracion) : ITokenAccesoSer
             new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Correo.Valor),
             new Claim("nombre", usuario.Nombre),
+            new Claim(ClaimTypes.Role, usuario.Tipo.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

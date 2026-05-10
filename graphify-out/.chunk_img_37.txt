@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-xxhdpi-v4\abc_btn_radio_to_on_mtrl_000.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-xxhdpi-v4\abc_btn_radio_to_on_mtrl_015.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-xxhdpi-v4\abc_btn_switch_to_on_mtrl_00001.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-xxhdpi-v4\abc_btn_switch_to_on_mtrl_00012.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-xxhdpi-v4\abc_cab_background_top_mtrl_alpha.9.png

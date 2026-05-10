@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\appiconWideTile.scale-400.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\dotnet_bot.scale-100.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\dotnet_bot.scale-125.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\dotnet_bot.scale-150.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\dotnet_bot.scale-200.png

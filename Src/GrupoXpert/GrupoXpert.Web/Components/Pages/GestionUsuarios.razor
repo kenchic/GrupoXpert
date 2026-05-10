@@ -1,0 +1,12 @@
+@page "/admin/gestion-usuarios"
+
+@using Microsoft.AspNetCore.Authorization
+@using GrupoXpert.Shared.UI.Componentes.Identidad
+
+@attribute [Authorize(Roles = "Administrador")]
+
+<PageTitle>Gestión de Usuarios - GrupoXpert</PageTitle>
+
+<div class="container-fluid py-4">
+    <TablaGestionUsuarios />
+</div>

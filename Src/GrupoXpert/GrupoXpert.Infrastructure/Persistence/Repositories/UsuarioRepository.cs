@@ -1,7 +1,7 @@
 using GrupoXpert.Domain.Identidad;
 using Microsoft.EntityFrameworkCore;
 
-namespace GrupoXpert.Infrastructure.Persistence.Repositorios;
+namespace GrupoXpert.Infrastructure.Persistence.Repositories;
 
 /// <summary>
 /// Implementación del repositorio de Usuarios usando EF Core.
@@ -46,4 +46,41 @@ public sealed class UsuarioRepository(AppDbContext contexto) : IUsuarioRepositor
         _contexto.Usuarios.Update(usuario);
         await Task.CompletedTask;
     }
+
+    public async Task<(IReadOnlyList<Usuario> Usuarios, int TotalRegistros)> ObtenerPaginadoAsync(
+        TipoUsuario? tipo = null,
+        bool? estaAprobado = null,
+        EstadoVerificacion? estadoVerificacion = null,
+        int pagina = 1,
+        int tamanoPagina = 20,
+        CancellationToken cancelacion = default)
+    {
+        var consulta = _contexto.Usuarios.AsNoTracking();
+
+        if (tipo.HasValue)
+        {
+            consulta = consulta.Where(u => u.Tipo == tipo.Value);
+        }
+
+        if (estaAprobado.HasValue)
+        {
+            consulta = consulta.Where(u => u.EstaAprobado == estaAprobado.Value);
+        }
+
+        if (estadoVerificacion.HasValue)
+        {
+            consulta = consulta.Where(u => u.EstadoVerificacion == estadoVerificacion.Value);
+        }
+
+        var totalRegistros = await consulta.CountAsync(cancelacion);
+
+        var usuarios = await consulta
+            .OrderByDescending(u => u.FechaCreacion)
+            .Skip((pagina -1) * tamanoPagina)
+            .Take(tamanoPagina)
+            .ToListAsync(cancelacion);
+
+        return (usuarios, totalRegistros);
+    }     
+    
 }

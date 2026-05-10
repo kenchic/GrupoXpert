@@ -35,4 +35,15 @@ public interface IUsuarioRepository
     /// Actualiza un usuario existente en el repositorio.
     /// </summary>
     Task ActualizarAsync(Usuario usuario, CancellationToken cancelacion = default);
+
+    /// <summary>
+    /// Obtiene una lista paginada de usuarios filtrados por tipo, estado de aprobación y estado de verificación.
+    /// </summary>
+    Task<(IReadOnlyList<Usuario> Usuarios, int TotalRegistros)> ObtenerPaginadoAsync(
+        TipoUsuario? tipo = null,
+        bool? estaAprobado = null,
+        EstadoVerificacion? estadoVerificacion = null,
+        int pagina = 1,
+        int tamanoPagina = 20,
+        CancellationToken cancelacion = default);
 }

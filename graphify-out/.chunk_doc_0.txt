@@ -1,0 +1,25 @@
+E:\Documentos\Proyectos\GrupoXpert\README.md
+E:\Documentos\Proyectos\GrupoXpert\docs\Estructura de Plataforma de Servicios Académicos Xpert.txt
+E:\Documentos\Proyectos\GrupoXpert\docs\Estructura General del Proyecto.md
+E:\Documentos\Proyectos\GrupoXpert\docs\Flujos de usuario y colaboradores.txt
+E:\Documentos\Proyectos\GrupoXpert\docs\plan use-cases\plan.md
+E:\Documentos\Proyectos\GrupoXpert\docs\use-cases\gestionar_perfil_cliente.md
+E:\Documentos\Proyectos\GrupoXpert\docs\use-cases\login.md
+E:\Documentos\Proyectos\GrupoXpert\docs\use-cases\registrar-usuario.md
+E:\Documentos\Proyectos\GrupoXpert\docs\use-cases\registro-autenticacion-usuarios.md
+E:\Documentos\Proyectos\GrupoXpert\docs\use-cases\validar_perfil_colaborador.md
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\test-results.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Application\obj\Debug\net10.0\GrupoXpert.Application.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.ComponentTests\obj\Debug\net10.0\GrupoXpert.ComponentTests.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Domain\Identidad\diseno_login_identidad.md
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Domain\obj\Debug\net10.0\GrupoXpert.Domain.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Infrastructure\obj\Debug\net10.0\GrupoXpert.Infrastructure.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.IntegrationTests\obj\Debug\net10.0\GrupoXpert.IntegrationTests.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\AboutAssets.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.UI.Xaml\Assets\map.html
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\wwwroot\index.html
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\acw-map.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\case_map.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\customview-map.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\GrupoXpert.Maui.csproj.FileListAbsolute.txt
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\R.txt

@@ -11,6 +11,7 @@
             
             <RadzenFormField Text="Tipo de Usuario" Variant="Variant.Outlined">
                 <RadzenDropDown @bind-Value="modelo.Tipo" 
+                                Name="Tipo"
                                 Data="@tiposUsuario" 
                                 TextProperty="Texto" 
                                 ValueProperty="Valor"
@@ -67,8 +68,9 @@
     private ModeloRegistro modelo = new();
     private List<TipoOpcion> tiposUsuario = new()
     {
-        new() { Valor = "Estudiante", Texto = "Estudiante - Busco apoyo académico personalizado" },
-        new() { Valor = "Asesor", Texto = "Asesor - Ofrezco servicios de asesoría académica" }
+        new() { Valor = "Estudiante", Texto = "Estudiante" },
+        new() { Valor = "Asesor", Texto = "Asesor" },
+        new() { Valor = "Administrador", Texto = "Administrador" }
     };
 
     private async Task ManejarRegistroAsync()

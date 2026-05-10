@@ -1,0 +1,23 @@
+[
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\MacCatalyst\\AppDelegate.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\MacCatalyst\\Program.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\Windows\\App.xaml.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Shared.UI\\Abstracciones\\IAdminService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Shared.UI\\Abstracciones\\IAutenticacionService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Shared.UI\\Modelos\\IdentidadModelos.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Application\\Identidad\\Commands\\AprobarColaboradorHandlerTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Application\\Identidad\\Commands\\CrearUsuarioHandlerTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Application\\Identidad\\Commands\\IniciarSesionHandlerTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Application\\Identidad\\Commands\\RevocarAprobacionHandlerTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Domain\\Identidad\\CorreoElectronicoTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.UnitTests\\Domain\\Identidad\\UsuarioTests.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Web\\Program.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Web\\Services\\AdminService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Web\\Services\\AutenticacionService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.WebApi\\Program.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\scratch\\reparar_db.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\README.md",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\Estructura de Plataforma de Servicios Académicos Xpert.txt",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\Estructura General del Proyecto.md",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\Flujos de usuario y colaboradores.txt"
+]

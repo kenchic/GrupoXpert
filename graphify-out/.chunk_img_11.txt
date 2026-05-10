@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\splashSplashScreen.scale-400.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\WindowsAppRuntime.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.UI.Xaml\Assets\NoiseAsset_256x256_PNG.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\wwwroot\images\logo.jpg
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\wwwroot\_content\GrupoXpert.Shared.UI\background.png

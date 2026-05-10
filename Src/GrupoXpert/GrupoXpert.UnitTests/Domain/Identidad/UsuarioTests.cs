@@ -288,4 +288,176 @@ public sealed class UsuarioTests
         usuario.Nombre.Should().Be(nuevoNombre);
         usuario.Imagen.Should().Be(nuevaImagen);
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // APROBACIÓN DE COLABORADOR (CU3)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    private static Usuario CrearAsesorPorDefecto() =>
+        Usuario.Crear(CorreoValido, HashClaveValida, NombreValido, TokenActivacion, tipo: TipoUsuario.Asesor);
+
+    [Fact]
+    public void Crear_CuandoTipoEsEstudiante_DebeAutoAprobarse()
+    {
+        // Act
+        var usuario = CrearUsuarioPorDefecto();
+
+        // Assert
+        usuario.EstaAprobado.Should().BeTrue("los estudiantes no requieren aprobación de administrador");
+    }
+
+    [Fact]
+    public void Crear_CuandoTipoEsAsesor_NoDebeEstarAprobado()
+    {
+        // Act
+        var usuario = CrearAsesorPorDefecto();
+
+        // Assert
+        usuario.EstaAprobado.Should().BeFalse("los asesores requieren aprobación explícita de un administrador");
+    }
+
+    [Fact]
+    public void AprobarCuenta_CuandoEsAsesorPendiente_DebeAprobarYActivar()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        var administradorId = Guid.NewGuid();
+
+        // Act
+        asesor.AprobarCuenta(administradorId);
+
+        // Assert
+        asesor.EstaAprobado.Should().BeTrue();
+        asesor.EstaActivo.Should().BeTrue("la aprobación también activa la cuenta");
+        asesor.FechaAprobacion.Should().NotBeNull();
+        asesor.AprobadoPorId.Should().Be(administradorId);
+        asesor.TokenActivacion.Should().BeNull("el token se invalida al aprobar");
+    }
+
+    [Fact]
+    public void AprobarCuenta_CuandoEsAsesor_DebeEmitirEventoColaboradorAprobado()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        var administradorId = Guid.NewGuid();
+
+        // Act
+        asesor.AprobarCuenta(administradorId);
+
+        // Assert
+        asesor.EventosDominio
+            .Should().Contain(e => e is ColaboradorAprobadoEvent,
+                "se debe emitir un evento ColaboradorAprobadoEvent al aprobar");
+    }
+
+    [Fact]
+    public void AprobarCuenta_CuandoYaEstaAprobado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        asesor.AprobarCuenta(Guid.NewGuid());
+
+        // Act
+        var accion = () => asesor.AprobarCuenta(Guid.NewGuid());
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>()
+            .WithMessage("La cuenta del colaborador ya fue aprobada.");
+    }
+
+    [Fact]
+    public void AprobarCuenta_CuandoEsEstudiante_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var estudiante = CrearUsuarioPorDefecto();
+
+        // Act
+        var accion = () => estudiante.AprobarCuenta(Guid.NewGuid());
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>()
+            .WithMessage("Solo las cuentas de tipo Asesor requieren aprobación.");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // REVOCACIÓN DE APROBACIÓN (CU3)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    [Fact]
+    public void RevocarAprobacion_CuandoEstaAprobado_DebeDesaprobarYDesactivar()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        asesor.AprobarCuenta(Guid.NewGuid());
+
+        // Act
+        asesor.RevocarAprobacion();
+
+        // Assert
+        asesor.EstaAprobado.Should().BeFalse();
+        asesor.EstaActivo.Should().BeFalse("la revocación desactiva la cuenta");
+        asesor.FechaAprobacion.Should().BeNull();
+        asesor.AprobadoPorId.Should().BeNull();
+    }
+
+    [Fact]
+    public void RevocarAprobacion_CuandoNoEstaAprobado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+
+        // Act
+        var accion = () => asesor.RevocarAprobacion();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>()
+            .WithMessage("La cuenta del colaborador no está aprobada.");
+    }
+
+    [Fact]
+    public void RevocarAprobacion_CuandoEsEstudiante_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var estudiante = CrearUsuarioPorDefecto();
+
+        // Act
+        var accion = () => estudiante.RevocarAprobacion();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>()
+            .WithMessage("Solo las cuentas de tipo Asesor pueden revocarse.");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INICIO DE SESIÓN CON VALIDACIÓN DE APROBACIÓN (CU3)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    [Fact]
+    public void RegistrarInicioSesion_CuandoAsesorNoAprobado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        asesor.ActivarCuenta(TokenActivacion); // activar pero NO aprobar
+
+        // Act
+        var accion = () => asesor.RegistrarInicioSesion();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>()
+            .WithMessage("Tu cuenta está pendiente de aprobación por un administrador.");
+    }
+
+    [Fact]
+    public void RegistrarInicioSesion_CuandoAsesorAprobado_DebeRegistrarSesion()
+    {
+        // Arrange
+        var asesor = CrearAsesorPorDefecto();
+        asesor.AprobarCuenta(Guid.NewGuid()); // aprueba Y activa
+
+        // Act
+        asesor.RegistrarInicioSesion();
+
+        // Assert
+        asesor.UltimoInicioSesion.Should().NotBeNull();
+    }
 }

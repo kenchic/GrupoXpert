@@ -1,0 +1,23 @@
+[
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\IUsuarioRepository.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\TipoUsuario.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\Usuario.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\Events\\ColaboradorAprobadoEvent.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\Events\\CuentaActivadaEvent.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\Events\\SesionIniciadaEvent.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Domain\\Identidad\\Events\\UsuarioCreadoEvent.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\DependencyInjection.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Persistence\\AppDbContext.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Persistence\\Configurations\\UsuarioConfiguration.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Persistence\\Repositories\\UsuarioRepository.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Services\\CorreoElectronicoService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Services\\HashClaveService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Infrastructure\\Services\\UrlActivacionService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\App.xaml.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\MainPage.xaml.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\MauiProgram.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\Android\\MainActivity.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\Android\\MainApplication.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\iOS\\AppDelegate.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Maui\\Platforms\\iOS\\Program.cs"
+]

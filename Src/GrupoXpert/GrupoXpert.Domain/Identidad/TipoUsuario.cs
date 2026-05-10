@@ -6,5 +6,6 @@ namespace GrupoXpert.Domain.Identidad;
 public enum TipoUsuario
 {
     Estudiante = 1,
-    Asesor = 2
+    Asesor = 2,
+    Administrador = 3
 }

@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-mdpi-v4\abc_list_selector_disabled_holo_dark.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-mdpi-v4\abc_list_selector_disabled_holo_light.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-mdpi-v4\abc_menu_hardkey_panel_mtrl_mult.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-mdpi-v4\abc_popup_background_mtrl_mult.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\138\jl\res\drawable-mdpi-v4\abc_scrubber_control_off_mtrl_alpha.png
