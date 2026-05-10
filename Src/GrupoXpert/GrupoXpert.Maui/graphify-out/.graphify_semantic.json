@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {"id": "img_login_text_icons", "label": "Captura: Iconos como texto en Login", "file_type": "image", "source_file": "raw/media__1778424500794.png"},
+    {"id": "img_feed_text_icons", "label": "Captura: Iconos como texto en Feed", "file_type": "image", "source_file": "raw/media__1778425161360.png"},
+    {"id": "img_notch_issue", "label": "Captura: Colisión con el Notch", "file_type": "image", "source_file": "raw/media__1778425787025.png"},
+    {"id": "issue_rendering_icons", "label": "Problema: Renderizado de Material Icons", "file_type": "rationale", "source_file": "raw/media__1778424500794.png"},
+    {"id": "issue_safe_area", "label": "Problema: Área Segura (Notch) en Android", "file_type": "rationale", "source_file": "raw/media__1778425787025.png"}
+  ],
+  "edges": [
+    {"source": "img_login_text_icons", "target": "issue_rendering_icons", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0},
+    {"source": "img_feed_text_icons", "target": "issue_rendering_icons", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0},
+    {"source": "img_notch_issue", "target": "issue_safe_area", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0},
+    {"source": "issue_rendering_icons", "target": "maui_program_cs", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.85},
+    {"source": "issue_safe_area", "target": "app_css", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.95}
+  ],
+  "hyperedges": [],
+  "input_tokens": 1500,
+  "output_tokens": 500
+}

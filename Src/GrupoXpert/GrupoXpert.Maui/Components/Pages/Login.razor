@@ -4,6 +4,7 @@
 @inject NotificationService Notificaciones
 @inject HttpClient Http
 @using System.Net.Http.Json
+@using Microsoft.Maui.Storage
 
 <PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
 
@@ -18,12 +19,19 @@
         {
             var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
             { 
-                Email = modelo.Correo, 
+                Correo = modelo.Correo, 
                 Clave = modelo.Clave 
             });
 
             if (respuesta.IsSuccessStatusCode)
             {
+                var resultado = await respuesta.Content.ReadFromJsonAsync<ResultadoSesion>();
+                if (resultado != null)
+                {
+                    Preferences.Default.Set("authToken", resultado.TokenAcceso);
+                    Preferences.Default.Set("usuarioCorreo", resultado.Correo);
+                }
+
                 Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Correo}");
                 
                 await Task.Delay(1000);
@@ -39,4 +47,6 @@
             Notificaciones.Notify(NotificationSeverity.Error, "Error de Conexión", "No se pudo contactar con el servidor. Verifique su conexión.");
         }
     }
+
+    private record ResultadoSesion(string TokenAcceso, string Correo, string Nombre, string? Imagen);
 }

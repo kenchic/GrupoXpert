@@ -1,10 +1,29 @@
 @page "/"
 @inject NavigationManager Navegador
 
+@using Microsoft.Maui.Storage
+
+<div class="rz-p-4">
+    <RadzenText Text="Bienvenido a GrupoXpert" TextStyle="TextStyle.H4" />
+    <RadzenText Text="Tu plataforma de aprendizaje y colaboración." TextStyle="TextStyle.Body1" />
+    
+    <div class="rz-mt-4">
+        <TarjetaFeed Autor="Sistema GrupoXpert" Subtitulo="Actualización de Plataforma" Tiempo="Ahora">
+            <ContenidoHijo>
+                ¡Bienvenido a la nueva interfaz móvil de GrupoXpert! Estamos emocionados de que estés aquí.
+            </ContenidoHijo>
+        </TarjetaFeed>
+    </div>
+</div>
+
 @code {
     protected override void OnInitialized()
     {
-        Navegador.NavigateTo("/login");
+        var token = Preferences.Default.Get("authToken", string.Empty);
+        if (string.IsNullOrEmpty(token))
+        {
+            Navegador.NavigateTo("/login");
+        }
     }
 }
 

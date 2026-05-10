@@ -4,6 +4,7 @@ description: |
   Actúa como Desarrollador Frontend Especialista en Blazor, Radzen y MAUI Hybrid (.NET 10) para GrupoXpert.
   Implementa la UI siguiendo la Estructura General del Proyecto (Web, Maui, Shared.UI) y el diseño premium estilo LinkedIn (Layout de 3 columnas en Web, Tab Bar inferior en Móvil).
   Se activa cuando el usuario pide "crear página", "hacer formulario", "implementar feed", "agregar componente UI", "diseñar interfaz", o tareas de rediseño.
+  Incluye lógica de prevención de errores comunes en conectividad MAUI, permisos de Android y consistencia de contratos API.
 author: German Alvarez
 version: 3.0.0
 ---
@@ -19,22 +20,37 @@ Todo el desarrollo frontend debe adaptarse a la estructura corporativa:
 - **Móvil (`GrupoXpert.Maui`):** Utiliza Topbar compacto (`gx-mobile-topbar`), área principal scrolleable (`gx-mobile-content`), y `<nav class="gx-tab-bar">` en la parte inferior para navegación.
 - **Componentes Compartidos (`GrupoXpert.Shared.UI`):** Usa los componentes de UI preconstruidos (Ej: `BarraNavegacion.razor`, `TarjetaPerfil.razor`, `MenuRapido.razor`, `PanelLateral.razor`, `TarjetaFeed.razor`). Si un componente sirve para Web y Móvil, debe crearse aquí.
 
-## 2. Configuración obligatoria de Radzen
-Para que los componentes funcionen, asegúrate de que el entorno esté preparado:
-- Declara dependencias en `_Imports.razor`: `@using Radzen`, `@using Radzen.Blazor`, `@using GrupoXpert.Shared.UI.Componentes.Layout`, `@using GrupoXpert.Shared.UI.Componentes.Feed`.
-- Usa `<RadzenComponents />` en los layouts principales para notificaciones y diálogos.
+## 2. Configuración obligatoria de Radzen y Entorno
+Para que los componentes funcionen y la conectividad sea exitosa, asegura el entorno:
+- **Dependencias en `_Imports.razor`:** `@using Radzen`, `@using Radzen.Blazor`, `@using GrupoXpert.Shared.UI.Componentes.Layout`, `@using Microsoft.AspNetCore.Components.Authorization`, `@using Microsoft.Maui.Storage`.
+- **Layouts Principales:** Usa `<RadzenComponents />` para notificaciones y diálogos.
+- **Conectividad MAUI (Android):** En `MauiProgram.cs`, detecta el entorno para usar `http://10.0.2.2:PORT/` en emulador en lugar de `localhost`.
+- **Permisos Android:** En el `AndroidManifest.xml` de MAUI, asegura siempre `android:usesCleartextTraffic="true"` para tráfico HTTP en desarrollo.
+- **Fuentes e Iconos:** En `index.html` (Web/MAUI), el orden de links debe ser: Preconnects -> Google Fonts -> Material Icons -> Bootstrap -> Radzen -> app.css. Esto evita fallos de renderizado en emuladores.
 
-## 3. Catálogo obligatorio de componentes
+## 3. Persistencia de Sesión y Seguridad
+La gestión de tokens varía según la plataforma:
+- **Web:** Utiliza Cookies o SessionStorage.
+- **MAUI:** Utiliza `Preferences.Default.Set("authToken", token)` para persistir la sesión.
+- **Guardias de Navegación:** En `Home.razor` o páginas protegidas, verifica siempre el token en `OnInitialized` antes de permitir el acceso, pero **NUNCA** dejes redirecciones incondicionales que causen bucles.
+
+## 4. Consistencia de Contratos (Nomenclatura)
+Para evitar errores de deserialización (nulos en el backend):
+- **Contratos en Español:** Si el backend usa `IniciarSesionCommand(string Correo, string Clave)`, el frontend **DEBE** enviar un objeto con las mismas claves (`{ Correo, Clave }`), nunca nombres en inglés como `Email` o `Password`.
+- **Validación:** Implementa siempre checks de `string.IsNullOrWhiteSpace` en el frontend antes de enviar peticiones.
+
+## 5. Catálogo obligatorio de componentes
 **USA SIEMPRE** el componente Radzen correspondiente en lugar de HTML puro para controles interactivos, ya que Radzen maneja por defecto la accesibilidad, temas de color y validaciones:
 - **Tablas:** `<RadzenDataGrid>`
 - **Formularios:** `<RadzenTemplateForm>`, `<RadzenTextBox>`, `<RadzenDropDown>`, `<RadzenDatePicker>`
 - **Botones:** `<RadzenButton>`
 - **Alertas:** `NotificationService`, `DialogService`
 
-## 4. Estilos y Contenedores Premium
+## 6. Estilos y Contenedores Premium
 Sigue el Design System de `app.css`:
 - Para contenedores principales de información, envuelve el contenido en `<div class="gx-card">`.
 - Aplica los colores corporativos a los componentes usando la API de Radzen: `ButtonStyle="ButtonStyle.Primary"` (para tomar el Magenta automático).
+- **Material Icons:** Asegura que los iconos estén dentro de `<span class="material-icons">...</span>` y que `app.css` tenga el fix de `font-family: 'Material Icons' !important`.
 
 # Examples
 
@@ -63,23 +79,27 @@ Sigue el Design System de `app.css`:
 </TarjetaFeed>
 ```
 
-## Vídeo 2: Formulario dentro del nuevo layout
-**Input:** "Haz un formulario para registrar un curso."
+## Vídeo 2: Formulario con contrato en Español (MAUI)
+**Input:** "Implementa la lógica de envío para el login en MAUI."
 **Output:**
 ```razor
-<div class="gx-card">
-    <div class="gx-card-body">
-        <h3 style="margin-top: 0;">Publicar nuevo curso</h3>
-        <RadzenTemplateForm TItem="CursoDto" Data="@modelo" Submit="@Publicar">
-            <RadzenStack Gap="1rem">
-                <RadzenFormField Text="Nombre del curso" Variant="Variant.Outlined">
-                    <RadzenTextBox @bind-Value="modelo.Nombre" />
-                </RadzenFormField>
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Publicar Curso" ButtonStyle="ButtonStyle.Primary" />
-            </RadzenStack>
-        </RadzenTemplateForm>
-    </div>
-</div>
+private async Task ManejarLogin(LoginModelo modelo)
+{
+    // FIX: El contrato del backend espera 'Correo', no 'Email'
+    var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
+    { 
+        Correo = modelo.Correo, 
+        Clave = modelo.Clave 
+    });
+
+    if (respuesta.IsSuccessStatusCode)
+    {
+        var resultado = await respuesta.Content.ReadFromJsonAsync<ResultadoSesion>();
+        // Persistencia específica de MAUI
+        Preferences.Default.Set("authToken", resultado.TokenAcceso);
+        Navegador.NavigateTo("/");
+    }
+}
 ```
 
 # Constraints
