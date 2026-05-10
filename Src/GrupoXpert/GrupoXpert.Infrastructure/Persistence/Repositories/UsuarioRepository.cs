@@ -18,6 +18,8 @@ public sealed class UsuarioRepository(AppDbContext contexto) : IUsuarioRepositor
 
     public async Task<Usuario?> ObtenerPorCorreoAsync(string correo, CancellationToken cancelacion = default)
     {
+        if (string.IsNullOrWhiteSpace(correo)) return null;
+
         var correoNormalizado = correo.Trim().ToLowerInvariant();
         return await _contexto.Usuarios
             .FirstOrDefaultAsync(u => u.Correo.Valor == correoNormalizado, cancelacion);
@@ -31,6 +33,8 @@ public sealed class UsuarioRepository(AppDbContext contexto) : IUsuarioRepositor
 
     public async Task<bool> ExisteCorreoAsync(string correo, CancellationToken cancelacion = default)
     {
+        if (string.IsNullOrWhiteSpace(correo)) return false;
+
         var correoNormalizado = correo.Trim().ToLowerInvariant();
         return await _contexto.Usuarios
             .AnyAsync(u => u.Correo.Valor == correoNormalizado, cancelacion);

@@ -1,0 +1,826 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "App.xaml.cs",
+      "file_type": "code",
+      "source_file": "App.xaml.cs",
+      "source_location": "L1",
+      "id": "app_xaml_cs",
+      "community": 1,
+      "norm_label": "app.xaml.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "App.xaml.cs",
+      "source_location": "L1",
+      "id": "grupoxpert_maui_app_xaml_grupoxpert_maui",
+      "community": 1,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "App",
+      "file_type": "code",
+      "source_file": "App.xaml.cs",
+      "source_location": "L3",
+      "id": "grupoxpert_maui_app_xaml_app",
+      "community": 1,
+      "norm_label": "app"
+    },
+    {
+      "label": "Application",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "application",
+      "community": 1,
+      "norm_label": "application"
+    },
+    {
+      "label": ".CreateWindow()",
+      "file_type": "code",
+      "source_file": "App.xaml.cs",
+      "source_location": "L10",
+      "id": "grupoxpert_maui_app_xaml_app_createwindow",
+      "community": 1,
+      "norm_label": ".createwindow()"
+    },
+    {
+      "label": "MainPage.xaml.cs",
+      "file_type": "code",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L1",
+      "id": "mainpage_xaml_cs",
+      "community": 4,
+      "norm_label": "mainpage.xaml.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L1",
+      "id": "grupoxpert_maui_mainpage_xaml_grupoxpert_maui",
+      "community": 4,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "MainPage",
+      "file_type": "code",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L3",
+      "id": "grupoxpert_maui_mainpage_xaml_mainpage",
+      "community": 4,
+      "norm_label": "mainpage"
+    },
+    {
+      "label": "ContentPage",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "contentpage",
+      "community": 4,
+      "norm_label": "contentpage"
+    },
+    {
+      "label": "MauiProgram.cs",
+      "file_type": "code",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L1",
+      "id": "mauiprogram_cs",
+      "community": 5,
+      "norm_label": "mauiprogram.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L3",
+      "id": "grupoxpert_maui_mauiprogram_grupoxpert_maui",
+      "community": 5,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "MauiProgram",
+      "file_type": "code",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L5",
+      "id": "grupoxpert_maui_mauiprogram_mauiprogram",
+      "community": 5,
+      "norm_label": "mauiprogram"
+    },
+    {
+      "label": ".CreateMauiApp()",
+      "file_type": "code",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L7",
+      "id": "grupoxpert_maui_mauiprogram_mauiprogram_createmauiapp",
+      "community": 5,
+      "norm_label": ".createmauiapp()"
+    },
+    {
+      "label": "MainActivity.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L1",
+      "id": "platforms_android_mainactivity_cs",
+      "community": 6,
+      "norm_label": "mainactivity.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L5",
+      "id": "android_mainactivity_grupoxpert_maui",
+      "community": 6,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "MainActivity",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L7",
+      "id": "android_mainactivity_mainactivity",
+      "community": 6,
+      "norm_label": "mainactivity"
+    },
+    {
+      "label": "MauiAppCompatActivity",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "mauiappcompatactivity",
+      "community": 6,
+      "norm_label": "mauiappcompatactivity"
+    },
+    {
+      "label": "MainApplication.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L1",
+      "id": "platforms_android_mainapplication_cs",
+      "community": 2,
+      "norm_label": "mainapplication.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L4",
+      "id": "android_mainapplication_grupoxpert_maui",
+      "community": 2,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "MainApplication",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L6",
+      "id": "android_mainapplication_mainapplication",
+      "community": 2,
+      "norm_label": "mainapplication"
+    },
+    {
+      "label": "MauiApplication",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "mauiapplication",
+      "community": 2,
+      "norm_label": "mauiapplication"
+    },
+    {
+      "label": ".CreateMauiApp()",
+      "file_type": "code",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L14",
+      "id": "android_mainapplication_mainapplication_createmauiapp",
+      "community": 2,
+      "norm_label": ".createmauiapp()"
+    },
+    {
+      "label": "AppDelegate.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L1",
+      "id": "platforms_ios_appdelegate_cs",
+      "community": 0,
+      "norm_label": "appdelegate.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L3",
+      "id": "ios_appdelegate_grupoxpert_maui",
+      "community": 0,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "AppDelegate",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L5",
+      "id": "ios_appdelegate_appdelegate",
+      "community": 0,
+      "norm_label": "appdelegate"
+    },
+    {
+      "label": "MauiUIApplicationDelegate",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "mauiuiapplicationdelegate",
+      "community": 0,
+      "norm_label": "mauiuiapplicationdelegate"
+    },
+    {
+      "label": ".CreateMauiApp()",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L8",
+      "id": "ios_appdelegate_appdelegate_createmauiapp",
+      "community": 0,
+      "norm_label": ".createmauiapp()"
+    },
+    {
+      "label": "Program.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L1",
+      "id": "platforms_ios_program_cs",
+      "community": 7,
+      "norm_label": "program.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L4",
+      "id": "ios_program_grupoxpert_maui",
+      "community": 7,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "Program",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L6",
+      "id": "ios_program_program",
+      "community": 7,
+      "norm_label": "program"
+    },
+    {
+      "label": ".Main()",
+      "file_type": "code",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L9",
+      "id": "ios_program_program_main",
+      "community": 7,
+      "norm_label": ".main()"
+    },
+    {
+      "label": "AppDelegate.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L1",
+      "id": "platforms_maccatalyst_appdelegate_cs",
+      "community": 0,
+      "norm_label": "appdelegate.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L3",
+      "id": "maccatalyst_appdelegate_grupoxpert_maui",
+      "community": 0,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "AppDelegate",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L5",
+      "id": "maccatalyst_appdelegate_appdelegate",
+      "community": 0,
+      "norm_label": "appdelegate"
+    },
+    {
+      "label": ".CreateMauiApp()",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L8",
+      "id": "maccatalyst_appdelegate_appdelegate_createmauiapp",
+      "community": 0,
+      "norm_label": ".createmauiapp()"
+    },
+    {
+      "label": "Program.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L1",
+      "id": "platforms_maccatalyst_program_cs",
+      "community": 8,
+      "norm_label": "program.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L4",
+      "id": "maccatalyst_program_grupoxpert_maui",
+      "community": 8,
+      "norm_label": "grupoxpert.maui"
+    },
+    {
+      "label": "Program",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L6",
+      "id": "maccatalyst_program_program",
+      "community": 8,
+      "norm_label": "program"
+    },
+    {
+      "label": ".Main()",
+      "file_type": "code",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L9",
+      "id": "maccatalyst_program_program_main",
+      "community": 8,
+      "norm_label": ".main()"
+    },
+    {
+      "label": "App.xaml.cs",
+      "file_type": "code",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L1",
+      "id": "platforms_windows_app_xaml_cs",
+      "community": 3,
+      "norm_label": "app.xaml.cs"
+    },
+    {
+      "label": "GrupoXpert.Maui.WinUI",
+      "file_type": "code",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L6",
+      "id": "windows_app_xaml_grupoxpert_maui_winui",
+      "community": 3,
+      "norm_label": "grupoxpert.maui.winui"
+    },
+    {
+      "label": "App",
+      "file_type": "code",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L11",
+      "id": "windows_app_xaml_app",
+      "community": 3,
+      "norm_label": "app"
+    },
+    {
+      "label": "MauiWinUIApplication",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "mauiwinuiapplication",
+      "community": 3,
+      "norm_label": "mauiwinuiapplication"
+    },
+    {
+      "label": ".CreateMauiApp()",
+      "file_type": "code",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L22",
+      "id": "windows_app_xaml_app_createmauiapp",
+      "community": 3,
+      "norm_label": ".createmauiapp()"
+    },
+    {
+      "label": "read_detect.py",
+      "file_type": "code",
+      "source_file": "scratch\\read_detect.py",
+      "source_location": "L1",
+      "id": "scratch_read_detect_py",
+      "community": 11,
+      "norm_label": "read_detect.py"
+    },
+    {
+      "label": "Captura: Iconos como texto en Login",
+      "file_type": "image",
+      "source_file": "raw/media__1778424500794.png",
+      "id": "img_login_text_icons",
+      "community": 9,
+      "norm_label": "captura: iconos como texto en login"
+    },
+    {
+      "label": "Captura: Iconos como texto en Feed",
+      "file_type": "image",
+      "source_file": "raw/media__1778425161360.png",
+      "id": "img_feed_text_icons",
+      "community": 9,
+      "norm_label": "captura: iconos como texto en feed"
+    },
+    {
+      "label": "Captura: Colisi\u00f3n con el Notch",
+      "file_type": "image",
+      "source_file": "raw/media__1778425787025.png",
+      "id": "img_notch_issue",
+      "community": 10,
+      "norm_label": "captura: colision con el notch"
+    },
+    {
+      "label": "Problema: Renderizado de Material Icons",
+      "file_type": "rationale",
+      "source_file": "raw/media__1778424500794.png",
+      "id": "issue_rendering_icons",
+      "community": 9,
+      "norm_label": "problema: renderizado de material icons"
+    },
+    {
+      "label": "Problema: \u00c1rea Segura (Notch) en Android",
+      "file_type": "rationale",
+      "source_file": "raw/media__1778425787025.png",
+      "id": "issue_safe_area",
+      "community": 10,
+      "norm_label": "problema: area segura (notch) en android"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "App.xaml.cs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "app_xaml_cs",
+      "target": "grupoxpert_maui_app_xaml_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "App.xaml.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "app_xaml_cs",
+      "target": "grupoxpert_maui_app_xaml_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "App.xaml.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "grupoxpert_maui_app_xaml_app",
+      "target": "application",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "App.xaml.cs",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "grupoxpert_maui_app_xaml_app",
+      "target": "grupoxpert_maui_app_xaml_app_createwindow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "mainpage_xaml_cs",
+      "target": "grupoxpert_maui_mainpage_xaml_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "mainpage_xaml_cs",
+      "target": "grupoxpert_maui_mainpage_xaml_mainpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "MainPage.xaml.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "grupoxpert_maui_mainpage_xaml_mainpage",
+      "target": "contentpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "mauiprogram_cs",
+      "target": "grupoxpert_maui_mauiprogram_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "mauiprogram_cs",
+      "target": "grupoxpert_maui_mauiprogram_mauiprogram",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "MauiProgram.cs",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "grupoxpert_maui_mauiprogram_mauiprogram",
+      "target": "grupoxpert_maui_mauiprogram_mauiprogram_createmauiapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "platforms_android_mainactivity_cs",
+      "target": "android_mainactivity_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "platforms_android_mainactivity_cs",
+      "target": "android_mainactivity_mainactivity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainActivity.cs",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "android_mainactivity_mainactivity",
+      "target": "mauiappcompatactivity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "platforms_android_mainapplication_cs",
+      "target": "android_mainapplication_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "platforms_android_mainapplication_cs",
+      "target": "android_mainapplication_mainapplication",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "android_mainapplication_mainapplication",
+      "target": "mauiapplication",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Android\\MainApplication.cs",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "android_mainapplication_mainapplication",
+      "target": "android_mainapplication_mainapplication_createmauiapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "platforms_ios_appdelegate_cs",
+      "target": "ios_appdelegate_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "platforms_ios_appdelegate_cs",
+      "target": "ios_appdelegate_appdelegate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "ios_appdelegate_appdelegate",
+      "target": "mauiuiapplicationdelegate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\AppDelegate.cs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "ios_appdelegate_appdelegate",
+      "target": "ios_appdelegate_appdelegate_createmauiapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "maccatalyst_appdelegate_appdelegate",
+      "target": "mauiuiapplicationdelegate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "platforms_ios_program_cs",
+      "target": "ios_program_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "platforms_ios_program_cs",
+      "target": "ios_program_program",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\iOS\\Program.cs",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "ios_program_program",
+      "target": "ios_program_program_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "platforms_maccatalyst_appdelegate_cs",
+      "target": "maccatalyst_appdelegate_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "platforms_maccatalyst_appdelegate_cs",
+      "target": "maccatalyst_appdelegate_appdelegate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\AppDelegate.cs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "maccatalyst_appdelegate_appdelegate",
+      "target": "maccatalyst_appdelegate_appdelegate_createmauiapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "platforms_maccatalyst_program_cs",
+      "target": "maccatalyst_program_grupoxpert_maui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "platforms_maccatalyst_program_cs",
+      "target": "maccatalyst_program_program",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\MacCatalyst\\Program.cs",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "maccatalyst_program_program",
+      "target": "maccatalyst_program_program_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "platforms_windows_app_xaml_cs",
+      "target": "windows_app_xaml_grupoxpert_maui_winui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "platforms_windows_app_xaml_cs",
+      "target": "windows_app_xaml_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "windows_app_xaml_app",
+      "target": "mauiwinuiapplication",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Platforms\\Windows\\App.xaml.cs",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "windows_app_xaml_app",
+      "target": "windows_app_xaml_app_createmauiapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source": "img_login_text_icons",
+      "target": "issue_rendering_icons"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source": "img_feed_text_icons",
+      "target": "issue_rendering_icons"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source": "img_notch_issue",
+      "target": "issue_safe_area"
+    }
+  ],
+  "hyperedges": []
+}

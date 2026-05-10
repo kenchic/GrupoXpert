@@ -1,0 +1,34 @@
+@* TarjetaPerfil.razor — Card de perfil lateral estilo LinkedIn *@
+
+<div class="gx-card gx-profile-card" id="gx-tarjeta-perfil">
+    <div class="gx-profile-banner"></div>
+    <img class="gx-profile-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+    <p class="gx-profile-name">@nombreCompleto</p>
+    <p class="gx-profile-role">@rol</p>
+    <p class="gx-profile-institution">@institucion</p>
+
+    <div class="gx-profile-stats">
+        @foreach (var stat in estadisticas)
+        {
+            <div class="gx-profile-stat">
+                <span class="gx-profile-stat-label">@stat.Etiqueta</span>
+                <span class="gx-profile-stat-value">@stat.Valor</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string nombreCompleto { get; set; } = "Usuario GrupoXpert";
+    [Parameter] public string rol { get; set; } = "Estudiante";
+    [Parameter] public string institucion { get; set; } = "Universidad";
+    [Parameter] public string avatarUrl { get; set; } = "images/logo.jpg";
+    [Parameter] public List<EstadisticaPerfil> estadisticas { get; set; } = new()
+    {
+        new("Cursos activos", "3"),
+        new("Promedio", "4.2"),
+        new("Documentos", "12")
+    };
+
+    public record EstadisticaPerfil(string Etiqueta, string Valor);
+}

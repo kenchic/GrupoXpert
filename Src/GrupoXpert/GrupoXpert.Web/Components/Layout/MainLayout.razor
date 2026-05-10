@@ -1,34 +1,46 @@
 @inherits LayoutComponentBase
 
-<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-body'; grid-template-columns: auto 1fr; height: 100vh;">
-    <RadzenSidebar @bind-Expanded="@sidebarExpanded" Style="background-color: var(--color-secundario);">
-        <RadzenStack AlignItems="AlignItems.Center" class="rz-py-8 rz-px-4">
-            <RadzenImage Path="images/logo.jpg" Style="width: 120px; border-radius: 50%; border: 4px solid white; box-shadow: var(--rz-shadow-6);" />
-            <RadzenText TextStyle="TextStyle.H6" class="rz-color-white rz-mt-4" TextAlign="TextAlign.Center" Style="font-weight: bold; letter-spacing: 1px;">GRUPOXPERT</RadzenText>
-        </RadzenStack>
-        <NavMenu />
-    </RadzenSidebar>
-    <RadzenBody>
-        <RadzenHeader Style="background-color: white; border-bottom: 1px solid var(--rz-base-200); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between;">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-m-0">Gestión Académica Profesional</RadzenText>
-            <RadzenProfileMenu>
-                <Template>
-                    <RadzenIcon Icon="account_circle" />
-                </Template>
-                <ChildContent>
-                    <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/api/auth/logout" />
-                </ChildContent>
-            </RadzenProfileMenu>
-        </RadzenHeader>
-        <div class="rz-p-4 rz-p-md-8">
-            @Body
-        </div>
-    </RadzenBody>
-</RadzenLayout>
+@* === TOP NAVBAR (estilo LinkedIn) === *@
+<BarraNavegacion />
 
+@* === 3-COLUMN LAYOUT === *@
+<div class="gx-layout">
+    @* Sidebar Izquierdo — Perfil + Menú Rápido *@
+    <aside class="gx-sidebar-left">
+        <TarjetaPerfil />
+        <MenuRapido />
+    </aside>
 
+    @* Contenido Principal (feed / página) *@
+    <main class="gx-main-content">
+        @Body
+    </main>
+
+    @* Sidebar Derecho — Widgets *@
+    <aside class="gx-sidebar-right">
+        <PanelLateral titulo="Noticias Académicas"
+                      elementos="@noticiasAcademicas"
+                      enlaceVerMas="/noticias" />
+
+        <PanelLateral titulo="Próximos Eventos"
+                      elementos="@proximosEventos"
+                      enlaceVerMas="/eventos" />
+    </aside>
+</div>
+
+<RadzenComponents />
 
 @code {
-    bool sidebarExpanded = true;
+    private List<PanelLateral.ElementoPanel> noticiasAcademicas = new()
+    {
+        new("Nuevos horarios de tutorías disponibles", "Hace 2 horas", "#A62677"),
+        new("Inscripciones abiertas para el semestre 2026-II", "Hace 5 horas", "#4A76B2"),
+        new("Actualización del reglamento académico", "Ayer", "#6B2D5C")
+    };
+
+    private List<PanelLateral.ElementoPanel> proximosEventos = new()
+    {
+        new("Semana de exámenes parciales", "12 - 16 Mayo 2026", "#4A76B2"),
+        new("Feria de empleo virtual", "20 Mayo 2026", "#A62677")
+    };
 }

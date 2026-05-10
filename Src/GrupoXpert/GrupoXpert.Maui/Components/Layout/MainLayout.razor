@@ -1,36 +1,55 @@
 @inherits LayoutComponentBase
 
-<RadzenLayout>
-    <RadzenHeader Style="background-color: var(--color-secundario); color: white; display: flex; align-items: center; padding: 0 1rem; height: 60px; justify-content: space-between;">
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenImage Path="images/logo.jpg" Style="width: 35px; border-radius: 50%; border: 1px solid white;" />
-            <RadzenText TextStyle="TextStyle.H6" class="rz-color-white rz-m-0" Style="font-weight: bold; font-size: 1.1rem;">GrupoXpert</RadzenText>
-        </RadzenStack>
-        <RadzenProfileMenu>
-            <Template>
-                <RadzenIcon Icon="account_circle" />
-            </Template>
-            <ChildContent>
-                <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" />
-                <RadzenProfileMenuItem Text="Salir" Icon="logout" Path="/login" />
-            </ChildContent>
-        </RadzenProfileMenu>
-    </RadzenHeader>
+@* === MOBILE TOP BAR === *@
+<div class="gx-mobile-topbar">
+    <img class="gx-mobile-topbar-avatar" src="images/logo.jpg" alt="Perfil" />
+    <div class="gx-mobile-search-container">
+        <span class="material-icons">search</span>
+        <input class="gx-mobile-topbar-search" type="text" placeholder="Buscar en GrupoXpert..." />
+    </div>
+    <button class="gx-mobile-topbar-action">
+        <span class="material-icons">chat_bubble_outline</span>
+    </button>
+</div>
 
-    <RadzenSidebar @bind-Expanded="@sidebarExpanded" Responsive="true" Style="background-color: white;">
-        <NavMenu />
-    </RadzenSidebar>
+@* === SCROLLABLE CONTENT === *@
+<div class="gx-mobile-content">
+    @Body
+</div>
 
-    <RadzenBody>
-        <div class="rz-p-4" style="height: calc(100vh - 60px); overflow-y: auto;">
-            @Body
-        </div>
-    </RadzenBody>
-</RadzenLayout>
+@* === BOTTOM TAB BAR (estilo LinkedIn móvil) === *@
+<nav class="gx-tab-bar">
+    <NavLink href="/" class="gx-tab-item" Match="NavLinkMatch.All">
+        <span class="material-icons">home</span>
+        <span>Inicio</span>
+    </NavLink>
+    <NavLink href="/academia" class="gx-tab-item">
+        <span class="material-icons">school</span>
+        <span>Academia</span>
+    </NavLink>
+    <div class="gx-tab-item gx-tab-item-create">
+        <span class="material-icons">add</span>
+        <span>Publicar</span>
+    </div>
+    <NavLink href="/notificaciones" class="gx-tab-item">
+        <span class="material-icons">notifications</span>
+        <span>Avisos</span>
+    </NavLink>
+    <NavLink href="/perfil" class="gx-tab-item">
+        <span class="material-icons">person</span>
+        <span>Perfil</span>
+    </NavLink>
+</nav>
 
 <RadzenComponents />
 
 @code {
-    bool sidebarExpanded = false; // Por defecto cerrado en móvil
+    [Inject] private NavigationManager Navegacion { get; set; } = default!;
+
+    private bool EsRutaActiva(string ruta)
+    {
+        var rutaActual = new Uri(Navegacion.Uri).AbsolutePath;
+        if (ruta == "/") return rutaActual == "/";
+        return rutaActual.StartsWith(ruta, StringComparison.OrdinalIgnoreCase);
+    }
 }

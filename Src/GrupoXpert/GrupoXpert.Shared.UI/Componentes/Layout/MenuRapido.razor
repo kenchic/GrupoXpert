@@ -1,0 +1,25 @@
+@* MenuRapido.razor — Menú lateral de accesos rápidos estilo LinkedIn *@
+
+<div class="gx-card" id="gx-menu-rapido">
+    <div style="padding:8px 0;">
+        @foreach (var item in elementos)
+        {
+            <a href="@item.Ruta" class="gx-quick-menu-item">
+                <span class="material-icons">@item.Icono</span>
+                <span>@item.Texto</span>
+            </a>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<ElementoMenu> elementos { get; set; } = new()
+    {
+        new("Mis Cursos", "menu_book", "/cursos"),
+        new("Calificaciones", "grade", "/calificaciones"),
+        new("Documentos", "folder_shared", "/documentos"),
+        new("Configuración", "settings", "/configuracion")
+    };
+
+    public record ElementoMenu(string Texto, string Icono, string Ruta);
+}

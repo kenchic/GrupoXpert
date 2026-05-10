@@ -1,0 +1,83 @@
+@* BarraNavegacion.razor — Top Navbar estilo LinkedIn (Web) *@
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Routing
+
+<nav class="gx-navbar" id="gx-navbar-principal">
+    <div class="gx-navbar-inner">
+        @* Logo *@
+        <a href="/" class="gx-navbar-logo" style="text-decoration:none;">
+            <img src="images/logo.jpg" alt="GrupoXpert" />
+            <span>GrupoXpert</span>
+        </a>
+
+        @* Búsqueda *@
+        <div class="gx-navbar-search">
+            <input type="text" placeholder="Buscar..." @bind="textoBusqueda" @bind:event="oninput" />
+            <span class="material-icons search-icon">search</span>
+        </div>
+
+        @* Navegación principal *@
+        <div class="gx-navbar-nav">
+            <a href="/" class="gx-nav-item @(EsRutaActiva("/") ? "active" : "")">
+                <span class="material-icons">home</span>
+                <span>Inicio</span>
+            </a>
+
+            <a href="/academia" class="gx-nav-item @(EsRutaActiva("/academia") ? "active" : "")">
+                <span class="material-icons">school</span>
+                <span>Academia</span>
+            </a>
+
+            <a href="/inscripciones" class="gx-nav-item @(EsRutaActiva("/inscripciones") ? "active" : "")">
+                <span class="material-icons">assignment_ind</span>
+                <span>Inscripciones</span>
+            </a>
+
+            <AuthorizeView Roles="Administrador">
+                <Authorized>
+                    <a href="/admin/gestion-usuarios" class="gx-nav-item @(EsRutaActiva("/admin") ? "active" : "")">
+                        <span class="material-icons">manage_accounts</span>
+                        <span>Gestión</span>
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
+            <a class="gx-nav-item" style="position:relative;">
+                <span class="material-icons">notifications</span>
+                <span>Avisos</span>
+                @if (contadorNotificaciones > 0)
+                {
+                    <span class="gx-nav-badge">@contadorNotificaciones</span>
+                }
+            </a>
+        </div>
+
+        @* Perfil *@
+        <div class="gx-navbar-profile">
+            <RadzenProfileMenu>
+                <Template>
+                    <RadzenIcon Icon="account_circle" />
+                </Template>
+                <ChildContent>
+                    <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" Path="/perfil" />
+                    <RadzenProfileMenuItem Text="Configuración" Icon="settings" Path="/configuracion" />
+                    <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/api/auth/logout" />
+                </ChildContent>
+            </RadzenProfileMenu>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private string textoBusqueda = "";
+    private int contadorNotificaciones = 3;
+
+    [Inject] private NavigationManager Navegacion { get; set; } = default!;
+
+    private bool EsRutaActiva(string ruta)
+    {
+        var rutaActual = new Uri(Navegacion.Uri).AbsolutePath;
+        if (ruta == "/") return rutaActual == "/";
+        return rutaActual.StartsWith(ruta, StringComparison.OrdinalIgnoreCase);
+    }
+}

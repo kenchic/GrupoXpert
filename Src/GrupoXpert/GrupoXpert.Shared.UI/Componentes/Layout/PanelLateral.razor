@@ -1,0 +1,29 @@
+@* PanelLateral.razor — Widget genérico del sidebar derecho estilo LinkedIn *@
+
+<div class="gx-card" id="gx-panel-@titulo.ToLower().Replace(" ", "-")">
+    <div class="gx-widget-title">@titulo</div>
+
+    @foreach (var item in elementos)
+    {
+        <div class="gx-widget-item">
+            <div class="gx-widget-dot" style="background-color: @item.Color;"></div>
+            <div>
+                <div class="gx-widget-item-text">@item.Texto</div>
+                <div class="gx-widget-item-meta">@item.Detalle</div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(enlaceVerMas))
+    {
+        <a href="@enlaceVerMas" class="gx-widget-link">Ver más →</a>
+    }
+</div>
+
+@code {
+    [Parameter] public string titulo { get; set; } = "Panel";
+    [Parameter] public string enlaceVerMas { get; set; } = "";
+    [Parameter] public List<ElementoPanel> elementos { get; set; } = new();
+
+    public record ElementoPanel(string Texto, string Detalle, string Color = "#A62677");
+}

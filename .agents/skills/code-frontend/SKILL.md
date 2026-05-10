@@ -2,261 +2,119 @@
 name: code-frontend
 description: |
   Actúa como Desarrollador Frontend Especialista en Blazor, Radzen y MAUI Hybrid (.NET 10) para GrupoXpert.
-  Implementa la UI siguiendo la Estructura General del Proyecto (Web, Maui, Shared.UI).
-  Se activa cuando el usuario pide "crear página", "hacer formulario", "implementar tabla",
-  "agregar componente UI", "construir pantalla", "diseñar interfaz" o cualquier tarea de frontend.
+  Implementa la UI siguiendo la Estructura General del Proyecto (Web, Maui, Shared.UI) y el diseño premium estilo LinkedIn (Layout de 3 columnas en Web, Tab Bar inferior en Móvil).
+  Se activa cuando el usuario pide "crear página", "hacer formulario", "implementar feed", "agregar componente UI", "diseñar interfaz", o tareas de rediseño.
+  Incluye lógica de prevención de errores comunes en conectividad MAUI, permisos de Android y consistencia de contratos API.
 author: German Alvarez
-version: 2.0.0
+version: 3.0.0
 ---
 
-# Objetivo
+# Goal
+Construir interfaces premium, responsivas y consistentes para GrupoXpert en Web y Móvil usando **exclusivamente Radzen Blazor** y la arquitectura de layout estilo **LinkedIn** (Navbar superior + 3 columnas en desktop / Tabs inferiores en móvil), respetando la paleta corporativa (Magenta, Azul, Violeta) y la nomenclatura en ESPAÑOL.
 
-Construir interfaces premium para GrupoXpert en Web y Móvil usando **exclusivamente Radzen Blazor**
-como librería de componentes, respetando la estructura de proyectos compartidos y nomenclatura en **ESPAÑOL**.
+# Instructions
 
----
+## 1. Arquitectura de Layout (Estilo LinkedIn)
+Todo el desarrollo frontend debe adaptarse a la estructura corporativa:
+- **Web (`GrupoXpert.Web`):** Utiliza `<BarraNavegacion />` en la parte superior y un layout principal de 3 columnas: `<aside class="gx-sidebar-left">`, `<main class="gx-main-content">`, `<aside class="gx-sidebar-right">`.
+- **Móvil (`GrupoXpert.Maui`):** Utiliza Topbar compacto (`gx-mobile-topbar`), área principal scrolleable (`gx-mobile-content`), y `<nav class="gx-tab-bar">` en la parte inferior para navegación.
+- **Componentes Compartidos (`GrupoXpert.Shared.UI`):** Usa los componentes de UI preconstruidos (Ej: `BarraNavegacion.razor`, `TarjetaPerfil.razor`, `MenuRapido.razor`, `PanelLateral.razor`, `TarjetaFeed.razor`). Si un componente sirve para Web y Móvil, debe crearse aquí.
 
-# Estructura del Frontend
+## 2. Configuración obligatoria de Radzen y Entorno
+Para que los componentes funcionen y la conectividad sea exitosa, asegura el entorno:
+- **Dependencias en `_Imports.razor`:** `@using Radzen`, `@using Radzen.Blazor`, `@using GrupoXpert.Shared.UI.Componentes.Layout`, `@using Microsoft.AspNetCore.Components.Authorization`, `@using Microsoft.Maui.Storage`.
+- **Layouts Principales:** Usa `<RadzenComponents />` para notificaciones y diálogos.
+- **Conectividad MAUI (Android):** En `MauiProgram.cs`, detecta el entorno para usar `http://10.0.2.2:PORT/` en emulador en lugar de `localhost`.
+- **Permisos Android:** En el `AndroidManifest.xml` de MAUI, asegura siempre `android:usesCleartextTraffic="true"` para tráfico HTTP en desarrollo.
+- **Fuentes e Iconos:** En `index.html` (Web/MAUI), el orden de links debe ser: Preconnects -> Google Fonts -> Material Icons -> Bootstrap -> Radzen -> app.css. Esto evita fallos de renderizado en emuladores.
 
-Organiza el código siguiendo esta jerarquía:
+## 3. Persistencia de Sesión y Seguridad
+La gestión de tokens varía según la plataforma:
+- **Web:** Utiliza Cookies o SessionStorage.
+- **MAUI:** Utiliza `Preferences.Default.Set("authToken", token)` para persistir la sesión.
+- **Guardias de Navegación:** En `Home.razor` o páginas protegidas, verifica siempre el token en `OnInitialized` antes de permitir el acceso, pero **NUNCA** dejes redirecciones incondicionales que causen bucles.
 
-```
-GrupoXpert.Web/                    → Blazor Web App (.NET 10)
-  Componentes/Paginas/             → Páginas principales
+## 4. Consistencia de Contratos (Nomenclatura)
+Para evitar errores de deserialización (nulos en el backend):
+- **Contratos en Español:** Si el backend usa `IniciarSesionCommand(string Correo, string Clave)`, el frontend **DEBE** enviar un objeto con las mismas claves (`{ Correo, Clave }`), nunca nombres en inglés como `Email` o `Password`.
+- **Validación:** Implementa siempre checks de `string.IsNullOrWhiteSpace` en el frontend antes de enviar peticiones.
 
-GrupoXpert.Maui/                   → Blazor Hybrid (.NET 10 MAUI)
-  → Interfaz móvil multiplataforma
+## 5. Catálogo obligatorio de componentes
+**USA SIEMPRE** el componente Radzen correspondiente en lugar de HTML puro para controles interactivos, ya que Radzen maneja por defecto la accesibilidad, temas de color y validaciones:
+- **Tablas:** `<RadzenDataGrid>`
+- **Formularios:** `<RadzenTemplateForm>`, `<RadzenTextBox>`, `<RadzenDropDown>`, `<RadzenDatePicker>`
+- **Botones:** `<RadzenButton>`
+- **Alertas:** `NotificationService`, `DialogService`
 
-GrupoXpert.Compartido.UI/          → Razor Class Library (.NET 10)
-  Componentes/[Funcionalidad]/     → TODOS los componentes reutilizables aquí
-    Ej: Componentes/Solicitudes/TablaSolicitudes.razor
-  Abstracciones/                   → Interfaces para servicios de plataforma
-```
+## 6. Estilos y Contenedores Premium
+Sigue el Design System de `app.css`:
+- Para contenedores principales de información, envuelve el contenido en `<div class="gx-card">`.
+- Aplica los colores corporativos a los componentes usando la API de Radzen: `ButtonStyle="ButtonStyle.Primary"` (para tomar el Magenta automático).
+- **Material Icons:** Asegura que los iconos estén dentro de `<span class="material-icons">...</span>` y que `app.css` tenga el fix de `font-family: 'Material Icons' !important`.
 
-> **Regla de oro:** Si un componente puede ser usado en más de un lugar → va en `Compartido.UI`.
+# Examples
 
----
-
-# Instrucciones
-
-## 1. Configuración obligatoria de Radzen
-
-Antes de crear cualquier componente, verifica que `Program.cs` tenga:
-
-```csharp
-// Program.cs (Web y Maui)
-builder.Services.AddRadzenComponents();
-```
-
-Y en `app.css` o el layout principal:
-
-```html
-<!-- _Imports.razor o MainLayout.razor -->
-<link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css" />
-@* Tema de color del proyecto (Magenta/Azul) *@
-```
-
-En `_Imports.razor` del proyecto:
-
+## Vídeo 1: Creación de una página tipo Feed (Estilo LinkedIn)
+**Input:** "Crea la vista principal de la Academia que muestre un feed de cursos nuevos."
+**Output:**
 ```razor
-@using Radzen
-@using Radzen.Blazor
+@page "/academia"
+@using GrupoXpert.Shared.UI.Componentes.Feed
+
+<PageTitle>Academia - GrupoXpert</PageTitle>
+
+<div class="gx-card" style="margin-bottom: 1rem; padding: 1.5rem;">
+    <h2 style="margin: 0;">Novedades Académicas</h2>
+</div>
+
+<TarjetaFeed identificador="curso-1"
+             autor="Departamento Académico"
+             subtitulo="Gestión de Grados"
+             tiempo="Hace 1 hora"
+             avatarUrl="images/logo.jpg">
+    <ContenidoHijo>
+        <p>Se ha habilitado el nuevo curso de <strong>Programación Avanzada</strong> en la currícula 2026. Inscríbete desde tu portal.</p>
+        <RadzenButton Text="Ver Detalles" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" />
+    </ContenidoHijo>
+</TarjetaFeed>
 ```
 
-Y al final del layout, el componente de notificaciones:
-
+## Vídeo 2: Formulario con contrato en Español (MAUI)
+**Input:** "Implementa la lógica de envío para el login en MAUI."
+**Output:**
 ```razor
-<RadzenComponents />
-```
+private async Task ManejarLogin(LoginModelo modelo)
+{
+    // FIX: El contrato del backend espera 'Correo', no 'Email'
+    var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
+    { 
+        Correo = modelo.Correo, 
+        Clave = modelo.Clave 
+    });
 
-## 2. Catálogo obligatorio de componentes Radzen
-
-**USA SIEMPRE** el componente Radzen correspondiente. Prohibido crear equivalentes en HTML puro.
-
-| Necesidad UI | Componente Radzen | Ejemplo de uso |
-|---|---|---|
-| Tabla de datos | `<RadzenDataGrid>` | Listas, catálogos, reportes |
-| Formulario de entrada texto | `<RadzenTextBox>` / `<RadzenTextArea>` | Nombre, descripción |
-| Selector numérico | `<RadzenNumeric>` | Notas, cantidades |
-| Fecha/hora | `<RadzenDatePicker>` | Fechas de solicitud, nacimiento |
-| Dropdown / Select | `<RadzenDropDown>` | Catálogos, estados |
-| Autocomplete | `<RadzenAutoComplete>` | Búsqueda de estudiantes, materias |
-| Checkbox | `<RadzenCheckBox>` | Activar/desactivar opciones |
-| Radio button | `<RadzenRadioButtonList>` | Opciones excluyentes |
-| Botón de acción | `<RadzenButton>` | Guardar, cancelar, filtrar |
-| Diálogo / Modal | `<RadzenDialog>` vía `DialogService` | Confirmaciones, edición rápida |
-| Notificaciones | `<RadzenNotification>` vía `NotificationService` | Éxito, error, advertencia |
-| Tabs / Pestañas | `<RadzenTabs>` | Secciones de formulario |
-| Panel / Card | `<RadzenPanel>` | Agrupación visual |
-| Spinner / Carga | `<RadzenProgressBarCircular>` | Estados de carga async |
-| Menú lateral | `<RadzenSidebar>` | Navegación principal |
-| Paginación | Propiedad `AllowPaging` en `RadzenDataGrid` | Tablas largas |
-
-## 3. Paleta de colores
-
-Aplica la paleta del proyecto mediante variables CSS en `app.css`:
-
-```css
-:root {
-  --color-primario: #C2185B;      /* Magenta */
-  --color-secundario: #1565C0;    /* Azul */
-  --color-acento: #7B1FA2;        /* Violeta */
-  --color-fondo: #F5F5F5;
-  --color-texto: #212121;
-}
-```
-
-En componentes Radzen, usa la propiedad `ButtonStyle` o `class` para alinearte:
-
-```razor
-<RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Guardar" />
-<RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancelar" />
-```
-
-## 4. Nomenclatura
-
-- Archivos Razor: PascalCase en **español** → `FormularioRegistro.razor`, `TablaSolicitudes.razor`
-- Parámetros de componente: camelCase en español → `@param estudianteSeleccionado`
-- Variables en código `@code { }`: camelCase en español
-
----
-
-# Ejemplos
-
-## Ejemplo 1 — Tabla con RadzenDataGrid
-
-```razor
-@* Componentes/Solicitudes/TablaSolicitudes.razor *@
-@using Radzen.Blazor
-
-<RadzenDataGrid Data="@solicitudes"
-                TItem="SolicitudDto"
-                AllowPaging="true"
-                PageSize="10"
-                AllowSorting="true"
-                AllowFiltering="true"
-                FilterMode="FilterMode.Advanced"
-                class="tabla-solicitudes">
-    <Columns>
-        <RadzenDataGridColumn TItem="SolicitudDto" Property="Codigo" Title="Código" Width="120px" />
-        <RadzenDataGridColumn TItem="SolicitudDto" Property="Estudiante" Title="Estudiante" />
-        <RadzenDataGridColumn TItem="SolicitudDto" Property="Estado" Title="Estado">
-            <Template Context="sol">
-                <RadzenBadge Text="@sol.Estado" BadgeStyle="BadgeStyle.Info" />
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="SolicitudDto" Title="Acciones" Filterable="false" Sortable="false" Width="120px">
-            <Template Context="sol">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
-                              Click="@(() => AbrirEdicion(sol))" />
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
-
-@code {
-    [Parameter] public IEnumerable<SolicitudDto> solicitudes { get; set; } = [];
-
-    private void AbrirEdicion(SolicitudDto sol) { /* ... */ }
-}
-```
-
-## Ejemplo 2 — Formulario con validación usando RadzenTemplateForm
-
-```razor
-@* Componentes/Estudiantes/FormularioEstudiante.razor *@
-@inject NotificationService Notificaciones
-
-<RadzenTemplateForm TItem="EstudianteDto" Data="@modelo" Submit="@GuardarAsync">
-    <RadzenStack Gap="1rem">
-
-        <RadzenFormField Text="Nombre completo" Variant="Variant.Outlined">
-            <RadzenTextBox @bind-Value="modelo.NombreCompleto" Placeholder="Ingrese el nombre" />
-        </RadzenFormField>
-
-        <RadzenFormField Text="Fecha de nacimiento" Variant="Variant.Outlined">
-            <RadzenDatePicker @bind-Value="modelo.FechaNacimiento" DateFormat="dd/MM/yyyy" />
-        </RadzenFormField>
-
-        <RadzenFormField Text="Programa académico" Variant="Variant.Outlined">
-            <RadzenDropDown @bind-Value="modelo.ProgramaId"
-                            Data="@programas"
-                            TextProperty="Nombre"
-                            ValueProperty="Id"
-                            Placeholder="Seleccione un programa" />
-        </RadzenFormField>
-
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="Guardar" ButtonStyle="ButtonStyle.Primary" />
-            <RadzenButton Text="Cancelar" ButtonStyle="ButtonStyle.Light" Click="@Cancelar" />
-        </RadzenStack>
-
-    </RadzenStack>
-</RadzenTemplateForm>
-
-@code {
-    [Parameter] public EstudianteDto modelo { get; set; } = new();
-    [Parameter] public IEnumerable<ProgramaDto> programas { get; set; } = [];
-    [Parameter] public EventCallback Cancelar { get; set; }
-
-    private async Task GuardarAsync()
+    if (respuesta.IsSuccessStatusCode)
     {
-        // Llamar al comando via HttpClient / MediatR
-        Notificaciones.Notify(NotificationSeverity.Success, "Guardado", "Estudiante registrado correctamente.");
+        var resultado = await respuesta.Content.ReadFromJsonAsync<ResultadoSesion>();
+        // Persistencia específica de MAUI
+        Preferences.Default.Set("authToken", resultado.TokenAcceso);
+        Navegador.NavigateTo("/");
     }
 }
 ```
 
-## Ejemplo 3 — Diálogo de confirmación con DialogService
+# Constraints
 
-```razor
-@* Uso en una página *@
-@inject DialogService Dialogo
+## Reglas de Arquitectura Visual (Innegociables)
+- 🚫 **NUNCA** uses el patrón antiguo de sidebar izquierdo colapsable (AdminLTE-style) en la versión Web. Respeta estrictamente el patrón LinkedIn (Top Navbar + 3 Columnas).
+- 🚫 **NUNCA** uses menús laterales en MAUI (Móvil). La navegación móvil se debe hacer siempre a través del Bottom Tab Bar (`gx-tab-bar`).
+- ✅ Usa siempre la clase `.gx-card` para paneles de información en el cuerpo principal. No uses estilos en línea para sombras o bordes de cards.
 
-<RadzenButton Text="Eliminar" ButtonStyle="ButtonStyle.Danger"
-              Click="@ConfirmarEliminacion" />
+## Uso de Componentes (Innegociables)
+- 🚫 **Prohibido usar `<input>`, `<select>`, `<button>` HTML puro** para recolectar o enviar datos. La suite de Radzen es obligatoria para garantizar la consistencia en el tema.
+- 🚫 **No dupliques componentes de estructura.** Si necesitas renderizar la actividad de un usuario, usa `TarjetaFeed`. Si necesitas el cuadro de información de usuario, usa `TarjetaPerfil`. No los reinventes.
 
-@code {
-    private async Task ConfirmarEliminacion()
-    {
-        bool? resultado = await Dialogo.Confirm(
-            "¿Está seguro de eliminar este registro?",
-            "Confirmar eliminación",
-            new ConfirmOptions { OkButtonText = "Sí, eliminar", CancelButtonText = "Cancelar" });
+## Nomenclatura (Innegociables)
+- ✅ **100% Español en UI y Lógica:** Etiquetas (`Text="Guardar"`), nombres de variables `@code`, parámetros `@param` y nombres de archivos Razor (`TarjetaFeed.razor`) van en ESPAÑOL.
+- ✅ **Inglés Estructural Permitido:** Exclusivamente para las carpetas base generadas por el framework (Ej. `Pages`, `Components`, `Layout`). Todo lo que haya adentro sigue el estándar en español.
 
-        if (resultado == true)
-        {
-            // Ejecutar comando de eliminación
-        }
-    }
-}
-```
-
----
-
-# Restricciones
-
-## Uso de Radzen (innegociables — el motivo es consistencia visual y mantenimiento)
-
-- 🚫 **Prohibido usar `<input>`, `<select>`, `<button>` HTML puro** cuando existe un equivalente Radzen — Radzen ya maneja accesibilidad, temas y validación.
-- 🚫 **Prohibido crear tablas con `<table>/<tr>/<td>`** para datos — usar `<RadzenDataGrid>`.
-- 🚫 **Prohibido usar `alert()` o `window.confirm()` de JavaScript** — usar `NotificationService` y `DialogService`.
-- ✅ HTML semántico puro (`<section>`, `<article>`, `<h1>`) está permitido para estructura, NO para controles interactivos.
-
-## Arquitectura
-
-- 🚫 **No duplicar componentes**: Si ya existe en `GrupoXpert.Compartido.UI`, reutilízalo.
-- ✅ Todo componente nuevo potencialmente compartible va en `Compartido.UI`, no en `Web` ni `Maui`.
-
-## Idioma
-
-- ✅ **100% Español en UI y Negocio**: Etiquetas, placeholders, nombres de archivos Razor (`Formulario.razor`), y variables de componente deben ir en ESPAÑOL.
-- ✅ Los DTOs y modelos de dominio ya vienen del backend en español — mantenlos igual en la UI.
-- ✅ **Inglés Estructural Permitido**: Las carpetas base de la arquitectura (como `Pages`, `Components`, `Shared`) DEBEN ir en inglés según el estándar, pero sus subcarpetas de Bounded Contexts y archivos van en español.
-
-## Calidad
-
-- Cada componente debe manejar el estado de carga (`bool estaCargando`) con `<RadzenProgressBarCircular>`.
-- Los errores de operación deben notificarse vía `NotificationService`, nunca silenciarse.
-
-<!-- Generado por Skill Creator Ultra v1.0 — Mejorado v2.0.0 -->
+<!-- Generado y optimizado por Skill Creator Ultra v1.0 — Adaptado al estándar LinkedIn de GrupoXpert -->

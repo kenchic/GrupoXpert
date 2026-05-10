@@ -18,9 +18,11 @@ namespace GrupoXpert.Maui
             builder.Services.AddRadzenComponents();
 
             // Configuración de HttpClient para el Backend (Ajustar IP según entorno móvil)
+            string baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5237/" : "http://localhost:5237/";
+            
             builder.Services.AddScoped(sp => new HttpClient 
             { 
-                BaseAddress = new Uri("http://localhost:5237/") 
+                BaseAddress = new Uri(baseAddress) 
             });
 
 #if DEBUG
