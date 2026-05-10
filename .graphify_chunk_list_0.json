@@ -1,0 +1,23 @@
+[
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\scripts\\001_ValidarPerfilColaborador.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\AgregarTipoUsuario.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\ConsultarEstructura.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\ListarColumnas.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\RenombrarEmailACorreo.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\SeguridadUsuarios.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\Usuarios.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\ValidarPerfilColaborador.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\VerificarEstructuraUsuarios.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\docs\\sql\\VerificarEstructuraUsuarios_CU3.sql",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\refactor_spanglish.ps1",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\refactor_spanglish2.ps1",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\DependencyInjection.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Common\\Dtos\\ResultadoPaginadoDto.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Common\\Interfaces\\ICorreoElectronicoService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Common\\Interfaces\\IHashClaveService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Common\\Interfaces\\IUnidadDeTrabajo.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Common\\Interfaces\\IUrlActivacionService.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\ActivarCuentaCommand.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\ActivarCuentaHandler.cs",
+  "E:\\Documentos\\Proyectos\\GradoXpert\\Src\\GrupoXpert\\GrupoXpert.Application\\Identidad\\Commands\\AprobarColaboradorCommand.cs"
+]

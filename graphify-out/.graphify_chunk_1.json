@@ -1,0 +1,216 @@
+{
+  "nodes": [
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\LoginCommand.cs",
+      "label": "LoginCommand.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Auth/Commands/LoginCommand.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\RegisterCommand.cs",
+      "label": "RegisterCommand.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Auth/Commands/RegisterCommand.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\AuthResponse.cs",
+      "label": "AuthResponse.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Auth/DTOs/AuthResponse.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\LoginRequest.cs",
+      "label": "LoginRequest.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Auth/DTOs/LoginRequest.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\RegisterRequest.cs",
+      "label": "RegisterRequest.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Auth/DTOs/RegisterRequest.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IApplicationDbContext.cs",
+      "label": "IApplicationDbContext.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Common/Interfaces/IApplicationDbContext.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IIdentityService.cs",
+      "label": "IIdentityService.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Common/Interfaces/IIdentityService.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Models\\Result.cs",
+      "label": "Result.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Application/Common/Models/Result.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Entities\\User.cs",
+      "label": "User.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Domain/Entities/User.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Enums\\UserRole.cs",
+      "label": "UserRole.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Domain/Enums/UserRole.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\ApplicationDbContext.cs",
+      "label": "ApplicationDbContext.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Infrastructure/Persistence/ApplicationDbContext.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\Configurations\\UserConfiguration.cs",
+      "label": "UserConfiguration.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Infrastructure/Persistence/Configurations/UserConfiguration.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\Migrations\\20240501123456_InitialCreate.cs",
+      "label": "20240501123456_InitialCreate.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Infrastructure/Persistence/Migrations/20240501123456_InitialCreate.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+      "label": "ApplicationDbContextModelSnapshot.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Components\\Pages\\Auth\\Login.razor",
+      "label": "Login.razor",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Web/Components/Pages/Auth/Login.razor"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Components\\Pages\\Auth\\Register.razor",
+      "label": "Register.razor",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Web/Components/Pages/Auth/Register.razor"
+    },
+    {
+      "id": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Program.cs",
+      "label": "Program.cs",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Web/Program.cs"
+    }
+  ],
+  "edges": [
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\LoginCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\LoginRequest.cs",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\LoginCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\AuthResponse.cs",
+      "relation": "returns",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\RegisterCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\RegisterRequest.cs",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\RegisterCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\DTOs\\AuthResponse.cs",
+      "relation": "returns",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\LoginCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IIdentityService.cs",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\RegisterCommand.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IIdentityService.cs",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\ApplicationDbContext.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IApplicationDbContext.cs",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\ApplicationDbContext.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Entities\\User.cs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Entities\\User.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Enums\\UserRole.cs",
+      "relation": "has_type",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\Configurations\\UserConfiguration.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Domain\\Entities\\User.cs",
+      "relation": "configures",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Components\\Pages\\Auth\\Login.razor",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\LoginCommand.cs",
+      "relation": "invokes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Components\\Pages\\Auth\\Register.razor",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Auth\\Commands\\RegisterCommand.cs",
+      "relation": "invokes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Program.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\ApplicationDbContext.cs",
+      "relation": "configures",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Web\\Program.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Application\\Common\\Interfaces\\IIdentityService.cs",
+      "relation": "configures",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\Migrations\\20240501123456_InitialCreate.cs",
+      "target": "e:\\Documentos\\Proyectos\\GrupoXpert\\Src\\GradoXpert.Infrastructure\\Persistence\\ApplicationDbContext.cs",
+      "relation": "describes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

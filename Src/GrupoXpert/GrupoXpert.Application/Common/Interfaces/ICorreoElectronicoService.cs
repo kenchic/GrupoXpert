@@ -17,4 +17,17 @@ public interface ICorreoElectronicoService
         string nombre,
         string enlaceActivacion,
         CancellationToken cancelacion = default);
+
+    Task EnviarAprobacionCuentaAsync(
+        string destinatario,
+        string nombre,
+        CancellationToken cancelacion = default);
+
+    /// <summary>
+    /// Envía una notificación indicando que el perfil del colaborador ha sido enviado a validación.
+    /// </summary>
+    Task EnviarValidacionPerfilAsync(
+        string destinatario,
+        string nombre,
+        CancellationToken cancelacion = default);
 }

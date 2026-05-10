@@ -1,5 +1,12 @@
 <RadzenPanelMenu>
     <RadzenPanelMenuItem Text="Inicio" Icon="home" Path="/" />
+    
+    <AuthorizeView Roles="Administrador">
+        <Authorized>
+            <RadzenPanelMenuItem Text="Gestión de Usuarios" Icon="manage_accounts" Path="/admin/gestion-usuarios" />
+        </Authorized>
+    </AuthorizeView>
+
     <RadzenPanelMenuItem Text="Inscripciones" Icon="assignment_ind" />
     <RadzenPanelMenuItem Text="Academia" Icon="school">
         <RadzenPanelMenuItem Text="Carreras" Icon="list_alt" />

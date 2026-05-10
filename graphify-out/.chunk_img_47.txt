@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-hdpi\appicon_foreground.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-hdpi\appicon_round.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-mdpi\appicon.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-mdpi\appicon_background.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-mdpi\appicon_foreground.png

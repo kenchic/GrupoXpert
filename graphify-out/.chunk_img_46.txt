@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\drawable-xhdpi\dotnet_bot.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\drawable-xxhdpi\dotnet_bot.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\drawable-xxxhdpi\dotnet_bot.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-hdpi\appicon.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\resizetizer\r\mipmap-hdpi\appicon_background.png

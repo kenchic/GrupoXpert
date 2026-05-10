@@ -63,6 +63,28 @@ public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
                 .HasMaxLength(500)
                 .IsRequired();
         });
+
+        // Propiedades de aprobación
+        builder.Property(u => u.EstaAprobado)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(u => u.FechaAprobacion);
+
+        builder.Property(u => u.AprobadoPorId);
+
+        // Propiedad de verificación de perfil
+        builder.Property(u => u.EstadoVerificacion)
+            .HasConversion<int>()
+            .IsRequired()
+            .HasDefaultValue(EstadoVerificacion.Pendiente);
+
+        // Relación con el administrador que aprueba (opcional, self-referencing)
+        builder.HasOne<Usuario>()
+            .WithMany()
+            .HasForeignKey(u => u.AprobadoPorId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
     }
 }
 

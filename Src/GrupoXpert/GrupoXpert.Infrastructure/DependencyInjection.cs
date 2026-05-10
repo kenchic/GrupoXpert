@@ -1,7 +1,7 @@
 using GrupoXpert.Application.Common.Interfaces;
 using GrupoXpert.Domain.Identidad;
 using GrupoXpert.Infrastructure.Persistence;
-using GrupoXpert.Infrastructure.Persistence.Repositorios;
+using GrupoXpert.Infrastructure.Persistence.Repositories;
 using GrupoXpert.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

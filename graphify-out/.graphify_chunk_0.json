@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "id": "identidad_bounded_context",
+      "label": "Bounded Context: IDENTIDAD",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "perfil_bounded_context",
+      "label": "Bounded Context: PERFIL",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/gestionar_perfil_cliente.md"
+    },
+    {
+      "id": "usuario_aggregate",
+      "label": "Usuario (Aggregate Root)",
+      "file_type": "code",
+      "source_file": "Src/GradoXpert.Domain/Entities/User.cs"
+    },
+    {
+      "id": "perfil_cliente_aggregate",
+      "label": "PerfilCliente (Aggregate Root)",
+      "file_type": "code",
+      "source_file": "docs/use-cases/gestionar_perfil_cliente.md"
+    },
+    {
+      "id": "administrador_role",
+      "label": "Rol: Administrador",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "asesor_role",
+      "label": "Rol: Asesor",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "estudiante_role",
+      "label": "Rol: Estudiante",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/gestionar_perfil_cliente.md"
+    },
+    {
+      "id": "uc_validar_perfil_colaborador",
+      "label": "UC: Validar Perfil de Colaborador",
+      "file_type": "document",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "uc_login",
+      "label": "UC: Inicio de Sesión",
+      "file_type": "document",
+      "source_file": "docs/use-cases/login.md"
+    },
+    {
+      "id": "uc_registrar_usuario",
+      "label": "UC: Registrar Usuario",
+      "file_type": "document",
+      "source_file": "docs/use-cases/registrar-usuario.md"
+    },
+    {
+      "id": "uc_gestionar_perfil_cliente",
+      "label": "UC: Gestionar Perfil de Cliente",
+      "file_type": "document",
+      "source_file": "docs/use-cases/gestionar_perfil_cliente.md"
+    },
+    {
+      "id": "aprobacion_cuenta_concept",
+      "label": "Concepto: Aprobación de Cuenta",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "verificacion_perfil_concept",
+      "label": "Concepto: Verificación de Perfil",
+      "file_type": "rationale",
+      "source_file": "docs/use-cases/validar_perfil_colaborador.md"
+    },
+    {
+      "id": "clean_architecture",
+      "label": "Arquitectura: Clean Architecture",
+      "file_type": "rationale",
+      "source_file": "docs/Estructura General del Proyecto.md"
+    },
+    {
+      "id": "plan_use_cases",
+      "label": "Plan de Casos de Uso",
+      "file_type": "document",
+      "source_file": "docs/plan use-cases/plan.md"
+    }
+  ],
+  "edges": [
+    {
+      "source": "uc_validar_perfil_colaborador",
+      "target": "usuario_aggregate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "uc_login",
+      "target": "usuario_aggregate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "uc_registrar_usuario",
+      "target": "usuario_aggregate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "uc_gestionar_perfil_cliente",
+      "target": "perfil_cliente_aggregate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "perfil_cliente_aggregate",
+      "target": "usuario_aggregate",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "source": "uc_validar_perfil_colaborador",
+      "target": "aprobacion_cuenta_concept",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "uc_validar_perfil_colaborador",
+      "target": "verificacion_perfil_concept",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "administrador_role",
+      "target": "uc_validar_perfil_colaborador",
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "asesor_role",
+      "target": "uc_validar_perfil_colaborador",
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "estudiante_role",
+      "target": "uc_gestionar_perfil_cliente",
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "plan_use_cases",
+      "target": "uc_registrar_usuario",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "plan_use_cases",
+      "target": "uc_login",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "plan_use_cases",
+      "target": "uc_validar_perfil_colaborador",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1500,
+  "output_tokens": 1100
+}

@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\assets\wwwroot\images\logo.jpg
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\assets\wwwroot\_content\GrupoXpert.Shared.UI\background.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\110\jl\res\drawable-hdpi-v4\notification_bg_low_normal.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\110\jl\res\drawable-hdpi-v4\notification_bg_low_pressed.9.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-android\lp\110\jl\res\drawable-hdpi-v4\notification_bg_normal.9.png

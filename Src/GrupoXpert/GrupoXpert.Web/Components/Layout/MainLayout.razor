@@ -17,7 +17,7 @@
                     <RadzenIcon Icon="account_circle" />
                 </Template>
                 <ChildContent>
-                    <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/login" />
+                    <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/api/auth/logout" />
                 </ChildContent>
             </RadzenProfileMenu>
         </RadzenHeader>
@@ -27,7 +27,7 @@
     </RadzenBody>
 </RadzenLayout>
 
-<RadzenComponents />
+
 
 @code {
     bool sidebarExpanded = true;

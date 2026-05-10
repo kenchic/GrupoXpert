@@ -4,6 +4,7 @@
 @using GrupoXpert.Shared.UI.Abstracciones
 @inject NavigationManager Navegador
 @inject NotificationService Notificaciones
+@inject IJSRuntime JS
 @inject IAutenticacionService AuthService
 
 <PageTitle>Iniciar Sesión - GrupoXpert</PageTitle>
@@ -12,11 +13,17 @@
     <FormularioLogin AlIniciarSesion="@ManejarLogin" />
 </div>
 
+@* Formulario oculto que el navegador envía directamente al servidor para establecer la cookie *@
+<form id="cookieForm" method="post" action="/api/auth/cookie-login" style="display:none;">
+    <input type="hidden" name="jwt" id="jwtInput" />
+</form>
+
 @code {
     private async Task ManejarLogin(FormularioLogin.LoginModelo modelo)
     {
         try 
         {
+            // 1. Obtener el JWT desde la API de backend
             var token = await AuthService.IniciarSesionAsync(modelo.Correo, modelo.Clave);
 
             if (!string.IsNullOrEmpty(token))
@@ -26,12 +33,13 @@
                     Severity = NotificationSeverity.Success,
                     Summary = "Acceso Correcto",
                     Detail = "Bienvenido al sistema.",
-                    Duration = 4000
+                    Duration = 2000
                 });
-                
-                // Forzar la navegación a la raíz
-                await Task.Delay(500);
-                Navegador.NavigateTo("/", forceLoad: true);
+
+                // 2. Enviar el JWT al endpoint de cookie vía formulario HTML del NAVEGADOR
+                //    Esto garantiza que la cookie Set-Cookie se establece en el browser
+                await JS.InvokeVoidAsync("eval", 
+                    $"document.getElementById('jwtInput').value = '{token}'; document.getElementById('cookieForm').submit();");
             }
             else
             {

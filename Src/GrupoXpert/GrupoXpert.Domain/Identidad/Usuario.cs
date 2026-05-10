@@ -62,6 +62,27 @@ public sealed class Usuario : AggregateRoot
     /// </summary>
     public DateTimeOffset? UltimoInicioSesion { get; private set; }
 
+    /// <summary>
+    /// Indica si la cuenta del colaborador fue aprobada por un administrador.
+    /// Solo aplica para usuarios de tipo Asesor.
+    /// </summary>
+    public bool EstaAprobado { get; private set; }
+
+    /// <summary>
+    /// Fecha y hora (UTC) en la que un administrador aprobó la cuenta del colaborador.
+    /// </summary>
+    public DateTimeOffset? FechaAprobacion { get; private set; }
+
+    /// <summary>
+    /// Identificador del administrador que aprobó la cuenta.
+    /// </summary>
+    public Guid? AprobadoPorId { get; private set; }
+
+    /// <summary>
+    /// Estado actual de verificación del perfil del colaborador.
+    /// </summary>
+    public EstadoVerificacion EstadoVerificacion { get; private set; }
+
     // Constructor privado para EF Core / rehidratación
 #pragma warning disable CS8618 // Requerido por EF Core para rehidratación de entidades
     private Usuario() : base() { }
@@ -84,6 +105,8 @@ public sealed class Usuario : AggregateRoot
         Imagen = imagen;
         Tipo = tipo;
         EstaActivo = false;
+        EstaAprobado = tipo == TipoUsuario.Estudiante || tipo == TipoUsuario.Administrador;
+        EstadoVerificacion = tipo == TipoUsuario.Asesor ? EstadoVerificacion.Pendiente : EstadoVerificacion.Aprobado;
         TokenActivacion = tokenActivacion;
         TokenActivacionExpira = DateTimeOffset.UtcNow.AddHours(24);
         FechaCreacion = DateTimeOffset.UtcNow;
@@ -145,8 +168,63 @@ public sealed class Usuario : AggregateRoot
         if (!EstaActivo)
             throw new ExcepcionDominio("La cuenta no está activa. Por favor verifica tu correo para activarla.");
 
+        if (Tipo == TipoUsuario.Asesor && !EstaAprobado)
+            throw new ExcepcionDominio("Tu cuenta está pendiente de aprobación por un administrador.");
+
         UltimoInicioSesion = DateTimeOffset.UtcNow;
         AgregarEventoDominio(new SesionIniciadaEvent(Id, Correo.Valor));
+    }
+
+    /// <summary>
+    /// Aprueba la cuenta de un colaborador (solo Asesores). Acción exclusiva de un Administrador.
+    /// </summary>
+    public void AprobarCuenta(Guid administradorId)
+    {
+        if (Tipo != TipoUsuario.Asesor)
+            throw new ExcepcionDominio("Solo las cuentas de tipo Asesor requieren aprobación.");
+
+        if (EstaAprobado)
+            throw new ExcepcionDominio("La cuenta del colaborador ya fue aprobada.");
+
+        EstaAprobado = true;
+        EstaActivo = true;
+        FechaAprobacion = DateTimeOffset.UtcNow;
+        AprobadoPorId = administradorId;
+        TokenActivacion = null;
+        TokenActivacionExpira = null;
+
+        AgregarEventoDominio(new ColaboradorAprobadoEvent(Id, Correo.Valor, administradorId));
+    }
+
+    /// <summary>
+    /// Valida el perfil del colaborador cambiando su estado a EnRevision o Aprobado según corresponda.
+    /// </summary>
+    public void ValidarPerfil()
+    {
+        if (Tipo != TipoUsuario.Asesor)
+            throw new ExcepcionDominio("Solo las cuentas de tipo Asesor requieren validación de perfil.");
+
+        if (EstadoVerificacion == EstadoVerificacion.Aprobado)
+            throw new ExcepcionDominio("El perfil del colaborador ya fue aprobado.");
+
+        EstadoVerificacion = EstadoVerificacion.EnRevision;
+    }
+
+    /// <summary>
+    /// Rechaza/Desactiva la cuenta de un colaborador aprobado previamente.
+    /// </summary>
+    public void RevocarAprobacion()
+    {
+        if (Tipo != TipoUsuario.Asesor)
+            throw new ExcepcionDominio("Solo las cuentas de tipo Asesor pueden revocarse.");
+
+        if (!EstaAprobado)
+            throw new ExcepcionDominio("La cuenta del colaborador no está aprobada.");
+
+        EstaAprobado = false;
+        EstaActivo = false;
+        FechaAprobacion = null;
+        AprobadoPorId = null;
     }
 
     /// <summary>
@@ -195,7 +273,7 @@ public sealed class Usuario : AggregateRoot
 
     private static void ValidarTipo(TipoUsuario tipo)
     {
-        if (tipo != TipoUsuario.Estudiante && tipo != TipoUsuario.Asesor)
-            throw new ExcepcionDominio("El tipo de usuario debe ser Estudiante o Asesor.");
+        if (!Enum.IsDefined(typeof(TipoUsuario), tipo))
+            throw new ExcepcionDominio("El tipo de usuario no es válido.");
     }
 }

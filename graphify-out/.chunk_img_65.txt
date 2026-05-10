@@ -1,0 +1,5 @@
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-windows10.0.19041.0\win-x64\resizetizer\r\appiconSmallTile.scale-400.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-windows10.0.19041.0\win-x64\resizetizer\r\appiconStoreLogo.scale-100.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-windows10.0.19041.0\win-x64\resizetizer\r\appiconStoreLogo.scale-125.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-windows10.0.19041.0\win-x64\resizetizer\r\appiconStoreLogo.scale-150.png
+E:\Documentos\Proyectos\GrupoXpert\Src\GrupoXpert\GrupoXpert.Maui\obj\Debug\net10.0-windows10.0.19041.0\win-x64\resizetizer\r\appiconStoreLogo.scale-200.png
