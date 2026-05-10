@@ -3,17 +3,69 @@
 
 @using Microsoft.Maui.Storage
 
-<div class="rz-p-4">
-    <RadzenText Text="Bienvenido a GrupoXpert" TextStyle="TextStyle.H4" />
-    <RadzenText Text="Tu plataforma de aprendizaje y colaboración." TextStyle="TextStyle.Body1" />
-    
-    <div class="rz-mt-4">
-        <TarjetaFeed Autor="Sistema GrupoXpert" Subtitulo="Actualización de Plataforma" Tiempo="Ahora">
-            <ContenidoHijo>
-                ¡Bienvenido a la nueva interfaz móvil de GrupoXpert! Estamos emocionados de que estés aquí.
-            </ContenidoHijo>
-        </TarjetaFeed>
+<div class="gx-mobile-content-container">
+    @* === Banner de bienvenida (Mobile Optimized) === *@
+    <div class="gx-card" style="background: var(--navbar-bg); color: white; border-radius: var(--card-radius); overflow: hidden; margin-bottom: 16px;">
+        <div style="padding: 20px; position: relative;">
+            <span class="material-icons" style="font-size: 5rem; opacity: 0.1; position: absolute; right: 8px; bottom: -8px;">dashboard</span>
+            <h1 style="font-size: 1.3rem; font-weight: 800; margin: 0 0 4px;">¡Bienvenido a GrupoXpert!</h1>
+            <p style="font-size: 0.85rem; opacity: 0.9; margin: 0;">Gestión Académica y Profesional</p>
+        </div>
     </div>
+
+    @* === Accesos rápidos (Horizontal Scroll) === *@
+    <div style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 16px; margin: 0 -12px; padding-left: 12px; -webkit-overflow-scrolling: touch;">
+        <div class="gx-card" style="flex: 0 0 160px; cursor: pointer;">
+            <div class="gx-card-body" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;">
+                <span class="material-icons" style="font-size: 2rem; color: var(--color-primario);">people</span>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.8rem;">Usuarios</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary);">Administrar</div>
+                </div>
+            </div>
+        </div>
+        <div class="gx-card" style="flex: 0 0 160px; cursor: pointer;">
+            <div class="gx-card-body" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;">
+                <span class="material-icons" style="font-size: 2rem; color: var(--color-secundario);">school</span>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.8rem;">Grados</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary);">Oferta académica</div>
+                </div>
+            </div>
+        </div>
+        <div class="gx-card" style="flex: 0 0 160px; cursor: pointer;">
+            <div class="gx-card-body" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;">
+                <span class="material-icons" style="font-size: 2rem; color: #f97316;">assignment</span>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.8rem;">Reportes</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary);">Métricas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* === Feed de actividades === *@
+    <TarjetaFeed identificador="act-1"
+                 autor="Departamento Académico"
+                 subtitulo="Administración"
+                 tiempo="Hace 2 horas"
+                 avatarUrl="images/logo.jpg">
+        <ContenidoHijo>
+            <p style="margin:0;">📚 <strong>Nuevos horarios de tutorías</strong> disponibles para el semestre 2026-II.</p>
+        </ContenidoHijo>
+    </TarjetaFeed>
+
+    <div style="height: 12px;"></div>
+
+    <TarjetaFeed identificador="act-2"
+                 autor="Coordinación de Grados"
+                 subtitulo="Gestión Académica"
+                 tiempo="Hace 5 horas"
+                 avatarUrl="images/logo.jpg">
+        <ContenidoHijo>
+            <p style="margin:0;">🎓 Las <strong>inscripciones</strong> para el periodo 2026-II están abiertas.</p>
+        </ContenidoHijo>
+    </TarjetaFeed>
 </div>
 
 @code {

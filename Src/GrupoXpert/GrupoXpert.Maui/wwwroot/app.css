@@ -33,17 +33,28 @@ html, body {
     overflow-x: hidden;
 }
 
+/* Fix para Material Icons en MAUI */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+}
+
 .material-icons {
-    font-family: 'Material Icons' !important;
-    font-weight: normal;
-    font-style: normal;
-    display: inline-block;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
+  font-family: 'Material Icons' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 /* MOBILE TOP BAR */
@@ -62,10 +73,34 @@ html, body {
     height: calc(var(--navbar-height) + env(safe-area-inset-top)); 
 }
 .gx-mobile-topbar-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--color-primario); flex-shrink: 0; }
-.gx-mobile-topbar-search { flex: 1; min-width: 0; height: 36px; border: none; border-radius: 20px; padding: 0 16px; font-size: 0.9rem; font-family: var(--font-family); background: var(--color-fondo); color: var(--text-primary); outline: none; }
+.gx-mobile-search-container { 
+    flex: 1; 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+}
+.gx-mobile-search-container .material-icons { 
+    position: absolute; 
+    left: 12px; 
+    font-size: 1.2rem; 
+    color: var(--text-secondary); 
+    pointer-events: none; 
+}
+.gx-mobile-topbar-search { 
+    width: 100%; 
+    height: 36px; 
+    border: none; 
+    border-radius: 8px; 
+    padding: 0 12px 0 38px; 
+    font-size: 0.9rem; 
+    font-family: var(--font-family); 
+    background: var(--color-fondo); 
+    color: var(--text-primary); 
+    outline: none; 
+}
 .gx-mobile-topbar-search::placeholder { color: var(--text-secondary); opacity: 0.7; }
 .gx-mobile-topbar-action { background: none; border: none; color: var(--color-primario); padding: 4px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; }
-.gx-mobile-topbar-action .material-icons { font-size: 1.6rem; }
+.gx-mobile-topbar-action .material-icons { font-size: 1.5rem; }
 
 /* MOBILE CONTENT */
 .gx-mobile-content { padding: calc(var(--navbar-height) + env(safe-area-inset-top) + 12px) 0 calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + 12px); min-height: 100vh; width: 100%; }
@@ -125,3 +160,6 @@ h1:focus { outline:none; }
 @supports (-webkit-touch-callout:none) {
   .status-bar-safe-area { display:flex; position:sticky; top:0; height:env(safe-area-inset-top); background:white; width:100%; z-index:1; }
 }
+
+.gx-mobile-content-container { padding: 0 12px; }
+.gx-feed-card { margin-bottom: 12px; }

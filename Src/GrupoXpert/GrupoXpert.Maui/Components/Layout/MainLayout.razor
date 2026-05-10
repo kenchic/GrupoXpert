@@ -3,7 +3,10 @@
 @* === MOBILE TOP BAR === *@
 <div class="gx-mobile-topbar">
     <img class="gx-mobile-topbar-avatar" src="images/logo.jpg" alt="Perfil" />
-    <input class="gx-mobile-topbar-search" type="text" placeholder="Buscar en GrupoXpert..." />
+    <div class="gx-mobile-search-container">
+        <span class="material-icons">search</span>
+        <input class="gx-mobile-topbar-search" type="text" placeholder="Buscar en GrupoXpert..." />
+    </div>
     <button class="gx-mobile-topbar-action">
         <span class="material-icons">chat_bubble_outline</span>
     </button>
@@ -16,26 +19,26 @@
 
 @* === BOTTOM TAB BAR (estilo LinkedIn móvil) === *@
 <nav class="gx-tab-bar">
-    <a href="/" class="gx-tab-item @(EsRutaActiva("/") ? "active" : "")">
+    <NavLink href="/" class="gx-tab-item" Match="NavLinkMatch.All">
         <span class="material-icons">home</span>
         <span>Inicio</span>
-    </a>
-    <a href="/academia" class="gx-tab-item @(EsRutaActiva("/academia") ? "active" : "")">
+    </NavLink>
+    <NavLink href="/academia" class="gx-tab-item">
         <span class="material-icons">school</span>
         <span>Academia</span>
-    </a>
-    <a class="gx-tab-item gx-tab-item-create">
+    </NavLink>
+    <div class="gx-tab-item gx-tab-item-create">
         <span class="material-icons">add</span>
         <span>Publicar</span>
-    </a>
-    <a href="/notificaciones" class="gx-tab-item @(EsRutaActiva("/notificaciones") ? "active" : "")">
+    </div>
+    <NavLink href="/notificaciones" class="gx-tab-item">
         <span class="material-icons">notifications</span>
         <span>Avisos</span>
-    </a>
-    <a href="/perfil" class="gx-tab-item @(EsRutaActiva("/perfil") ? "active" : "")">
+    </NavLink>
+    <NavLink href="/perfil" class="gx-tab-item">
         <span class="material-icons">person</span>
         <span>Perfil</span>
-    </a>
+    </NavLink>
 </nav>
 
 <RadzenComponents />
