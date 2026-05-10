@@ -34,7 +34,7 @@
                 Notificaciones.Notify(NotificationSeverity.Error, "Error de Acceso", "Usuario o clave incorrectos.");
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             Notificaciones.Notify(NotificationSeverity.Error, "Error de Conexión", "No se pudo contactar con el servidor. Verifique su conexión.");
         }

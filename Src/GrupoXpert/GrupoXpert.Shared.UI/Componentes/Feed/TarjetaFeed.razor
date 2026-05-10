@@ -1,0 +1,42 @@
+@* TarjetaFeed.razor — Card de actividad/publicación estilo LinkedIn *@
+
+<div class="gx-card gx-feed-card" id="gx-feed-@identificador">
+    <div class="gx-feed-author">
+        <img class="gx-feed-author-avatar" src="@avatarUrl" alt="@autor" />
+        <div style="flex:1; min-width:0;">
+            <div class="gx-feed-author-name">@autor</div>
+            <div class="gx-feed-author-meta">@subtitulo · @tiempo</div>
+        </div>
+    </div>
+
+    <div class="gx-feed-content">
+        @ContenidoHijo
+    </div>
+
+    <div class="gx-feed-actions">
+        <button class="gx-feed-action" @onclick="() => AlReaccionar.InvokeAsync(identificador)">
+            <span class="material-icons">thumb_up</span>
+            <span>Recomendar</span>
+        </button>
+        <button class="gx-feed-action" @onclick="() => AlComentar.InvokeAsync(identificador)">
+            <span class="material-icons">chat_bubble_outline</span>
+            <span>Comentar</span>
+        </button>
+        <button class="gx-feed-action" @onclick="() => AlCompartir.InvokeAsync(identificador)">
+            <span class="material-icons">share</span>
+            <span>Compartir</span>
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string identificador { get; set; } = "";
+    [Parameter] public string autor { get; set; } = "Usuario";
+    [Parameter] public string subtitulo { get; set; } = "";
+    [Parameter] public string tiempo { get; set; } = "Hace un momento";
+    [Parameter] public string avatarUrl { get; set; } = "images/logo.jpg";
+    [Parameter] public RenderFragment? ContenidoHijo { get; set; }
+    [Parameter] public EventCallback<string> AlReaccionar { get; set; }
+    [Parameter] public EventCallback<string> AlComentar { get; set; }
+    [Parameter] public EventCallback<string> AlCompartir { get; set; }
+}
