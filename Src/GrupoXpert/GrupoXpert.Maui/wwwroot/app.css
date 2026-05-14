@@ -192,6 +192,7 @@ html, body {
 
 /* CARDS (shared with web) */
 .gx-card { background:var(--card-bg); border-radius:var(--card-radius); box-shadow:var(--card-shadow); overflow:hidden; }
+.gx-card.gx-card-overflow-visible { overflow: visible !important; }
 .gx-card-body { padding:16px; }
 .gx-profile-card { text-align:center; }
 .gx-profile-banner { height:60px; background:var(--navbar-bg); border-radius:var(--card-radius) var(--card-radius) 0 0; }

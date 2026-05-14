@@ -1,6 +1,8 @@
 using System.Text;
 using GrupoXpert.Application;
 using GrupoXpert.Application.Identidad.Commands;
+using GrupoXpert.Application.Perfil.Commands;
+using GrupoXpert.Application.Perfil.Queries;
 using GrupoXpert.Infrastructure;
 using GrupoXpert.Infrastructure.Persistence;
 using MediatR;
@@ -171,6 +173,39 @@ try
 
             await mediador.Send(new ValidarPerfilColaboradorCommand(id, adminId), ct);
             return Results.Ok(new { mensaje = "Perfil enviado a validación exitosamente." });
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new { mensaje = ex.Message });
+        }
+    });
+    
+    // 6. Endpoints de Perfil (Protegidos)
+    var perfilGroup = app.MapGroup("/api/perfil")
+        .WithTags("Perfil")
+        .RequireAuthorization();
+
+    perfilGroup.MapGet("/", async (System.Security.Claims.ClaimsPrincipal user, ISender mediador, CancellationToken ct) =>
+    {
+        var usuarioIdString = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(usuarioIdString, out var usuarioId)) return Results.Unauthorized();
+
+        var perfil = await mediador.Send(new ObtenerPerfilPorUsuarioQuery(usuarioId), ct);
+        return perfil is not null ? Results.Ok(perfil) : Results.NotFound(new { mensaje = "El perfil no existe." });
+    });
+
+    perfilGroup.MapPost("/", async (ActualizarPerfilCommand comando, System.Security.Claims.ClaimsPrincipal user, ISender mediador, CancellationToken ct) =>
+    {
+        var usuarioIdString = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(usuarioIdString, out var usuarioId)) return Results.Unauthorized();
+
+        // Aseguramos que el comando use el ID del usuario autenticado para seguridad
+        var comandoSeguro = comando with { UsuarioId = usuarioId };
+        
+        try
+        {
+            await mediador.Send(comandoSeguro, ct);
+            return Results.Ok(new { mensaje = "Perfil actualizado exitosamente." });
         }
         catch (Exception ex)
         {

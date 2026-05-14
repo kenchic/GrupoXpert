@@ -13,7 +13,7 @@
     <RadzenCard>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Span">Estado de Aprobación:</RadzenText>
-            <RadzenDropDown @bind-Value="filtroAprobado" 
+            <RadzenDropDown TValue="bool?" @bind-Value="filtroAprobado" 
                             Data="@estadosAprobacion" 
                             TextProperty="Text" 
                             ValueProperty="Value" 
@@ -21,7 +21,7 @@
                             Style="width: 200px" />
             
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Span">Estado de Verificación:</RadzenText>
-            <RadzenDropDown @bind-Value="filtroEstadoVerificacion" 
+            <RadzenDropDown TValue="int?" @bind-Value="filtroEstadoVerificacion" 
                             Data="@estadosVerificacion" 
                             TextProperty="Text" 
                             ValueProperty="Value" 
@@ -136,20 +136,32 @@
     private bool? filtroAprobado = null;
     private int? filtroEstadoVerificacion = null;
     
-    private readonly IEnumerable<object> estadosAprobacion = new List<object>
+    public class OpcionFiltroAprobacion
     {
-        new { Text = "Todos", Value = (bool?)null },
-        new { Text = "Pendientes", Value = (bool?)false },
-        new { Text = "Aprobados", Value = (bool?)true }
+        public string Text { get; set; } = string.Empty;
+        public bool? Value { get; set; }
+    }
+
+    public class OpcionFiltroVerificacion
+    {
+        public string Text { get; set; } = string.Empty;
+        public int? Value { get; set; }
+    }
+
+    private readonly IEnumerable<OpcionFiltroAprobacion> estadosAprobacion = new List<OpcionFiltroAprobacion>
+    {
+        new OpcionFiltroAprobacion { Text = "Todos", Value = null },
+        new OpcionFiltroAprobacion { Text = "Pendientes", Value = false },
+        new OpcionFiltroAprobacion { Text = "Aprobados", Value = true }
     };
 
-    private readonly IEnumerable<object> estadosVerificacion = new List<object>
+    private readonly IEnumerable<OpcionFiltroVerificacion> estadosVerificacion = new List<OpcionFiltroVerificacion>
     {
-        new { Text = "Todos", Value = (int?)null },
-        new { Text = "Pendientes", Value = (int?)EstadoVerificacionUI.Pendiente },
-        new { Text = "En Revisión", Value = (int?)EstadoVerificacionUI.EnRevision },
-        new { Text = "Aprobados", Value = (int?)EstadoVerificacionUI.Aprobado },
-        new { Text = "Rechazados", Value = (int?)EstadoVerificacionUI.Rechazado }
+        new OpcionFiltroVerificacion { Text = "Todos", Value = null },
+        new OpcionFiltroVerificacion { Text = "Pendientes", Value = (int?)EstadoVerificacionUI.Pendiente },
+        new OpcionFiltroVerificacion { Text = "En Revisión", Value = (int?)EstadoVerificacionUI.EnRevision },
+        new OpcionFiltroVerificacion { Text = "Aprobados", Value = (int?)EstadoVerificacionUI.Aprobado },
+        new OpcionFiltroVerificacion { Text = "Rechazados", Value = (int?)EstadoVerificacionUI.Rechazado }
     };
 
     protected override async Task OnInitializedAsync()

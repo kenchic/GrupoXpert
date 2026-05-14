@@ -14,11 +14,11 @@
     .\run_sql.ps1 -ScriptFile "docs/sql/CreateUsers.sql" -ConnectionName "CadenaConexion"
 #>
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$ScriptFile,
 
     [string]$AppSettingsPath = "",
-    [string]$ConnectionName  = "CadenaConexion"
+    [string]$ConnectionName = "CadenaConexion"
 )
 
 # ─── Funciones auxiliares ──────────────────────────────────────────────────────
@@ -27,28 +27,28 @@ function Parse-ConnectionString {
     param([string]$connStr)
 
     $result = @{
-        Server   = ""
-        Database = ""
-        User     = ""
-        Password = ""
+        Server        = ""
+        Database      = ""
+        User          = ""
+        Password      = ""
         IsWindowsAuth = $false
     }
 
     foreach ($part in $connStr -split ";") {
         $kv = $part.Trim() -split "=", 2
         if ($kv.Count -ne 2) { continue }
-        $key   = $kv[0].Trim().ToLower()
+        $key = $kv[0].Trim().ToLower()
         $value = $kv[1].Trim()
 
         switch -Wildcard ($key) {
-            "data source"         { $result.Server   = $value }
-            "server"              { $result.Server   = $value }
-            "initial catalog"     { $result.Database = $value }
-            "database"            { $result.Database = $value }
-            "user id"             { $result.User     = $value }
-            "uid"                 { $result.User     = $value }
-            "password"            { $result.Password = $value }
-            "pwd"                 { $result.Password = $value }
+            "data source" { $result.Server = $value }
+            "server" { $result.Server = $value }
+            "initial catalog" { $result.Database = $value }
+            "database" { $result.Database = $value }
+            "user id" { $result.User = $value }
+            "uid" { $result.User = $value }
+            "password" { $result.Password = $value }
+            "pwd" { $result.Password = $value }
             "integrated security" {
                 if ($value -match "^(true|sspi|yes)$") {
                     $result.IsWindowsAuth = $true
@@ -62,8 +62,8 @@ function Parse-ConnectionString {
 function Find-AppSettings {
     # Busca el appsettings.json subiendo desde el directorio actual
     $candidates = @(
-        "src\Spherical.Api\appsettings.json",
-        "Spherical.Api\appsettings.json",
+        "src\GrupoXpert\GrupoXpert.Infrastructure\Persistence\appsettings.json",
+        "GrupoXpert.Infrastructure\appsettings.json",
         "appsettings.json"
     )
 
@@ -111,14 +111,15 @@ Write-Host "  📄 Config   : $AppSettingsPath" -ForegroundColor White
 
 # 3. Leer y parsear el JSON
 try {
-    $json      = Get-Content $AppSettingsPath -Raw | ConvertFrom-Json
-    $connStr   = $json.ConnectionStrings.$ConnectionName
+    $json = Get-Content $AppSettingsPath -Raw | ConvertFrom-Json
+    $connStr = $json.ConnectionStrings.$ConnectionName
 
     if ([string]::IsNullOrEmpty($connStr)) {
         Write-Error "❌ No se encontró la ConnectionString '$ConnectionName' en el appsettings.json."
         exit 1
     }
-} catch {
+}
+catch {
     Write-Error "❌ Error al leer appsettings.json: $_"
     exit 1
 }
@@ -154,12 +155,12 @@ try {
         Write-Host "📦 Ejecutando con Invoke-Sqlcmd..." -ForegroundColor Yellow
 
         $params = @{
-            ServerInstance       = $conn.Server
-            Database             = $conn.Database
-            InputFile            = $ScriptFile
+            ServerInstance         = $conn.Server
+            Database               = $conn.Database
+            InputFile              = $ScriptFile
             TrustServerCertificate = $true
-            ErrorAction          = "Stop"
-            Verbose              = $true
+            ErrorAction            = "Stop"
+            Verbose                = $true
         }
 
         if (-not $conn.IsWindowsAuth) {
@@ -169,12 +170,14 @@ try {
 
         Invoke-Sqlcmd @params
 
-    } else {
+    }
+    else {
         Write-Host "📦 Ejecutando con sqlcmd..." -ForegroundColor Yellow
 
         if ($conn.IsWindowsAuth) {
             sqlcmd -S $conn.Server -d $conn.Database -i $ScriptFile -E -b
-        } else {
+        }
+        else {
             sqlcmd -S $conn.Server -d $conn.Database -U $conn.User -P $conn.Password -i $ScriptFile -b
         }
 
@@ -184,7 +187,8 @@ try {
     Write-Host ""
     Write-Host "✅ Script ejecutado correctamente en '$($conn.Database)'." -ForegroundColor Green
 
-} catch {
+}
+catch {
     Write-Host ""
     Write-Error "❌ Error durante la ejecución: $_"
     exit 1

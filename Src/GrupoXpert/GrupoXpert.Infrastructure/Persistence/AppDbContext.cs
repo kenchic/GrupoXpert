@@ -1,5 +1,6 @@
 using GrupoXpert.Application.Common.Interfaces;
 using GrupoXpert.Domain.Identidad;
+using GrupoXpert.Domain.Perfil;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrupoXpert.Infrastructure.Persistence;
@@ -12,6 +13,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     : DbContext(options), IUnidadDeTrabajo
 {
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<PerfilCliente> PerfilesCliente => Set<PerfilCliente>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
