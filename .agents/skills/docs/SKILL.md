@@ -1,95 +1,95 @@
 ---
 name: docs
 description: |
-  Documentador Dual para GrupoXpert. Genera manuales funcionales para usuarios 
-  y especificaciones técnicas para desarrolladores a partir del código. 
-  Se activa al pedir "documentar caso de uso", "generar manual", "explicar funcionalidad" 
-  o "crear documentación de X".
+  Dual Documenter for GrupoXpert. Generates functional manuals for users 
+  and technical specifications for developers from the code. 
+  Activated when asking to "document use case", "generate manual", "explain functionality", 
+  or "create documentation for X".
 author: Antigravity (Skill Creator Ultra)
 version: 2.1.0
 ---
 
-# Objetivo
-Transformar el código fuente de GrupoXpert en documentación útil y legible para dos perfiles: el **Usuario Funcional** (qué hace el sistema y cómo se usa) y el **Desarrollador** (cómo está construido y qué clases intervienen), manteniendo la coherencia con la Arquitectura Limpia y DDD.
+# Goal
+Transform GrupoXpert's source code into useful and readable documentation for two profiles: the **Functional User** (what the system does and how it is used) and the **Developer** (how it is built and which classes are involved), maintaining consistency with Clean Architecture and DDD.
 
-# Instrucciones
+# Instructions
 
-## 1. Análisis del Caso de Uso (Insumos)
-Antes de escribir, debes identificar:
-- **Punto de Entrada**: El `Command` o `Query` de MediatR.
-- **Flujo de Negocio**: Lógica dentro del `Handler` y las entidades del **Dominio**.
-- **Interfaz**: Componentes Blazor/Radzen que disparan la acción.
-- **Persistencia**: Tablas de SQL Server afectadas.
+## 1. Use Case Analysis (Inputs)
+Before writing, you must identify:
+- **Entry Point**: The MediatR `Command` or `Query`.
+- **Business Flow**: Logic within the `Handler` and **Domain** entities.
+- **Interface**: Blazor/Radzen components that trigger the action.
+- **Persistence**: Affected SQL Server tables.
 
-## 2. Estructura del Documento (.md)
-Genera siempre un único archivo Markdown con estas dos secciones claramente diferenciadas:
+## 2. Document Structure (.md)
+Always generate a single Markdown file with these two clearly differentiated sections:
 
-### A. Perspectiva Funcional (Manual de Usuario)
-- **Propósito**: Explicar el "Para qué" en lenguaje no técnico.
-- **Actores**: Quién tiene permiso para ejecutar esto.
-- **Guía de Uso**: Paso a paso narrativo ("El usuario hace clic en...", "El sistema muestra...").
-- **Reglas de Negocio**: Qué validaciones ocurren (Ej: "No se permite si el saldo es menor a 0").
-- **Diagrama de Flujo**: Crear un diagrama `mermaid` de tipo `graph TD` para el proceso funcional.
+### A. Functional Perspective (User Manual)
+- **Purpose**: Explain the "Why" in non-technical language.
+- **Actors**: Who has permission to execute this.
+- **Usage Guide**: Narrative step-by-step ("The user clicks on...", "The system shows...").
+- **Business Rules**: What validations occur (e.g., "Not allowed if balance is less than 0").
+- **Flowchart**: Create a `mermaid` `graph TD` diagram for the functional process.
 
-### B. Perspectiva Técnica (Guía del Desarrollador)
-- **Mapa de Componentes**: Tabla con: Capa, Proyecto, Archivo y Responsabilidad.
-- **Contrato de Datos**: Descripción del DTO/Command de entrada.
-- **Lógica de Dominio**: Indicar exactamente en qué Entidad o Value Object reside la lógica.
-- **Diagrama de Secuencia**: Crear un diagrama `mermaid` de tipo `sequenceDiagram` que muestre el flujo: UI -> WebApi -> Application (Handler) -> Domain -> Infrastructure (DB).
+### B. Technical Perspective (Developer Guide)
+- **Component Map**: Table with: Layer, Project, File, and Responsibility.
+- **Data Contract**: Description of the input DTO/Command.
+- **Domain Logic**: Indicate exactly in which Entity or Value Object the logic resides.
+- **Sequence Diagram**: Create a `mermaid` `sequenceDiagram` showing the flow: UI -> WebApi -> Application (Handler) -> Domain -> Infrastructure (DB).
 
-## 3. Post-Procesamiento (Cierre del Caso de Uso)
-Una vez generada y aceptada la documentación:
-1.  **Actualizar el Plan**: Buscar el caso de uso correspondiente en `e:\Documentos\Proyectos\GradoXpert\docs\plan use-cases\plan.md` y marcarlo como realizado cambiando `[ ]` por `[x]` en la columna de Estado.
-2.  **Confirmación**: Informar al usuario que el plan ha sido actualizado.
+## 3. Post-Processing (Use Case Closing)
+Once the documentation is generated and accepted:
+1.  **Update the Plan**: Find the corresponding use case in `e:\Documentos\Proyectos\GradoXpert\docs\plan use-cases\plan.md` and mark it as completed by changing `[ ]` to `[x]` in the Status column.
+2.  **Confirmation**: Inform the user that the plan has been updated.
 
-# Ejemplos
+# Examples
 
-## Input: "Documenta el caso de uso de Inscripción de Alumnos"
-**Output Esperado:**
+## Input: "Document the Student Enrollment use case"
+**Expected Output:**
 ```markdown
-# Caso de Uso: Inscripción de Alumnos
+# Use Case: Student Enrollment
 
-## 👥 Perspectiva Funcional
-### Objetivo
-Permitir que un administrativo registre a un nuevo alumno en el sistema validando sus requisitos previos.
+## 👥 Functional Perspective
+### Goal
+Allow an administrator to register a new student in the system, validating their prerequisites.
 
-### Guía de Uso
-1. Ingrese al módulo "Academia > Inscripciones".
-2. Complete los datos básicos (Nombre, Documento, Carrera).
-3. Presione "Confirmar Inscripción".
+### Usage Guide
+1. Go to the "Academy > Enrollments" module.
+2. Complete the basic data (Name, ID, Major).
+3. Press "Confirm Enrollment".
 
-### Reglas de Oro
-- El alumno no debe tener deudas pendientes.
-- El cupo de la carrera debe estar disponible.
+### Golden Rules
+- The student must not have outstanding debts.
+- The major's capacity must be available.
 
 ```mermaid
 graph TD
-    A[Inicio] --> B[Ingresar Datos]
-    B --> C{¿Tiene Deuda?}
-    C -- Sí --> D[Rechazar]
-    C -- No --> E[Confirmar Cupo]
-    E --> F[Inscripción Exitosa]
+    A[Start] --> B[Enter Data]
+    B --> C{Has Debt?}
+    C -- Yes --> D[Reject]
+    C -- No --> E[Confirm Capacity]
+    E --> F[Successful Enrollment]
 ```
 
-## 💻 Perspectiva Técnica
-### Mapa de Archivos
-| Capa | Proyecto | Archivo |
+## 💻 Technical Perspective
+### File Map
+| Layer | Project | File |
 | :--- | :--- | :--- |
-| Presentación | `Web.Blazor` | `InscripcionForm.razor` |
-| Aplicación | `Application` | `InscribirAlumnoCommand.cs` |
-| Dominio | `Domain` | `Alumno.cs` (Método `Inscribir`) |
+| Presentation | `Web.Blazor` | `InscripcionForm.razor` |
+| Application | `Application` | `InscribirAlumnoCommand.cs` |
+| Domain | `Domain` | `Alumno.cs` (`Inscribir` method) |
 
-### Flujo de Datos
-El comando `InscribirAlumnoCommand` requiere `AlumnoId` y `CarreraId`. Se procesa mediante `InscribirAlumnoHandler`.
+### Data Flow
+The `InscribirAlumnoCommand` command requires `AlumnoId` and `CarreraId`. It is processed via `InscribirAlumnoHandler`.
 ```
 
-# Restricciones
-- ✅ **Idioma**: 100% Español para descripciones de negocio.
-- ✅ **Nomenclatura**: Mantener nombres de clases y métodos en Inglés (según estándar del proyecto).
-- ✅ **Formato**: Markdown estándar con soporte para Mermaid.
-- ✅ **Ubicación de Salida**: Guardar SIEMPRE en `e:\Documentos\Proyectos\GradoXpert\docs\use-cases\`.
-- ✅ **Nombre de Archivo**: Usar **snake_case** estricto derivado del nombre del caso de uso en el plan.
-    - Ejemplo: `Recuperar / Restablecer Contraseña` -> `recuperar_restables_contraseña.md`.
-- ✅ **Actualización Obligatoria**: Es MANDATORIO marcar con `[x]` el caso de uso en `plan.md` al finalizar.
+# Constraints
+- ✅ **Language**: 100% English for business and technical descriptions (as requested).
+- ✅ **Nomenclature**: Maintain class and method names in the project's standard (English/Spanish mix as defined).
+- ✅ **Format**: Standard Markdown with Mermaid support.
+- ✅ **Output Location**: ALWAYS save in `e:\Documentos\Proyectos\GradoXpert\docs\use-cases\`.
+- ✅ **Filename**: Use strict **snake_case** derived from the use case name in the plan.
+    - Example: `Recuperar / Restablecer Contraseña` -> `recuperar_restables_contraseña.md`.
+- ✅ **Mandatory Update**: It is MANDATORY to mark the use case with `[x]` in `plan.md` upon completion.
 
 <!-- Generated by Skill Creator Ultra v1.0 -->

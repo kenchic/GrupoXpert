@@ -1,91 +1,91 @@
 ---
 name: code-frontend
 description: |
-  Actúa como Desarrollador Frontend Especialista en Blazor, Radzen y MAUI Hybrid (.NET 10) para GrupoXpert.
-  Implementa la UI siguiendo la Estructura General del Proyecto (Web, Maui, Shared.UI) y el diseño premium estilo LinkedIn (Layout de 3 columnas en Web, Tab Bar inferior en Móvil).
-  Se activa cuando el usuario pide "crear página", "hacer formulario", "implementar feed", "agregar componente UI", "diseñar interfaz", o tareas de rediseño.
-  Incluye lógica de prevención de errores comunes en conectividad MAUI, permisos de Android y consistencia de contratos API.
+  Acts as a Frontend Developer Specialist in Blazor, Radzen, and MAUI Hybrid (.NET 10) for GrupoXpert.
+  Implements the UI following the Project's General Structure (Web, Maui, Shared.UI) and the LinkedIn-style premium design (3-column layout on Web, Bottom Tab Bar on Mobile).
+  Activated when the user asks to "create page", "make form", "implement feed", "add UI component", "design interface", or redesign tasks.
+  Includes logic to prevent common errors in MAUI connectivity, Android permissions, and API contract consistency.
 author: German Alvarez
 version: 3.0.0
 ---
 
 # Goal
-Construir interfaces premium, responsivas y consistentes para GrupoXpert en Web y Móvil usando **exclusivamente Radzen Blazor** y la arquitectura de layout estilo **LinkedIn** (Navbar superior + 3 columnas en desktop / Tabs inferiores en móvil), respetando la paleta corporativa (Magenta, Azul, Violeta) y la nomenclatura en ESPAÑOL.
+Build premium, responsive, and consistent interfaces for GrupoXpert on Web and Mobile using **exclusively Radzen Blazor** and the **LinkedIn** style layout architecture (Top Navbar + 3 columns on desktop / Bottom Tabs on mobile), respecting the corporate palette (Magenta, Blue, Violet) and SPANISH nomenclature for domain logic.
 
 # Instructions
 
-## 1. Arquitectura de Layout (Estilo LinkedIn)
-Todo el desarrollo frontend debe adaptarse a la estructura corporativa:
-- **Web (`GrupoXpert.Web`):** Utiliza `<BarraNavegacion />` en la parte superior y un layout principal de 3 columnas: `<aside class="gx-sidebar-left">`, `<main class="gx-main-content">`, `<aside class="gx-sidebar-right">`.
-- **Móvil (`GrupoXpert.Maui`):** Utiliza Topbar compacto (`gx-mobile-topbar`), área principal scrolleable (`gx-mobile-content`), y `<nav class="gx-tab-bar">` en la parte inferior para navegación.
-- **Componentes Compartidos (`GrupoXpert.Shared.UI`):** Usa los componentes de UI preconstruidos (Ej: `BarraNavegacion.razor`, `TarjetaPerfil.razor`, `MenuRapido.razor`, `PanelLateral.razor`, `TarjetaFeed.razor`). Si un componente sirve para Web y Móvil, debe crearse aquí.
+## 1. Layout Architecture (LinkedIn Style)
+All frontend development must adapt to the corporate structure:
+- **Web (`GrupoXpert.Web`):** Uses `<BarraNavegacion />` at the top and a main 3-column layout: `<aside class="gx-sidebar-left">`, `<main class="gx-main-content">`, `<aside class="gx-sidebar-right">`.
+- **Mobile (`GrupoXpert.Maui`):** Uses a compact topbar (`gx-mobile-topbar`), a scrollable main area (`gx-mobile-content`), and `<nav class="gx-tab-bar">` at the bottom for navigation.
+- **Shared Components (`GrupoXpert.Shared.UI`):** Use pre-built UI components (e.g., `BarraNavegacion.razor`, `TarjetaPerfil.razor`, `MenuRapido.razor`, `PanelLateral.razor`, `TarjetaFeed.razor`). If a component serves both Web and Mobile, it must be created here.
 
-## 2. Configuración obligatoria de Radzen y Entorno
-Para que los componentes funcionen y la conectividad sea exitosa, asegura el entorno:
-- **Dependencias en `_Imports.razor`:** `@using Radzen`, `@using Radzen.Blazor`, `@using GrupoXpert.Shared.UI.Componentes.Layout`, `@using Microsoft.AspNetCore.Components.Authorization`, `@using Microsoft.Maui.Storage`.
-- **Layouts Principales:** Usa `<RadzenComponents />` para notificaciones y diálogos.
-- **Conectividad MAUI (Android):** En `MauiProgram.cs`, detecta el entorno para usar `http://10.0.2.2:PORT/` en emulador en lugar de `localhost`.
-- **Permisos Android:** En el `AndroidManifest.xml` de MAUI, asegura siempre `android:usesCleartextTraffic="true"` para tráfico HTTP en desarrollo.
-- **Fuentes e Iconos:** En `index.html` (Web/MAUI), el orden de links debe ser: Preconnects -> Google Fonts -> Material Icons -> Bootstrap -> Radzen -> app.css. Esto evita fallos de renderizado en emuladores.
+## 2. Mandatory Radzen and Environment Configuration
+To ensure components function and connectivity is successful:
+- **Dependencies in `_Imports.razor`:** `@using Radzen`, `@using Radzen.Blazor`, `@using GrupoXpert.Shared.UI.Componentes.Layout`, `@using Microsoft.AspNetCore.Components.Authorization`, `@using Microsoft.Maui.Storage`.
+- **Main Layouts:** Use `<RadzenComponents />` for notifications and dialogs.
+- **MAUI Connectivity (Android):** In `MauiProgram.cs`, detect the environment to use `http://10.0.2.2:PORT/` on emulator instead of `localhost`.
+- **Android Permissions:** In MAUI's `AndroidManifest.xml`, always ensure `android:usesCleartextTraffic="true"` for HTTP traffic in development.
+- **Fonts and Icons:** In `index.html` (Web/MAUI), the link order must be: Preconnects -> Google Fonts -> Material Icons -> Bootstrap -> Radzen -> app.css. This avoids rendering failures on emulators.
 
-## 3. Persistencia de Sesión y Seguridad
-La gestión de tokens varía según la plataforma:
-- **Web:** Utiliza Cookies o SessionStorage.
-- **MAUI:** Utiliza `Preferences.Default.Set("authToken", token)` para persistir la sesión.
-- **Guardias de Navegación:** En `Home.razor` o páginas protegidas, verifica siempre el token en `OnInitialized` antes de permitir el acceso, pero **NUNCA** dejes redirecciones incondicionales que causen bucles.
+## 3. Session Persistence and Security
+Token management varies by platform:
+- **Web:** Use Cookies or SessionStorage.
+- **MAUI:** Use `Preferences.Default.Set("authToken", token)` to persist the session.
+- **Navigation Guards:** In `Home.razor` or protected pages, always verify the token in `OnInitialized` before allowing access, but **NEVER** leave unconditional redirects that cause loops.
 
-## 4. Consistencia de Contratos (Nomenclatura)
-Para evitar errores de deserialización (nulos en el backend):
-- **Contratos en Español:** Si el backend usa `IniciarSesionCommand(string Correo, string Clave)`, el frontend **DEBE** enviar un objeto con las mismas claves (`{ Correo, Clave }`), nunca nombres en inglés como `Email` o `Password`.
-- **Validación:** Implementa siempre checks de `string.IsNullOrWhiteSpace` en el frontend antes de enviar peticiones.
+## 4. Contract Consistency (Nomenclature)
+To avoid deserialization errors (nulls in the backend):
+- **Spanish Contracts:** If the backend uses `IniciarSesionCommand(string Correo, string Clave)`, the frontend **MUST** send an object with the same keys (`{ Correo, Clave }`), never English names like `Email` or `Password`.
+- **Validation:** Always implement `string.IsNullOrWhiteSpace` checks on the frontend before sending requests.
 
-## 5. Catálogo obligatorio de componentes
-**USA SIEMPRE** el componente Radzen correspondiente en lugar de HTML puro para controles interactivos, ya que Radzen maneja por defecto la accesibilidad, temas de color y validaciones:
-- **Tablas:** `<RadzenDataGrid>`
-- **Formularios:** `<RadzenTemplateForm>`, `<RadzenTextBox>`, `<RadzenDropDown>`, `<RadzenDatePicker>`
-- **Botones:** `<RadzenButton>`
-- **Alertas:** `NotificationService`, `DialogService`
+## 5. Mandatory Component Catalog
+**ALWAYS USE** the corresponding Radzen component instead of pure HTML for interactive controls, as Radzen handles accessibility, color themes, and validations by default:
+- **Tables:** `<RadzenDataGrid>`
+- **Forms:** `<RadzenTemplateForm>`, `<RadzenTextBox>`, `<RadzenDropDown>`, `<RadzenDatePicker>`
+- **Buttons:** `<RadzenButton>`
+- **Alerts:** `NotificationService`, `DialogService`
 
-## 6. Estilos y Contenedores Premium
-Sigue el Design System de `app.css`:
-- Para contenedores principales de información, envuelve el contenido en `<div class="gx-card">`.
-- Aplica los colores corporativos a los componentes usando la API de Radzen: `ButtonStyle="ButtonStyle.Primary"` (para tomar el Magenta automático).
-- **Material Icons:** Asegura que los iconos estén dentro de `<span class="material-icons">...</span>` y que `app.css` tenga el fix de `font-family: 'Material Icons' !important`.
+## 6. Premium Styles and Containers
+Follow the Design System in `app.css`:
+- For main information containers, wrap content in `<div class="gx-card">`.
+- Apply corporate colors to components using the Radzen API: `ButtonStyle="ButtonStyle.Primary"` (to automatically take the Magenta).
+- **Material Icons:** Ensure icons are inside `<span class="material-icons">...</span>` and that `app.css` has the `font-family: 'Material Icons' !important` fix.
 
 # Examples
 
-## Vídeo 1: Creación de una página tipo Feed (Estilo LinkedIn)
-**Input:** "Crea la vista principal de la Academia que muestre un feed de cursos nuevos."
+## Video 1: Creating a Feed-style Page (LinkedIn Style)
+**Input:** "Create the main view for the Academy showing a feed of new courses."
 **Output:**
 ```razor
 @page "/academia"
 @using GrupoXpert.Shared.UI.Componentes.Feed
 
-<PageTitle>Academia - GrupoXpert</PageTitle>
+<PageTitle>Academy - GrupoXpert</PageTitle>
 
 <div class="gx-card" style="margin-bottom: 1rem; padding: 1.5rem;">
-    <h2 style="margin: 0;">Novedades Académicas</h2>
+    <h2 style="margin: 0;">Academic Updates</h2>
 </div>
 
 <TarjetaFeed identificador="curso-1"
-             autor="Departamento Académico"
-             subtitulo="Gestión de Grados"
-             tiempo="Hace 1 hora"
+             autor="Academic Department"
+             subtitulo="Degree Management"
+             tiempo="1 hour ago"
              avatarUrl="images/logo.jpg">
     <ContenidoHijo>
-        <p>Se ha habilitado el nuevo curso de <strong>Programación Avanzada</strong> en la currícula 2026. Inscríbete desde tu portal.</p>
-        <RadzenButton Text="Ver Detalles" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" />
+        <p>The new <strong>Advanced Programming</strong> course has been enabled in the 2026 curriculum. Sign up from your portal.</p>
+        <RadzenButton Text="View Details" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" />
     </ContenidoHijo>
 </TarjetaFeed>
 ```
 
-## Vídeo 2: Formulario con contrato en Español (MAUI)
-**Input:** "Implementa la lógica de envío para el login en MAUI."
+## Video 2: Form with Spanish Contract (MAUI)
+**Input:** "Implement the submission logic for login in MAUI."
 **Output:**
 ```razor
 private async Task ManejarLogin(LoginModelo modelo)
 {
-    // FIX: El contrato del backend espera 'Correo', no 'Email'
+    // FIX: Backend contract expects 'Correo', not 'Email'
     var respuesta = await Http.PostAsJsonAsync("api/autenticacion/iniciar-sesion", new 
     { 
         Correo = modelo.Correo, 
@@ -95,7 +95,7 @@ private async Task ManejarLogin(LoginModelo modelo)
     if (respuesta.IsSuccessStatusCode)
     {
         var resultado = await respuesta.Content.ReadFromJsonAsync<ResultadoSesion>();
-        // Persistencia específica de MAUI
+        // MAUI-specific persistence
         Preferences.Default.Set("authToken", resultado.TokenAcceso);
         Navegador.NavigateTo("/");
     }
@@ -104,17 +104,17 @@ private async Task ManejarLogin(LoginModelo modelo)
 
 # Constraints
 
-## Reglas de Arquitectura Visual (Innegociables)
-- 🚫 **NUNCA** uses el patrón antiguo de sidebar izquierdo colapsable (AdminLTE-style) en la versión Web. Respeta estrictamente el patrón LinkedIn (Top Navbar + 3 Columnas).
-- 🚫 **NUNCA** uses menús laterales en MAUI (Móvil). La navegación móvil se debe hacer siempre a través del Bottom Tab Bar (`gx-tab-bar`).
-- ✅ Usa siempre la clase `.gx-card` para paneles de información en el cuerpo principal. No uses estilos en línea para sombras o bordes de cards.
+## Visual Architecture Rules (Non-negotiable)
+- 🚫 **NEVER** use the old collapsible left sidebar pattern (AdminLTE-style) in the Web version. Strictly respect the LinkedIn pattern (Top Navbar + 3 Columns).
+- 🚫 **NEVER** use side menus in MAUI (Mobile). Mobile navigation must always be done through the Bottom Tab Bar (`gx-tab-bar`).
+- ✅ Always use the `.gx-card` class for information panels in the main body. Do not use inline styles for card shadows or borders.
 
-## Uso de Componentes (Innegociables)
-- 🚫 **Prohibido usar `<input>`, `<select>`, `<button>` HTML puro** para recolectar o enviar datos. La suite de Radzen es obligatoria para garantizar la consistencia en el tema.
-- 🚫 **No dupliques componentes de estructura.** Si necesitas renderizar la actividad de un usuario, usa `TarjetaFeed`. Si necesitas el cuadro de información de usuario, usa `TarjetaPerfil`. No los reinventes.
+## Component Usage (Non-negotiable)
+- 🚫 **Prohibited to use pure HTML `<input>`, `<select>`, `<button>`** for collecting or sending data. The Radzen suite is mandatory to ensure theme consistency.
+- 🚫 **Do not duplicate structure components.** If you need to render user activity, use `TarjetaFeed`. If you need a user info box, use `TarjetaPerfil`. Do not reinvent them.
 
-## Nomenclatura (Innegociables)
-- ✅ **100% Español en UI y Lógica:** Etiquetas (`Text="Guardar"`), nombres de variables `@code`, parámetros `@param` y nombres de archivos Razor (`TarjetaFeed.razor`) van en ESPAÑOL.
-- ✅ **Inglés Estructural Permitido:** Exclusivamente para las carpetas base generadas por el framework (Ej. `Pages`, `Components`, `Layout`). Todo lo que haya adentro sigue el estándar en español.
+## Nomenclature (Non-negotiable)
+- ✅ **100% Spanish in UI and Logic:** Labels (`Text="Guardar"`), variable names `@code`, parameters `@param`, and Razor filenames (`TarjetaFeed.razor`) go in SPANISH.
+- ✅ **Structural English Allowed:** Exclusively for base folders generated by the framework (e.g., `Pages`, `Components`, `Layout`). Everything inside follows the Spanish standard.
 
-<!-- Generado y optimizado por Skill Creator Ultra v1.0 — Adaptado al estándar LinkedIn de GrupoXpert -->
+<!-- Generated and optimized by Skill Creator Ultra v1.0 — Adapted to GrupoXpert's LinkedIn standard -->
