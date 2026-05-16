@@ -1,0 +1,184 @@
+@using Radzen
+@using Radzen.Blazor
+@using GrupoXpert.Shared.UI.Modelos.Perfil
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject IPerfilService PerfilService
+@inject NotificationService NotificationService
+
+<div class="gx-card gx-card-overflow-visible" style="padding: 2rem;">
+    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" Text="Editar Perfil" Style="color: var(--color-texto); font-weight: 700; margin-bottom: 0.5rem;" />
+    <RadzenText TextStyle="TextStyle.Body1" class="rz-color-base-500 rz-mb-8">Personaliza tus preferencias académicas para una mejor experiencia.</RadzenText>
+    
+    @if (modelo == null)
+    {
+        <div class="d-flex justify-content-center p-5">
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="width: 200px;" />
+        </div>
+    }
+    else
+    {
+        <RadzenTemplateForm TItem="PerfilClienteModelo" Data="@modelo" Submit="@GuardarPerfil">
+            <RadzenStack Gap="1.5rem">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <RadzenFormField Text="Nivel Académico" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.NivelAcademico"
+                                            Name="NivelAcademico"
+                                            Data="@niveles" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            Placeholder="Selecciona nivel académico"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <RadzenFormField Text="Urgencia de Entregas" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.UrgenciaEntrega"
+                                            Name="UrgenciaEntrega"
+                                            Data="@urgencias" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            Placeholder="Selecciona urgencia"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <RadzenFormField Text="Teléfono de Contacto" Variant="Variant.Outlined" Style="width: 100%;">
+                            <RadzenTextBox @bind-Value="modelo.Telefono" Placeholder="Ej: +57 300 123 4567" />
+                        </RadzenFormField>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <RadzenText TextStyle="TextStyle.Subtitle2" Style="font-weight: 700; color: var(--color-texto); margin-bottom: 0.5rem;">Áreas de Interés</RadzenText>
+                        <div class="d-flex align-items-start gap-2 mb-3">
+                            <RadzenFormField Text="Nueva Área" Variant="Variant.Outlined" Style="flex: 1;">
+                                <RadzenTextBox @bind-Value="nuevaArea" Placeholder="Ej: IA, Derecho, Medicina" 
+                                               @onkeypress="@(e => { if(e.Key == "Enter") AgregarArea(); })" 
+                                               Style="width: 100%;" />
+                            </RadzenFormField>
+                            <RadzenButton Icon="add" ButtonStyle="ButtonStyle.Primary" Click="@AgregarArea" 
+                                          Size="ButtonSize.Medium" Style="height: 40px; width: 40px; border-radius: 8px; margin-top: 16px; display: flex; justify-content: center; align-items: center;" />
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            @if (!modelo.AreasInteres.Any())
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="font-style: italic;">No has agregado áreas todavía.</RadzenText>
+                            }
+                            @foreach (var area in modelo.AreasInteres)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true" Style="padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; background-color: var(--color-primario);" 
+                                             Click="@(() => RemoverArea(area))">
+                                    @area <span class="material-icons" style="font-size: 14px; margin-left: 8px;">close</span>
+                                </RadzenBadge>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end rz-mt-4">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="GUARDAR" Icon="save" 
+                                  ButtonStyle="ButtonStyle.Primary" 
+                                  Size="ButtonSize.Medium"
+                                  Style="font-weight: 800; background-color: var(--color-primario); border-radius: 12px; padding: 0 2rem;"
+                                  Disabled="@procesando" IsBusy="@procesando" />
+                </div>
+            </RadzenStack>
+        </RadzenTemplateForm>
+    }
+</div>
+
+@code {
+    private PerfilClienteModelo? modelo;
+    private bool procesando = false;
+    private string nuevaArea = "";
+
+    public class OpcionCombo
+    {
+        public int Id { get; set; }
+        public string Texto { get; set; } = string.Empty;
+    }
+
+    private List<OpcionCombo> niveles = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "No Especificado" },
+        new OpcionCombo { Id = 1, Texto = "Técnico" },
+        new OpcionCombo { Id = 2, Texto = "Tecnólogo" },
+        new OpcionCombo { Id = 3, Texto = "Pregrado" },
+        new OpcionCombo { Id = 4, Texto = "Posgrado" },
+        new OpcionCombo { Id = 5, Texto = "Maestría" },
+        new OpcionCombo { Id = 6, Texto = "Doctorado" }
+    };
+
+    private List<OpcionCombo> urgencias = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "No Especificada" },
+        new OpcionCombo { Id = 1, Texto = "Baja" },
+        new OpcionCombo { Id = 2, Texto = "Media" },
+        new OpcionCombo { Id = 3, Texto = "Alta" },
+        new OpcionCombo { Id = 4, Texto = "Muy Urgente" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            modelo = await PerfilService.ObtenerPerfilActualAsync();
+            if (modelo == null)
+            {
+                modelo = new PerfilClienteModelo();
+            }
+        }
+        catch
+        {
+            modelo = new PerfilClienteModelo();
+        }
+    }
+
+    private void AgregarArea()
+    {
+        if (!string.IsNullOrWhiteSpace(nuevaArea))
+        {
+            var areaLimpia = nuevaArea.Trim();
+            if (!modelo!.AreasInteres.Any(a => a.Equals(areaLimpia, StringComparison.OrdinalIgnoreCase)))
+            {
+                modelo.AreasInteres.Add(areaLimpia);
+                nuevaArea = "";
+            }
+        }
+    }
+
+    private void RemoverArea(string area)
+    {
+        modelo?.AreasInteres.Remove(area);
+    }
+
+    private async Task GuardarPerfil()
+    {
+        procesando = true;
+        try
+        {
+            var exito = await PerfilService.ActualizarPerfilAsync(modelo!);
+            if (exito)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Perfil Actualizado", "Tus preferencias se han guardado correctamente.");
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo actualizar el perfil.");
+            }
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error Crítico", ex.Message);
+        }
+        finally
+        {
+            procesando = false;
+        }
+    }
+}

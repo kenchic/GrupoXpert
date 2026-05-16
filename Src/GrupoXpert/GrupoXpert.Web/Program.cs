@@ -20,6 +20,7 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAutenticacionService, GrupoXpert.Web.Services.AutenticacionService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAdminService, GrupoXpert.Web.Services.AdminService>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilService, GrupoXpert.Web.Services.PerfilService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configurar servicios de autenticación y autorización basada en Cookies

@@ -12,21 +12,24 @@
 
     <RadzenCard>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Span">Estado de Aprobación:</RadzenText>
-            <RadzenDropDown @bind-Value="filtroAprobado" 
-                            Data="@estadosAprobacion" 
-                            TextProperty="Text" 
-                            ValueProperty="Value" 
-                            Change="@(args => CargarUsuariosAsync())" 
-                            Style="width: 200px" />
+            <RadzenFormField Text="Aprobado" Variant="Variant.Outlined" class="rz-w-100">
+                <RadzenDropDown TValue="bool?" @bind-Value="filtroAprobado" 
+                                Name="FiltroAprobado"
+                                Data="@estadosAprobacion"
+                                TextProperty="Text"
+                                ValueProperty="Value"
+                                Change="@(args => CargarUsuariosAsync())"
+                                class="rz-w-100" />
+            </RadzenFormField>
             
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Span">Estado de Verificación:</RadzenText>
-            <RadzenDropDown @bind-Value="filtroEstadoVerificacion" 
-                            Data="@estadosVerificacion" 
-                            TextProperty="Text" 
-                            ValueProperty="Value" 
-                            Change="@(args => CargarUsuariosAsync())" 
-                            Style="width: 200px" />
+            <RadzenFormField Text="Verificación" Variant="Variant.Outlined" class="rz-w-100">
+                <RadzenDropDown TValue="int?" @bind-Value="filtroEstadoVerificacion"
+                                Data="@estadosVerificacion"
+                                TextProperty="Text"
+                                ValueProperty="Value"
+                                Change="@(args => CargarUsuariosAsync())"
+                                class="rz-w-100" />
+            </RadzenFormField>
         </RadzenStack>
     </RadzenCard>
 
@@ -96,25 +99,25 @@
                 <Template Context="usuario">
                     @if (usuario.EstadoVerificacion == EstadoVerificacionUI.Pendiente)
                     {
-                        <RadzenButton Icon="fact_check" 
-                                      Text="Validar Perfil" 
-                                      ButtonStyle="ButtonStyle.Info" 
+                        <RadzenButton Icon="fact_check"
+                                      Text="Validar Perfil"
+                                      ButtonStyle="ButtonStyle.Info"
                                       Size="ButtonSize.Small"
                                       Click="@(() => ConfirmarValidacionPerfilAsync(usuario))" />
                     }
                     @if (!usuario.EstaAprobado)
                     {
-                        <RadzenButton Icon="check_circle" 
-                                      Text="Aprobar" 
-                                      ButtonStyle="ButtonStyle.Success" 
+                        <RadzenButton Icon="check_circle"
+                                      Text="Aprobar"
+                                      ButtonStyle="ButtonStyle.Success"
                                       Size="ButtonSize.Small"
                                       Click="@(() => ConfirmarAprobacionAsync(usuario))" />
                     }
                     else
                     {
-                        <RadzenButton Icon="cancel" 
-                                      Text="Revocar" 
-                                      ButtonStyle="ButtonStyle.Danger" 
+                        <RadzenButton Icon="cancel"
+                                      Text="Revocar"
+                                      ButtonStyle="ButtonStyle.Danger"
                                       Size="ButtonSize.Small"
                                       Click="@(() => ConfirmarRevocacionAsync(usuario))" />
                     }
@@ -136,20 +139,32 @@
     private bool? filtroAprobado = null;
     private int? filtroEstadoVerificacion = null;
     
-    private readonly IEnumerable<object> estadosAprobacion = new List<object>
+    public class OpcionFiltroAprobacion
     {
-        new { Text = "Todos", Value = (bool?)null },
-        new { Text = "Pendientes", Value = (bool?)false },
-        new { Text = "Aprobados", Value = (bool?)true }
+        public string Text { get; set; } = string.Empty;
+        public bool? Value { get; set; }
+    }
+
+    public class OpcionFiltroVerificacion
+    {
+        public string Text { get; set; } = string.Empty;
+        public int? Value { get; set; }
+    }
+
+    private readonly IEnumerable<OpcionFiltroAprobacion> estadosAprobacion = new List<OpcionFiltroAprobacion>
+    {
+        new OpcionFiltroAprobacion { Text = "Todos", Value = null },
+        new OpcionFiltroAprobacion { Text = "Pendientes", Value = false },
+        new OpcionFiltroAprobacion { Text = "Aprobados", Value = true }
     };
 
-    private readonly IEnumerable<object> estadosVerificacion = new List<object>
+    private readonly IEnumerable<OpcionFiltroVerificacion> estadosVerificacion = new List<OpcionFiltroVerificacion>
     {
-        new { Text = "Todos", Value = (int?)null },
-        new { Text = "Pendientes", Value = (int?)EstadoVerificacionUI.Pendiente },
-        new { Text = "En Revisión", Value = (int?)EstadoVerificacionUI.EnRevision },
-        new { Text = "Aprobados", Value = (int?)EstadoVerificacionUI.Aprobado },
-        new { Text = "Rechazados", Value = (int?)EstadoVerificacionUI.Rechazado }
+        new OpcionFiltroVerificacion { Text = "Todos", Value = null },
+        new OpcionFiltroVerificacion { Text = "Pendientes", Value = (int?)EstadoVerificacionUI.Pendiente },
+        new OpcionFiltroVerificacion { Text = "En Revisión", Value = (int?)EstadoVerificacionUI.EnRevision },
+        new OpcionFiltroVerificacion { Text = "Aprobados", Value = (int?)EstadoVerificacionUI.Aprobado },
+        new OpcionFiltroVerificacion { Text = "Rechazados", Value = (int?)EstadoVerificacionUI.Rechazado }
     };
 
     protected override async Task OnInitializedAsync()
@@ -170,10 +185,10 @@
         {
             estaCargando = true;
             var resultado = await AdminService.ObtenerUsuariosPaginadoAsync(
-                tipo: (int)TipoUsuarioUI.Asesor, 
-                estaAprobado: filtroAprobado, 
+                tipo: (int)TipoUsuarioUI.Asesor,
+                estaAprobado: filtroAprobado,
                 estadoVerificacion: filtroEstadoVerificacion,
-                pagina: paginaActual, 
+                pagina: paginaActual,
                 tamanoPagina: tamanoPagina);
             usuarios = resultado.Elementos;
             totalRegistros = resultado.TotalRegistros;

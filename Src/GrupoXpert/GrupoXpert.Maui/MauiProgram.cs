@@ -25,6 +25,8 @@ namespace GrupoXpert.Maui
                 BaseAddress = new Uri(baseAddress) 
             });
 
+            builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilService, GrupoXpert.Maui.Services.PerfilService>();
+
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();

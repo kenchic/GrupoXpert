@@ -18,7 +18,7 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [x] | 2 | Registrar Cuenta de Colaborador (Asesor) | 
 | [x] | 3 | Validar Perfil de Colaborador (Proceso de Aprobación Interno) |  
 | [x] | 4 | Iniciar Sesión (Login General) | 
-| [ ] | 5 | Gestionar Perfil de Cliente (Preferencias académicas) | 
+| [x] | 5 | Gestionar Perfil de Cliente (Preferencias académicas) | 
 | [ ] | 6 | Gestionar Perfil Profesional de Colaborador (Habilidades/Disponibilidad) | 
 | [ ] | 7 | Recuperar / Restablecer Contraseña | 
 | [ ] | 8 | Crear Solicitud Académica (Formulario Dinámico) | 
