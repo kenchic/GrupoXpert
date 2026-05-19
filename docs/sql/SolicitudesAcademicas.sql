@@ -25,8 +25,11 @@ BEGIN
         [MaterialBase] NVARCHAR(MAX) NOT NULL,
         [EsUrgente] BIT NOT NULL,
         [EntregaPorFases] BIT NOT NULL,
+        [Estado] INT NOT NULL DEFAULT 1,
+        [AsesorId] UNIQUEIDENTIFIER NULL,
         CONSTRAINT [PK_SolicitudesAcademicas] PRIMARY KEY CLUSTERED ([Id] ASC),
-        CONSTRAINT [FK_SolicitudesAcademicas_PerfilesCliente] FOREIGN KEY ([ClienteId]) REFERENCES [Perfil].[PerfilesCliente] ([Id])
+        CONSTRAINT [FK_SolicitudesAcademicas_PerfilesCliente] FOREIGN KEY ([ClienteId]) REFERENCES [Perfil].[PerfilesCliente] ([Id]),
+        CONSTRAINT [FK_SolicitudesAcademicas_PerfilesColaboradores] FOREIGN KEY ([AsesorId]) REFERENCES [Perfil].[PerfilesColaboradores] ([Id])
     );
 END
 GO

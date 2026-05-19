@@ -1,13 +1,53 @@
-<dialog class="rz-dialog rz-shadow-6" style="max-width: 400px;">
-    <div class="rz-dialog-titlebar">
-        <span class="rz-dialog-title">Reconectando al servidor</span>
-    </div>
-    <div class="rz-dialog-content">
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 1rem;">
-            <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="width: 80px; height: 80px;" />
-            <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center">
-                Reintentando conexión...
-            </RadzenText>
-        </RadzenStack>
-    </div>
-</dialog>
+<div id="components-reconnect-modal">
+    <div class="modal-backdrop"></div>
+    <dialog class="rz-dialog rz-shadow-6" style="max-width: 400px; display: block; margin: auto; z-index: 10000; position: relative; border: none; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 0; overflow: hidden;">
+        <div class="rz-dialog-titlebar" style="background: var(--navbar-bg); color: white; padding: 16px 24px; font-weight: 700; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <span class="rz-dialog-title">Reconectando al servidor</span>
+        </div>
+        <div class="rz-dialog-content" style="padding: 28px; background: white;">
+            <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1.5rem">
+                <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="width: 60px; height: 60px;" />
+                <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center" Style="font-weight: 600; color: var(--text-primary); margin: 0;">
+                    Se perdió la conexión con el servidor. Reintentando conectar...
+                </RadzenText>
+            </RadzenStack>
+        </div>
+    </dialog>
+</div>
+
+<style>
+    #components-reconnect-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #components-reconnect-modal.components-reconnect-show {
+        display: flex;
+    }
+
+    #components-reconnect-modal.components-reconnect-failed {
+        display: flex;
+    }
+
+    #components-reconnect-modal.components-reconnect-rejected {
+        display: flex;
+    }
+
+    .modal-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+</style>

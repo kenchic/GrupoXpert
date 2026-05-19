@@ -2,23 +2,16 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using GrupoXpert.Shared.UI.Abstracciones;
 using GrupoXpert.Shared.UI.Modelos.Academia;
-using Microsoft.AspNetCore.Http;
 
-namespace GrupoXpert.Web.Services;
+namespace GrupoXpert.Maui.Services;
 
-public sealed class SolicitudAcademicaService(
-    HttpClient http, 
-    IHttpContextAccessor httpContextAccessor,
-    IPerfilService perfilService) 
-    : ISolicitudAcademicaService
+public sealed class SolicitudAcademicaService(HttpClient http) : ISolicitudAcademicaService
 {
     private readonly HttpClient _http = http;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly IPerfilService _perfilService = perfilService;
 
     private void PrepararCliente()
     {
-        var token = _httpContextAccessor.HttpContext?.User?.FindFirst("jwt_token")?.Value;
+        var token = Preferences.Default.Get("authToken", string.Empty);
         if (!string.IsNullOrEmpty(token))
         {
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -30,7 +23,14 @@ public sealed class SolicitudAcademicaService(
         PrepararCliente();
         
         // Obtener el perfil del cliente para tener su ClienteId
-        var perfil = await _perfilService.ObtenerPerfilActualAsync();
+        // En MAUI, también podemos consultar la API para obtener el perfil actual
+        var perfilResponse = await _http.GetAsync("api/perfil");
+        if (!perfilResponse.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException("No se pudo obtener el perfil del cliente actual. Debes configurar tu perfil antes de hacer solicitudes.");
+        }
+        
+        var perfil = await perfilResponse.Content.ReadFromJsonAsync<GrupoXpert.Shared.UI.Modelos.Perfil.PerfilClienteModelo>();
         if (perfil == null)
         {
             throw new InvalidOperationException("No se pudo obtener el perfil del cliente actual. Debes configurar tu perfil antes de hacer solicitudes.");

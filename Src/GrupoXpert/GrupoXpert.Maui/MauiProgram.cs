@@ -26,6 +26,7 @@ namespace GrupoXpert.Maui
             });
 
             builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilService, GrupoXpert.Maui.Services.PerfilService>();
+            builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService, GrupoXpert.Maui.Services.SolicitudAcademicaService>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();

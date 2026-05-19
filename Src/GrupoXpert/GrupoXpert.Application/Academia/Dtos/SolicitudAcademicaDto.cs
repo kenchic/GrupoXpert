@@ -13,5 +13,7 @@ public record SolicitudAcademicaDto(
     string FormatoRequerido,
     string MaterialBase,
     bool EsUrgente,
-    bool EntregaPorFases
+    bool EntregaPorFases,
+    int Estado,
+    Guid? AsesorId
 );

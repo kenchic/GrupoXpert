@@ -29,4 +29,25 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
         
         context.Set<SolicitudAcademica>().Remove(solicitud);
     }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Where(x => x.ClienteId == clienteId)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerPendientesYAsignadasAAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Where(x => x.AsesorId == asesorId || (x.Estado == EstadoSolicitud.Pendiente && x.AsesorId == null))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerPorEstadosAsync(IEnumerable<EstadoSolicitud> estados, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Where(x => estados.Contains(x.Estado))
+            .ToListAsync(cancellationToken);
+    }
 }

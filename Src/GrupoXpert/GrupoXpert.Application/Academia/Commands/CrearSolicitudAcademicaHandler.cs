@@ -43,7 +43,9 @@ public sealed class CrearSolicitudAcademicaHandler(
             solicitud.FormatoRequerido,
             solicitud.MaterialBase,
             solicitud.EsUrgente,
-            solicitud.EntregaPorFases
+            solicitud.EntregaPorFases,
+            (int)solicitud.Estado,
+            solicitud.AsesorId
         );
     }
 }

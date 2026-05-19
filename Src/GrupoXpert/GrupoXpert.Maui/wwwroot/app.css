@@ -197,6 +197,7 @@ html, body {
 .gx-profile-card { text-align:center; }
 .gx-profile-banner { height:60px; background:var(--navbar-bg); border-radius:var(--card-radius) var(--card-radius) 0 0; }
 .gx-profile-avatar { width:72px; height:72px; border-radius:50%; border:3px solid white; margin:-36px auto 0; display:block; object-fit:cover; box-shadow:0 2px 8px rgba(0,0,0,0.15); position:relative; z-index:1; }
+.gx-profile-avatar-initials { width:72px; height:72px; border-radius:50%; border:3px solid white; margin:-36px auto 0; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.15); position:relative; z-index:1; background:linear-gradient(135deg, var(--color-primario) 0%, var(--color-acento) 100%); color:white; font-size:1.5rem; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; user-select:none; }
 .gx-profile-name { font-size:1rem; font-weight:700; margin:12px 0 2px; }
 .gx-profile-role { font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px; }
 .gx-profile-institution { font-size:0.75rem; color:var(--text-muted); padding-bottom:12px; }
@@ -232,3 +233,12 @@ h1:focus { outline:none; }
 
 .gx-mobile-content-container { padding: 0 12px; }
 .gx-feed-card { margin-bottom: 12px; }
+
+.gx-nav-profile-trigger { display:flex; align-items:center; gap:8px; cursor:pointer; color:white; padding:4px 8px; border-radius:6px; transition:background var(--transition-fast); }
+.gx-nav-profile-trigger:hover { background:rgba(255,255,255,0.1); }
+.gx-nav-profile-avatar { width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid white; }
+.gx-nav-profile-avatar-initials { width:32px; height:32px; border-radius:50%; border:1.5px solid white; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--color-primario) 0%, var(--color-acento) 100%); color:white; font-size:0.85rem; font-weight:800; text-transform:uppercase; user-select:none; }
+.gx-nav-profile-info { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+.gx-nav-profile-name { font-size:0.8rem; font-weight:700; white-space:nowrap; max-width:100px; overflow:hidden; text-overflow:ellipsis; }
+.gx-nav-profile-role { font-size:0.68rem; opacity:0.85; white-space:nowrap; font-weight:500; }
+.gx-nav-profile-caret { font-size:1.1rem; color:rgba(255,255,255,0.8); }

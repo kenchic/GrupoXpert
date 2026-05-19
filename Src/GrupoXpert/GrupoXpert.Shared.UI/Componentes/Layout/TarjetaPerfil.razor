@@ -1,8 +1,16 @@
 @* TarjetaPerfil.razor — Card de perfil lateral estilo LinkedIn *@
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
 
 <div class="gx-card gx-profile-card" id="gx-tarjeta-perfil">
     <div class="gx-profile-banner"></div>
-    <img class="gx-profile-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+    @if (tieneImagen)
+    {
+        <img class="gx-profile-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+    }
+    else
+    {
+        <div class="gx-profile-avatar-initials">@iniciales</div>
+    }
     <p class="gx-profile-name">@nombreCompleto</p>
     <p class="gx-profile-role">@rol</p>
     <p class="gx-profile-institution">@institucion</p>
@@ -22,13 +30,90 @@
     [Parameter] public string nombreCompleto { get; set; } = "Usuario GrupoXpert";
     [Parameter] public string rol { get; set; } = "Estudiante";
     [Parameter] public string institucion { get; set; } = "Universidad";
-    [Parameter] public string avatarUrl { get; set; } = "images/logo.jpg";
+    [Parameter] public string avatarUrl { get; set; } = "";
     [Parameter] public List<EstadisticaPerfil> estadisticas { get; set; } = new()
     {
         new("Cursos activos", "3"),
         new("Promedio", "4.2"),
         new("Documentos", "12")
     };
+
+    private string iniciales = "GX";
+    private bool tieneImagen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var nombreClaim = user.FindFirst("nombre")?.Value ?? user.Identity.Name;
+                if (!string.IsNullOrEmpty(nombreClaim))
+                {
+                    nombreCompleto = nombreClaim;
+                }
+
+                var rolClaim = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(rolClaim))
+                {
+                    rol = rolClaim;
+                }
+
+                var imagenClaim = user.FindFirst("imagen")?.Value;
+                if (!string.IsNullOrEmpty(imagenClaim))
+                {
+                    avatarUrl = imagenClaim;
+                    tieneImagen = true;
+                }
+                else
+                {
+                    tieneImagen = false;
+                    avatarUrl = "";
+                }
+            }
+            else
+            {
+                tieneImagen = false;
+                avatarUrl = "";
+            }
+        }
+        catch
+        {
+            // Fallback safe defaults if AuthStateProvider cannot be resolved (e.g. in some testing/MAUI contexts)
+            tieneImagen = !string.IsNullOrEmpty(avatarUrl);
+        }
+
+        iniciales = ObtenerIniciales(nombreCompleto);
+    }
+
+    private string ObtenerIniciales(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return "GX";
+
+        var parts = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0)
+            return "GX";
+
+        if (parts.Length == 1)
+        {
+            return parts[0].Length >= 2 
+                ? parts[0].Substring(0, 2).ToUpper() 
+                : parts[0].ToUpper();
+        }
+
+        if (parts.Length == 2)
+        {
+            return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+        }
+
+        // Si tiene 3 o más partes, se omite el segundo nombre (parte 1) y se usa la primera y la tercera parte.
+        // Ej: "German Enrique Alvarez" -> "GA" (partes "German" e "Alvarez")
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[2][0])}";
+    }
 
     public record EstadisticaPerfil(string Etiqueta, string Valor);
 }

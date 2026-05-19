@@ -1,79 +1,318 @@
 @page "/"
 @rendermode InteractiveServer
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
+@inject GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService SolicitudService
+@inject NavigationManager Navegador
+@using GrupoXpert.Shared.UI.Modelos.Academia
+@using System.Globalization
 
 <PageTitle>Inicio - GrupoXpert</PageTitle>
 
-@* === Banner de bienvenida (como el hero de LinkedIn) === *@
-<div class="gx-card" style="background: var(--navbar-bg); color: white; border-radius: var(--card-radius); overflow: hidden;">
-    <div style="padding: 24px 28px; position: relative;">
-        <span class="material-icons" style="font-size: 6rem; opacity: 0.08; position: absolute; right: 16px; bottom: -8px;">dashboard</span>
-        <h1 style="font-size: 1.5rem; font-weight: 800; margin: 0 0 6px;">¡Bienvenido a GrupoXpert!</h1>
-        <p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Plataforma Integral de Gestión Académica y Profesional</p>
-    </div>
-</div>
+@* === Solicitudes Académicas === *@
 
-@* === Accesos rápidos (cards horizontales) === *@
-<div style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 0;">
-    <div class="gx-card" style="flex: 1; min-width: 180px; cursor: pointer;">
-        <div class="gx-card-body" style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="font-size: 2rem; color: var(--color-primario);">people</span>
-            <div>
-                <div style="font-weight: 600; font-size: 0.88rem;">Gestión de Usuarios</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Administrar perfiles</div>
+@if (estaCargando)
+{
+    @* SKELETON LOADING ANIMATION *@
+    <div class="gx-card" style="padding: 20px; margin-bottom: 16px; background: white;">
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: #e5e7eb; animation: pulse 1.5s infinite ease-in-out;"></div>
+            <div style="flex: 1;">
+                <div style="width: 150px; height: 16px; background: #e5e7eb; margin-bottom: 8px; border-radius: 4px; animation: pulse 1.5s infinite ease-in-out;"></div>
+                <div style="width: 100px; height: 12px; background: #e5e7eb; border-radius: 4px; animation: pulse 1.5s infinite ease-in-out;"></div>
             </div>
         </div>
+        <div style="width: 100%; height: 60px; background: #f3f4f6; border-radius: 6px; animation: pulse 1.5s infinite ease-in-out;"></div>
     </div>
-    <div class="gx-card" style="flex: 1; min-width: 180px; cursor: pointer;">
-        <div class="gx-card-body" style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="font-size: 2rem; color: var(--color-secundario);">school</span>
-            <div>
-                <div style="font-weight: 600; font-size: 0.88rem;">Grados y Cursos</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Oferta académica</div>
-            </div>
+
+}
+else if (solicitudes == null || !solicitudes.Any())
+{
+    @* PREMIUM EMPTY STATE *@
+    <div class="gx-card" style="padding: 48px 24px; text-align: center; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 250px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario);">
+            <span class="material-icons" style="font-size: 3rem;">inbox</span>
         </div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-texto); margin: 0;">No se encontraron solicitudes académicas</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 450px; margin: 0; line-height: 1.5;">
+            @(rolUsuario == "Estudiante" 
+                ? "Aún no has registrado ninguna solicitud académica. Comienza creando una nueva solicitud y un asesor calificado te ayudará a lograr tus metas." 
+                : rolUsuario == "Asesor"
+                ? "No hay solicitudes académicas pendientes de asignación o asignadas a ti en este momento. ¡Vuelve más tarde!"
+                : "No se registran solicitudes académicas pendientes o en proceso en la plataforma actualmente.")
+        </p>
+        @if (rolUsuario == "Estudiante")
+        {
+            <button class="btn btn-primary" style="font-weight: 700; border-radius: 8px; padding: 10px 24px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; border: none; cursor: pointer; transition: background var(--transition-fast);" @onclick='() => Navegador.NavigateTo("/solicitud-academica/nueva")'>
+                <span class="material-icons" style="font-size: 1.1rem;">add</span>
+                <span>Crear Primera Solicitud</span>
+            </button>
+        }
     </div>
-    <div class="gx-card" style="flex: 1; min-width: 180px; cursor: pointer;">
-        <div class="gx-card-body" style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="font-size: 2rem; color: #f97316;">assignment</span>
-            <div>
-                <div style="font-weight: 600; font-size: 0.88rem;">Reportes</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Informes y métricas</div>
+}
+else
+{
+    @* FEED DE SOLICITUDES *@
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        @foreach (var sol in solicitudes)
+        {
+            <div class="gx-card" style="position: relative; padding: 20px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white;">
+                @* Indicador de Urgencia Pulsante *@
+                @if (sol.EsUrgente)
+                {
+                    <div class="gx-urgente-badge">
+                        <span class="material-icons" style="font-size: 1rem;">priority_high</span>
+                        <span>URGENTE</span>
+                    </div>
+                }
+
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 12px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(sol.Id); color: white; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            @ObtenerInicialesArea(sol.AreaTematica)
+                        </div>
+                        <div>
+                            <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <span>@sol.AreaTematica</span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                                <span>@ObtenerNivelAcademicoTexto(sol.NivelAcademico)</span>
+                                <span>•</span>
+                                <span>@ObtenerTipoTrabajoTexto(sol.TipoTrabajo)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @* Badge de Estado *@
+                    <span class="gx-badge-estado" style="background: @ObtenerFondoEstado(sol.Estado); color: @ObtenerColorTextoEstado(sol.Estado);">
+                        <span class="material-icons" style="font-size: 0.9rem;">@ObtenerIconoEstado(sol.Estado)</span>
+                        <span style="font-size: 0.8rem; font-weight: 700;">@ObtenerTextoEstado(sol.Estado)</span>
+                    </span>
+                </div>
+
+                <div style="font-size: 0.9rem; line-height: 1.6;">
+                    @* Grilla de Detalles *@
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="color: var(--text-muted); font-size: 1.2rem;">auto_stories</span>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-secondary); display: block;">Extensión</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">@sol.NumeroPaginasOPalabras págs/palabras</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="color: var(--text-muted); font-size: 1.2rem;">format_quote</span>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-secondary); display: block;">Citación</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">Norma: @ObtenerNormaCitacionTexto(sol.NormaCitacion)</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="color: var(--text-muted); font-size: 1.2rem;">language</span>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-secondary); display: block;">Idioma</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">@ObtenerIdiomaTexto(sol.Idioma)</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="color: var(--text-muted); font-size: 1.2rem;">event</span>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-secondary); display: block;">Fecha de Entrega</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--color-primario);">@sol.FechaEntrega.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Formato Requerido *@
+                    @if (!string.IsNullOrEmpty(sol.FormatoRequerido))
+                    {
+                        <div style="margin-bottom: 12px; background: #fafafa; border-radius: 6px; padding: 10px 12px; border: 1px dashed var(--divider);">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; display: block; margin-bottom: 2px;">Formato Requerido:</span>
+                            <span style="font-size: 0.84rem; color: var(--text-primary);">@sol.FormatoRequerido</span>
+                        </div>
+                    }
+
+                    @* Instrucciones / Material Base *@
+                    @if (!string.IsNullOrEmpty(sol.MaterialBase))
+                    {
+                        <div style="background: rgba(74, 118, 178, 0.04); border-left: 3px solid var(--color-secundario); border-radius: 0 6px 6px 0; padding: 10px 14px; margin-bottom: 12px;">
+                            <span style="font-size: 0.75rem; color: var(--color-secundario); font-weight: 600; display: block; margin-bottom: 2px;">Instrucciones y Material de Apoyo:</span>
+                            <p style="font-size: 0.84rem; color: var(--text-primary); margin: 0; line-height: 1.5; font-style: italic;">
+                                @sol.MaterialBase
+                            </p>
+                        </div>
+                    }
+
+                    @* Opciones Adicionales *@
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; border-top: 1px solid var(--divider); padding-top: 12px;">
+                        @if (sol.EntregaPorFases)
+                        {
+                            <span class="gx-chip">
+                                <span class="material-icons" style="font-size: 0.85rem;">published_with_changes</span>
+                                <span>Entrega por fases</span>
+                            </span>
+                        }
+                        @if (sol.AsesorId != null)
+                        {
+                            <span class="gx-chip gx-chip-success">
+                                <span class="material-icons" style="font-size: 0.85rem;">assignment_ind</span>
+                                <span>Asesor Asignado</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="gx-chip gx-chip-warning">
+                                <span class="material-icons" style="font-size: 0.85rem;">person_search</span>
+                                <span>Pendiente de Asignación</span>
+                            </span>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
+        }
     </div>
-</div>
+}
 
-@* === Feed de actividades (estilo LinkedIn) === *@
-<TarjetaFeed identificador="act-1"
-             autor="Departamento Académico"
-             subtitulo="Administración"
-             tiempo="Hace 2 horas"
-             avatarUrl="images/logo.jpg">
-    <ContenidoHijo>
-        <p style="margin:0;">📚 <strong>Nuevos horarios de tutorías</strong> disponibles para el semestre 2026-II. Consulta los horarios actualizados en la sección de Academia.</p>
-    </ContenidoHijo>
-</TarjetaFeed>
-
-<TarjetaFeed identificador="act-2"
-             autor="Coordinación de Grados"
-             subtitulo="Gestión Académica"
-             tiempo="Hace 5 horas"
-             avatarUrl="images/logo.jpg">
-    <ContenidoHijo>
-        <p style="margin:0;">🎓 Las <strong>inscripciones</strong> para el periodo 2026-II están abiertas. No olvides verificar tu documentación antes de la fecha límite del <em>30 de mayo</em>.</p>
-    </ContenidoHijo>
-</TarjetaFeed>
-
-<TarjetaFeed identificador="act-3"
-             autor="Dirección General"
-             subtitulo="Comunicado Institucional"
-             tiempo="Ayer"
-             avatarUrl="images/logo.jpg">
-    <ContenidoHijo>
-        <p style="margin:0;">📋 Se ha actualizado el <strong>reglamento académico</strong> para el periodo vigente. Revisa los cambios en la sección de documentos institucionales.</p>
-    </ContenidoHijo>
-</TarjetaFeed>
 
 @code {
-    // Aquí implementaremos la lógica de carga de feed real más adelante
+    private string nombreUsuario = "Usuario";
+    private string rolUsuario = "Estudiante";
+    private bool estaCargando = true;
+    private IReadOnlyList<SolicitudAcademicaDto> solicitudes = new List<SolicitudAcademicaDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                nombreUsuario = user.FindFirst("nombre")?.Value ?? user.Identity.Name ?? "Usuario";
+                rolUsuario = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Estudiante";
+            }
+            
+            // Cargar solicitudes desde el servicio
+            solicitudes = await SolicitudService.ObtenerSolicitudesDashboardAsync();
+        }
+        catch (Exception ex)
+        {
+            // Fail-safe
+            Console.WriteLine($"Error al cargar dashboard: {ex.Message}");
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    // MÉTODOS DE FORMATO / UTILITIES
+    private string ObtenerBordePorEstado(int estado) => estado switch
+    {
+        1 => "#d97706", // Pendiente: Amber
+        2 => "#4a76b2", // En Proceso: Azul
+        3 => "#26b050", // Completada: Verde
+        4 => "#9ca3af", // Cancelada: Gris
+        _ => "#e5e7eb"
+    };
+
+    private string ObtenerFondoEstado(int estado) => estado switch
+    {
+        1 => "rgba(245, 158, 11, 0.08)",
+        2 => "rgba(74, 118, 178, 0.08)",
+        3 => "rgba(38, 176, 80, 0.08)",
+        4 => "rgba(156, 163, 175, 0.08)",
+        _ => "#f3f4f6"
+    };
+
+    private string ObtenerColorTextoEstado(int estado) => estado switch
+    {
+        1 => "#d97706",
+        2 => "#4a76b2",
+        3 => "#26b050",
+        4 => "#4b5563",
+        _ => "#6b7280"
+    };
+
+    private string ObtenerTextoEstado(int estado) => estado switch
+    {
+        1 => "Pendiente",
+        2 => "En Proceso",
+        3 => "Completada",
+        4 => "Cancelada",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerIconoEstado(int estado) => estado switch
+    {
+        1 => "pending_actions",
+        2 => "engineering",
+        3 => "task_alt",
+        4 => "cancel",
+        _ => "help_outline"
+    };
+
+    private string ObtenerInicialesArea(string area)
+    {
+        if (string.IsNullOrWhiteSpace(area)) return "SA";
+        var parts = area.Split(new[] { ' ', '/', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "SA";
+        if (parts.Length == 1) return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0].ToUpper();
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+    }
+
+    private string ObtenerFondoGradiente(Guid id)
+    {
+        // Generar un gradiente determinista según el Guid para que sea estéticamente hermoso y consistente
+        var hash = id.GetHashCode();
+        var num = Math.Abs(hash) % 4;
+        return num switch
+        {
+            0 => "linear-gradient(135deg, #a62677 0%, #6b2d5c 100%)",
+            1 => "linear-gradient(135deg, #4a76b2 0%, #2f5485 100%)",
+            2 => "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+            _ => "linear-gradient(135deg, #10b981 0%, #047857 100%)"
+        };
+    }
+
+    private string ObtenerNivelAcademicoTexto(int nivel) => nivel switch
+    {
+        0 => "Secundaria",
+        1 => "Pregrado",
+        2 => "Especialización",
+        3 => "Maestría",
+        4 => "Doctorado",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerTipoTrabajoTexto(int tipo) => tipo switch
+    {
+        0 => "Ensayo",
+        1 => "Tesis",
+        2 => "Artículo",
+        3 => "Monografía",
+        4 => "Proyecto de Grado",
+        5 => "Resumen",
+        6 => "Presentación",
+        _ => "Otro"
+    };
+
+    private string ObtenerNormaCitacionTexto(int norma) => norma switch
+    {
+        0 => "APA",
+        1 => "IEEE",
+        2 => "Vancouver",
+        3 => "Chicago",
+        4 => "Harvard",
+        _ => "Otra"
+    };
+
+    private string ObtenerIdiomaTexto(int idioma) => idioma switch
+    {
+        0 => "Español",
+        1 => "Inglés",
+        2 => "Portugués",
+        3 => "Francés",
+        _ => "Otro"
+    };
 }
