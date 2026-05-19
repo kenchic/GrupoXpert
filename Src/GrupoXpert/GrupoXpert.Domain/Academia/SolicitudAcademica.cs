@@ -17,6 +17,8 @@ public class SolicitudAcademica : AggregateRoot
     public string MaterialBase { get; private set; }
     public bool EsUrgente { get; private set; }
     public bool EntregaPorFases { get; private set; }
+    public EstadoSolicitud Estado { get; private set; }
+    public Guid? AsesorId { get; private set; }
 
     // Constructor vacío para EF Core
     private SolicitudAcademica() 
@@ -24,6 +26,7 @@ public class SolicitudAcademica : AggregateRoot
         AreaTematica = string.Empty;
         FormatoRequerido = string.Empty;
         MaterialBase = string.Empty;
+        Estado = EstadoSolicitud.Pendiente;
     }
 
     private SolicitudAcademica(
@@ -52,6 +55,8 @@ public class SolicitudAcademica : AggregateRoot
         MaterialBase = materialBase ?? throw new ArgumentNullException(nameof(materialBase));
         EsUrgente = esUrgente;
         EntregaPorFases = entregaPorFases;
+        Estado = EstadoSolicitud.Pendiente;
+        AsesorId = null;
     }
 
     public static SolicitudAcademica Crear(
@@ -105,5 +110,41 @@ public class SolicitudAcademica : AggregateRoot
         solicitud.AgregarEventoDominio(new SolicitudAcademicaCreadaDomainEvent(solicitud.Id));
 
         return solicitud;
+    }
+
+    public void AsignarAsesor(Guid asesorId)
+    {
+        if (asesorId == Guid.Empty)
+        {
+            throw new ArgumentException("El ID del asesor no puede estar vacío.", nameof(asesorId));
+        }
+
+        if (Estado != EstadoSolicitud.Pendiente)
+        {
+            throw new Exceptions.ExcepcionDominio("Solo se pueden asignar asesores a solicitudes pendientes.");
+        }
+
+        AsesorId = asesorId;
+        Estado = EstadoSolicitud.EnProceso;
+    }
+
+    public void Completar()
+    {
+        if (Estado != EstadoSolicitud.EnProceso)
+        {
+            throw new Exceptions.ExcepcionDominio("Solo se pueden completar solicitudes que estén en proceso.");
+        }
+
+        Estado = EstadoSolicitud.Completada;
+    }
+
+    public void Cancelar()
+    {
+        if (Estado == EstadoSolicitud.Completada)
+        {
+            throw new Exceptions.ExcepcionDominio("No se puede cancelar una solicitud que ya ha sido completada.");
+        }
+
+        Estado = EstadoSolicitud.Cancelada;
     }
 }

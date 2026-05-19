@@ -1,6 +1,7 @@
 @* BarraNavegacion.razor — Top Navbar estilo LinkedIn (Web) *@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Routing
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
 
 <nav class="gx-navbar" id="gx-navbar-principal">
     <div class="gx-navbar-inner">
@@ -23,7 +24,7 @@
                 <span>Inicio</span>
             </a>
 
-            <a href="/academia" class="gx-nav-item @(EsRutaActiva("/academia") ? "active" : "")">
+           @*  <a href="/academia" class="gx-nav-item @(EsRutaActiva("/academia") ? "active" : "")">
                 <span class="material-icons">school</span>
                 <span>Academia</span>
             </a>
@@ -31,7 +32,7 @@
             <a href="/inscripciones" class="gx-nav-item @(EsRutaActiva("/inscripciones") ? "active" : "")">
                 <span class="material-icons">assignment_ind</span>
                 <span>Inscripciones</span>
-            </a>
+            </a> *@
 
             <AuthorizeView Roles="Estudiante">
                 <Authorized>
@@ -51,7 +52,7 @@
                 </Authorized>
             </AuthorizeView>
 
-            <a class="gx-nav-item" style="position:relative;">
+            <a class="gx-nav-item">
                 <span class="material-icons">notifications</span>
                 <span>Avisos</span>
                 @if (contadorNotificaciones > 0)
@@ -63,9 +64,19 @@
 
         @* Perfil *@
         <div class="gx-navbar-profile">
-            <RadzenProfileMenu>
+            <RadzenProfileMenu Style="background: transparent; border: none; box-shadow: none; padding: 0;">
                 <Template>
-                    <RadzenIcon Icon="account_circle" />
+                    <div class="gx-nav-profile-trigger">
+                        @if (tieneImagen)
+                        {
+                            <img class="gx-nav-profile-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+                        }
+                        else
+                        {
+                            <div class="gx-nav-profile-avatar-initials">@iniciales</div>
+                        }
+                        <span class="material-icons gx-nav-profile-caret" style="margin-left: 2px;">arrow_drop_down</span>
+                    </div>
                 </Template>
                 <ChildContent>
                     <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" Path="/perfil" />
@@ -81,7 +92,80 @@
     private string textoBusqueda = "";
     private int contadorNotificaciones = 3;
 
+    private string nombreCompleto = "Usuario GrupoXpert";
+    private string rol = "Estudiante";
+    private string avatarUrl = "";
+    private string iniciales = "GX";
+    private bool tieneImagen = false;
+
     [Inject] private NavigationManager Navegacion { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var nombreClaim = user.FindFirst("nombre")?.Value ?? user.Identity.Name;
+                if (!string.IsNullOrEmpty(nombreClaim))
+                {
+                    nombreCompleto = nombreClaim;
+                }
+
+                var rolClaim = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(rolClaim))
+                {
+                    rol = rolClaim;
+                }
+
+                var imagenClaim = user.FindFirst("imagen")?.Value;
+                if (!string.IsNullOrEmpty(imagenClaim))
+                {
+                    avatarUrl = imagenClaim;
+                    tieneImagen = true;
+                }
+                else
+                {
+                    tieneImagen = false;
+                    avatarUrl = "";
+                }
+            }
+        }
+        catch
+        {
+            tieneImagen = !string.IsNullOrEmpty(avatarUrl);
+        }
+
+        iniciales = ObtenerIniciales(nombreCompleto);
+    }
+
+    private string ObtenerIniciales(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return "GX";
+
+        var parts = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0)
+            return "GX";
+
+        if (parts.Length == 1)
+        {
+            return parts[0].Length >= 2 
+                ? parts[0].Substring(0, 2).ToUpper() 
+                : parts[0].ToUpper();
+        }
+
+        if (parts.Length == 2)
+        {
+            return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+        }
+
+        // Si tiene 3 o más partes, se omite el segundo nombre (parte 1) y se usa la primera y la tercera parte.
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[2][0])}";
+    }
 
     private bool EsRutaActiva(string ruta)
     {

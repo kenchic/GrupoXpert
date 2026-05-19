@@ -25,7 +25,11 @@ public sealed class SolicitudAcademicaConfiguracion : IEntityTypeConfiguration<S
             .HasMaxLength(200);
 
         builder.Property(x => x.FechaEntrega)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                v => new DateTimeOffset(v, TimeSpan.Zero),
+                v => v.UtcDateTime
+            );
 
         builder.Property(x => x.NumeroPaginasOPalabras)
             .IsRequired();
@@ -53,6 +57,19 @@ public sealed class SolicitudAcademicaConfiguracion : IEntityTypeConfiguration<S
             
         builder.Property(x => x.EntregaPorFases)
             .IsRequired();
+
+        builder.Property(x => x.Estado)
+            .IsRequired()
+            .HasConversion<int>()
+            .HasDefaultValue(EstadoSolicitud.Pendiente);
+
+        builder.Property(x => x.AsesorId)
+            .IsRequired(false);
+
+        builder.HasOne<GrupoXpert.Domain.Perfil.PerfilColaborador>()
+            .WithMany()
+            .HasForeignKey(x => x.AsesorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Ignore(x => x.EventosDominio);
     }
