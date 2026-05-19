@@ -1,0 +1,276 @@
+@using Radzen
+@using Radzen.Blazor
+@using GrupoXpert.Shared.UI.Modelos.Academia
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject ISolicitudAcademicaService SolicitudService
+@inject NotificationService NotificationService
+@inject NavigationManager Navegador
+
+<div class="gx-card gx-card-overflow-visible" style="padding: 2.5rem; border-radius: var(--card-radius); box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: white;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <span class="material-icons" style="font-size: 3.5rem; color: var(--color-primario); opacity: 0.9; margin-bottom: 0.5rem;">edit_note</span>
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H2" Text="Nueva Solicitud Académica" Style="color: var(--color-texto); font-weight: 800; margin: 0;" />
+        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-base-500 rz-mt-2" Style="max-width: 600px; margin-left: auto; margin-right: auto;">
+            Completa el siguiente formulario detallado para solicitar el apoyo académico en tu trabajo. Un profesional idóneo será asignado a tu caso.
+        </RadzenText>
+    </div>
+
+    <RadzenTemplateForm TItem="SolicitudAcademicaModelo" Data="@modelo" Submit="@ManejarEnvio">
+        <DataAnnotationsValidator />
+        
+        <RadzenStack Gap="1.8rem">
+            
+            @* --- Sección 1: Información Básica --- *@
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-secundario); border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 1.2rem;">school</span> 1. Detalles del Trabajo
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <RadzenFormField Text="Nivel Académico" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.NivelAcademico"
+                                            Name="NivelAcademico"
+                                            Data="@niveles" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="NivelAcademico" Text="El nivel académico es obligatorio." Style="position: absolute;" />
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <RadzenFormField Text="Tipo de Trabajo" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.TipoTrabajo"
+                                            Name="TipoTrabajo"
+                                            Data="@tiposTrabajo" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="TipoTrabajo" Text="El tipo de trabajo es obligatorio." Style="position: absolute;" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <RadzenFormField Text="Área Temática / Campo del Conocimiento" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenTextBox @bind-Value="modelo.AreaTematica" Name="AreaTematica" class="rz-w-100" Placeholder="Ej: Inteligencia Artificial aplicada a la Medicina, Derecho Laboral, etc." />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="AreaTematica" Text="El área temática es obligatoria." Style="position: absolute;" />
+                    </div>
+                </div>
+            </div>
+
+            @* --- Sección 2: Especificaciones del Formato --- *@
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-secundario); border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 1.2rem;">description</span> 2. Formato y Requisitos
+                </h3>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <RadzenFormField Text="Páginas o Palabras Estimadas" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenNumeric TValue="int" @bind-Value="modelo.NumeroPaginasOPalabras" Name="NumeroPaginas" class="rz-w-100" Min="1" />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="NumeroPaginas" Text="El número de páginas o palabras es obligatorio." Style="position: absolute;" />
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <RadzenFormField Text="Norma de Citación" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.NormaCitacion"
+                                            Name="NormaCitacion"
+                                            Data="@normasCitacion" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <RadzenFormField Text="Idioma" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.Idioma"
+                                            Name="Idioma"
+                                            Data="@idiomas" 
+                                            TextProperty="Texto" 
+                                            ValueProperty="Id"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <RadzenFormField Text="Formato Requerido (Detalles de entrega)" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenTextBox @bind-Value="modelo.FormatoRequerido" Name="FormatoRequerido" class="rz-w-100" Placeholder="Ej: Letra Arial 12, interlineado doble, formato PDF y Word." />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="FormatoRequerido" Text="El formato requerido es obligatorio." Style="position: absolute;" />
+                    </div>
+                </div>
+            </div>
+
+            @* --- Sección 3: Planificación e Instrucciones --- *@
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-secundario); border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 1.2rem;">event_available</span> 3. Instrucciones y Entrega
+                </h3>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <RadzenFormField Text="Fecha de Entrega Deseada" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDatePicker @bind-Value="modelo.FechaEntrega" Name="FechaEntrega" class="rz-w-100" DateFormat="dd/MM/yyyy" Min="@DateTime.Today" />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="FechaEntrega" Text="La fecha de entrega es obligatoria." Style="position: absolute;" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <RadzenFormField Text="Instrucciones y Material de Apoyo (Enlaces o texto)" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenTextArea @bind-Value="modelo.MaterialBase" Name="MaterialBase" class="rz-w-100" Rows="4" Placeholder="Describe en detalle las instrucciones del docente o pega enlaces a tus lecturas base." />
+                        </RadzenFormField>
+                        <RadzenRequiredValidator Component="MaterialBase" Text="Las instrucciones o material base son obligatorios." Style="position: absolute;" />
+                    </div>
+                </div>
+            </div>
+
+            @* --- Sección 4: Opciones Premium (Urgencia & Fases) --- *@
+            <div style="background: #fafafa; border: 1px solid #f0f0f0; border-radius: var(--card-radius); padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primario); margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 1.2rem;">star</span> Opciones Adicionales
+                </h3>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3 d-flex align-items-center justify-content-between" style="border-right: 1px solid #e5e7eb; padding-right: 1.5rem;">
+                        <div>
+                            <strong style="display: block; font-size: 0.92rem; color: var(--color-texto);">¿Requiere Entrega Urgente?</strong>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Prioriza tu solicitud para asignación rápida.</span>
+                        </div>
+                        <RadzenSwitch @bind-Value="modelo.EsUrgente" />
+                    </div>
+                    
+                    <div class="col-md-6 mb-3 d-flex align-items-center justify-content-between" style="padding-left: 1.5rem;">
+                        <div>
+                            <strong style="display: block; font-size: 0.92rem; color: var(--color-texto);">¿Entrega por Fases?</strong>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Recibe avances parciales a medida que el redactor avanza.</span>
+                        </div>
+                        <RadzenSwitch @bind-Value="modelo.EntregaPorFases" />
+                    </div>
+                </div>
+            </div>
+
+            @* --- Botones de Acción --- *@
+            <div class="d-flex justify-content-end gap-3 rz-mt-6">
+                <RadzenButton Text="CANCELAR" ButtonStyle="ButtonStyle.Light" Click="@Cancelar" 
+                              Size="ButtonSize.Medium" Style="border-radius: 12px; font-weight: 700; padding: 0 2rem;" />
+                              
+                <RadzenButton ButtonType="ButtonType.Submit" Text="ENVIAR SOLICITUD" Icon="send" 
+                              ButtonStyle="ButtonStyle.Primary" 
+                              Size="ButtonSize.Medium"
+                              Style="font-weight: 800; background-color: var(--color-primario); border-radius: 12px; padding: 0 2rem;"
+                              Disabled="@estaCargando" IsBusy="@estaCargando" />
+            </div>
+
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>
+
+@code {
+    private SolicitudAcademicaModelo modelo = new();
+    private bool estaCargando = false;
+
+    public class OpcionCombo
+    {
+        public int Id { get; set; }
+        public string Texto { get; set; } = string.Empty;
+    }
+
+    private List<OpcionCombo> niveles = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "Secundaria" },
+        new OpcionCombo { Id = 1, Texto = "Pregrado" },
+        new OpcionCombo { Id = 2, Texto = "Especialización" },
+        new OpcionCombo { Id = 3, Texto = "Maestría" },
+        new OpcionCombo { Id = 4, Texto = "Doctorado" }
+    };
+
+    private List<OpcionCombo> tiposTrabajo = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "Ensayo" },
+        new OpcionCombo { Id = 1, Texto = "Tesis" },
+        new OpcionCombo { Id = 2, Texto = "Artículo" },
+        new OpcionCombo { Id = 3, Texto = "Monografía" },
+        new OpcionCombo { Id = 4, Texto = "Proyecto de Grado" },
+        new OpcionCombo { Id = 5, Texto = "Resumen" },
+        new OpcionCombo { Id = 6, Texto = "Presentación" },
+        new OpcionCombo { Id = 7, Texto = "Otro" }
+    };
+
+    private List<OpcionCombo> normasCitacion = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "APA" },
+        new OpcionCombo { Id = 1, Texto = "IEEE" },
+        new OpcionCombo { Id = 2, Texto = "Vancouver" },
+        new OpcionCombo { Id = 3, Texto = "Chicago" },
+        new OpcionCombo { Id = 4, Texto = "Harvard" },
+        new OpcionCombo { Id = 5, Texto = "Otra" }
+    };
+
+    private List<OpcionCombo> idiomas = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "Español" },
+        new OpcionCombo { Id = 1, Texto = "Inglés" },
+        new OpcionCombo { Id = 2, Texto = "Portugués" },
+        new OpcionCombo { Id = 3, Texto = "Francés" },
+        new OpcionCombo { Id = 4, Texto = "Otro" }
+    };
+
+    private async Task ManejarEnvio()
+    {
+        estaCargando = true;
+        try
+        {
+            var exito = await SolicitudService.CrearSolicitudAsync(modelo);
+            if (exito)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Solicitud Creada",
+                    Detail = "Tu solicitud académica se ha registrado de manera exitosa.",
+                    Duration = 5000
+                });
+
+                // Redirigir al inicio después de registrar la solicitud exitosamente
+                await Task.Delay(2000);
+                Navegador.NavigateTo("/");
+            }
+            else
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error al Guardar",
+                    Detail = "No fue posible crear la solicitud académica. Inténtalo nuevamente.",
+                    Duration = 5000
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error Crítico",
+                Detail = ex.Message,
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        Navegador.NavigateTo("/");
+    }
+}

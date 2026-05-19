@@ -45,6 +45,7 @@ try
     builder.Services.AddAuthorization();
 
     builder.Services.AddOpenApi();
+    builder.Services.AddControllers();
 
     var app = builder.Build();
 
@@ -213,6 +214,7 @@ try
         }
     });
 
+    app.MapControllers();
     app.Run();
 }
 catch (Exception ex)

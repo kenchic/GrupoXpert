@@ -19,9 +19,9 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [x] | 3 | Validar Perfil de Colaborador (Proceso de Aprobación Interno) |  
 | [x] | 4 | Iniciar Sesión (Login General) | 
 | [x] | 5 | Gestionar Perfil de Cliente (Preferencias académicas) | 
-| [ ] | 6 | Gestionar Perfil Profesional de Colaborador (Habilidades/Disponibilidad) | 
+| [x] | 6 | Gestionar Perfil Profesional de Colaborador (Habilidades/Disponibilidad) | 
 | [ ] | 7 | Recuperar / Restablecer Contraseña | 
-| [ ] | 8 | Crear Solicitud Académica (Formulario Dinámico) | 
+| [x] | 8 | Crear Solicitud Académica (Formulario Dinámico) | 
 | [ ] | 9 | Generar Cotización Automática de Solicitud | 
 | [ ] | 10 | Realizar Pago de Solicitud (Pasarela y opciones de hitos) | 
 | [ ] | 11 | Asignar Solicitud Automáticamente (Algoritmo de Matching) | 

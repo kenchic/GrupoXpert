@@ -1,0 +1,329 @@
+@using Radzen
+@using Radzen.Blazor
+@using GrupoXpert.Shared.UI.Modelos.Perfil
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject IPerfilColaboradorService PerfilColaboradorService
+@inject NotificationService NotificationService
+
+@* ─── ENCABEZADO ─── *@
+<div class="gx-card" style="padding: 2rem; margin-bottom: 1rem; position: relative; overflow: visible;">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.25rem;">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--color-acento), var(--color-primario)); display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons" style="color: white; font-size: 1.5rem;">badge</span>
+        </div>
+        <div>
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" Text="Perfil Profesional de Colaborador" Style="color: var(--color-texto); font-weight: 700; margin: 0;" />
+            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="margin: 0;">
+                Completa tu información profesional para recibir solicitudes académicas.
+            </RadzenText>
+        </div>
+    </div>
+
+    @if (modelo?.ValidadoPorAdmin == true)
+    {
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; margin-top: 0.75rem;">
+            <span class="material-icons" style="font-size: 1rem;">verified</span>
+            Perfil Verificado por Administración
+        </div>
+    }
+    else if (modelo != null)
+    {
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(243, 156, 18, 0.1); color: #e67e22; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; margin-top: 0.75rem;">
+            <span class="material-icons" style="font-size: 1rem;">pending</span>
+            Pendiente de Verificación
+        </div>
+    }
+</div>
+
+@* ─── FORMULARIO PRINCIPAL ─── *@
+<div class="gx-card gx-card-overflow-visible" style="padding: 2rem;">
+    @if (modelo == null)
+    {
+        <div class="d-flex justify-content-center p-5">
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="width: 200px;" />
+        </div>
+    }
+    else
+    {
+        <RadzenTemplateForm TItem="PerfilColaboradorModelo" Data="@modelo" Submit="@GuardarPerfil">
+            <RadzenStack Gap="1.5rem">
+
+                @* ─── SECCIÓN: FORMACIÓN ACADÉMICA ─── *@
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons" style="font-size: 1.1rem; color: var(--color-primario);">school</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 700; color: var(--color-texto); margin: 0;">Formación Académica</RadzenText>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <RadzenFormField Text="Nivel Académico" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenDropDown TValue="int" @bind-Value="modelo.NivelAcademico"
+                                            Name="NivelAcademico"
+                                            Data="@nivelesAcademicos"
+                                            TextProperty="Texto"
+                                            ValueProperty="Id"
+                                            Placeholder="Selecciona tu nivel"
+                                            class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <RadzenFormField Text="Disponibilidad (horas/semana)" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenNumeric TValue="int" @bind-Value="modelo.DisponibilidadHorasSemana"
+                                           Name="Disponibilidad"
+                                           Min="0" Max="80"
+                                           Placeholder="Ej: 20"
+                                           class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <RadzenFormField Text="Carga Ideal (trabajos/semana)" Variant="Variant.Outlined" class="rz-w-100">
+                            <RadzenNumeric TValue="int" @bind-Value="modelo.CargaAcademicaIdeal"
+                                           Name="CargaIdeal"
+                                           Min="0" Max="50"
+                                           Placeholder="Ej: 5"
+                                           class="rz-w-100" />
+                        </RadzenFormField>
+                    </div>
+                </div>
+
+                @* ─── SECCIÓN: ÁREAS DE CONOCIMIENTO ─── *@
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons" style="font-size: 1.1rem; color: var(--color-primario);">psychology</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 700; color: var(--color-texto); margin: 0;">Áreas de Conocimiento</RadzenText>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-2 mb-2">
+                    <RadzenFormField Text="Nueva Área" Variant="Variant.Outlined" Style="flex: 1;">
+                        <RadzenTextBox @bind-Value="nuevaArea" Placeholder="Ej: Derecho, Psicología, Ingeniería"
+                                       @onkeypress="@(e => { if(e.Key == "Enter") AgregarElemento(modelo.AreasConocimiento, ref nuevaArea); })"
+                                       Style="width: 100%;" />
+                    </RadzenFormField>
+                    <RadzenButton Icon="add" ButtonStyle="ButtonStyle.Primary" Click="@(() => AgregarElemento(modelo.AreasConocimiento, ref nuevaArea))"
+                                  Size="ButtonSize.Medium"
+                                  Style="height: 40px; width: 40px; border-radius: 8px; margin-top: 16px; display: flex; justify-content: center; align-items: center;" />
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (!modelo.AreasConocimiento.Any())
+                    {
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="font-style: italic;">Agrega tus áreas de experiencia profesional.</RadzenText>
+                    }
+                    @foreach (var area in modelo.AreasConocimiento)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true"
+                                     Style="padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; background-color: var(--color-primario);"
+                                     Click="@(() => RemoverElemento(modelo.AreasConocimiento, area))">
+                            @area <span class="material-icons" style="font-size: 14px; margin-left: 8px;">close</span>
+                        </RadzenBadge>
+                    }
+                </div>
+
+                @* ─── SECCIÓN: TIPOS DE TRABAJO ─── *@
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 0.75rem; margin-top: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons" style="font-size: 1.1rem; color: var(--color-primario);">edit_note</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 700; color: var(--color-texto); margin: 0;">Tipos de Trabajo que Dominas</RadzenText>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-2 mb-2">
+                    <RadzenFormField Text="Nuevo Tipo" Variant="Variant.Outlined" Style="flex: 1;">
+                        <RadzenTextBox @bind-Value="nuevoTipo" Placeholder="Ej: Ensayos, Tesis, Artículos, Análisis Estadístico"
+                                       @onkeypress="@(e => { if(e.Key == "Enter") AgregarElemento(modelo.TiposTrabajo, ref nuevoTipo); })"
+                                       Style="width: 100%;" />
+                    </RadzenFormField>
+                    <RadzenButton Icon="add" ButtonStyle="ButtonStyle.Secondary" Click="@(() => AgregarElemento(modelo.TiposTrabajo, ref nuevoTipo))"
+                                  Size="ButtonSize.Medium"
+                                  Style="height: 40px; width: 40px; border-radius: 8px; margin-top: 16px; display: flex; justify-content: center; align-items: center;" />
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (!modelo.TiposTrabajo.Any())
+                    {
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="font-style: italic;">Indica qué tipos de trabajos académicos manejas.</RadzenText>
+                    }
+                    @foreach (var tipo in modelo.TiposTrabajo)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Info" IsPill="true"
+                                     Style="padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; background-color: var(--color-secundario);"
+                                     Click="@(() => RemoverElemento(modelo.TiposTrabajo, tipo))">
+                            @tipo <span class="material-icons" style="font-size: 14px; margin-left: 8px;">close</span>
+                        </RadzenBadge>
+                    }
+                </div>
+
+                @* ─── SECCIÓN: IDIOMAS ─── *@
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 0.75rem; margin-top: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons" style="font-size: 1.1rem; color: var(--color-primario);">translate</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 700; color: var(--color-texto); margin: 0;">Idiomas</RadzenText>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-2 mb-2">
+                    <RadzenFormField Text="Nuevo Idioma" Variant="Variant.Outlined" Style="flex: 1;">
+                        <RadzenTextBox @bind-Value="nuevoIdioma" Placeholder="Ej: Español, Inglés, Portugués"
+                                       @onkeypress="@(e => { if(e.Key == "Enter") AgregarElemento(modelo.Idiomas, ref nuevoIdioma); })"
+                                       Style="width: 100%;" />
+                    </RadzenFormField>
+                    <RadzenButton Icon="add" ButtonStyle="ButtonStyle.Light" Click="@(() => AgregarElemento(modelo.Idiomas, ref nuevoIdioma))"
+                                  Size="ButtonSize.Medium"
+                                  Style="height: 40px; width: 40px; border-radius: 8px; margin-top: 16px; display: flex; justify-content: center; align-items: center; background: var(--color-acento); color: white;" />
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (!modelo.Idiomas.Any())
+                    {
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="font-style: italic;">Agrega los idiomas que dominas.</RadzenText>
+                    }
+                    @foreach (var idioma in modelo.Idiomas)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Warning" IsPill="true"
+                                     Style="padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; background-color: var(--color-acento); color: white;"
+                                     Click="@(() => RemoverElemento(modelo.Idiomas, idioma))">
+                            @idioma <span class="material-icons" style="font-size: 14px; margin-left: 8px;">close</span>
+                        </RadzenBadge>
+                    }
+                </div>
+
+                @* ─── SECCIÓN: NORMAS DE CITACIÓN ─── *@
+                <div style="border-bottom: 1px solid var(--divider); padding-bottom: 0.75rem; margin-top: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-icons" style="font-size: 1.1rem; color: var(--color-primario);">menu_book</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 700; color: var(--color-texto); margin: 0;">Normas de Citación</RadzenText>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-2 mb-2">
+                    <RadzenFormField Text="Nueva Norma" Variant="Variant.Outlined" Style="flex: 1;">
+                        <RadzenTextBox @bind-Value="nuevaNorma" Placeholder="Ej: APA 7, IEEE, Chicago, Vancouver"
+                                       @onkeypress="@(e => { if(e.Key == "Enter") AgregarElemento(modelo.NormasCitacion, ref nuevaNorma); })"
+                                       Style="width: 100%;" />
+                    </RadzenFormField>
+                    <RadzenButton Icon="add" ButtonStyle="ButtonStyle.Light" Click="@(() => AgregarElemento(modelo.NormasCitacion, ref nuevaNorma))"
+                                  Size="ButtonSize.Medium"
+                                  Style="height: 40px; width: 40px; border-radius: 8px; margin-top: 16px; display: flex; justify-content: center; align-items: center; background: #2d3436; color: white;" />
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (!modelo.NormasCitacion.Any())
+                    {
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-500" Style="font-style: italic;">Agrega las normas de citación que manejas.</RadzenText>
+                    }
+                    @foreach (var norma in modelo.NormasCitacion)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Dark" IsPill="true"
+                                     Style="padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center;"
+                                     Click="@(() => RemoverElemento(modelo.NormasCitacion, norma))">
+                            @norma <span class="material-icons" style="font-size: 14px; margin-left: 8px;">close</span>
+                        </RadzenBadge>
+                    }
+                </div>
+
+                @* ─── BOTÓN GUARDAR ─── *@
+                <div class="d-flex justify-content-end rz-mt-4" style="padding-top: 1rem; border-top: 1px solid var(--divider);">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="GUARDAR PERFIL" Icon="save"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  Size="ButtonSize.Medium"
+                                  Style="font-weight: 800; background-color: var(--color-primario); border-radius: 12px; padding: 0 2rem;"
+                                  Disabled="@procesando" IsBusy="@procesando" />
+                </div>
+            </RadzenStack>
+        </RadzenTemplateForm>
+    }
+</div>
+
+@code {
+    private PerfilColaboradorModelo? modelo;
+    private bool procesando = false;
+    private string nuevaArea = "";
+    private string nuevoTipo = "";
+    private string nuevoIdioma = "";
+    private string nuevaNorma = "";
+
+    public class OpcionCombo
+    {
+        public int Id { get; set; }
+        public string Texto { get; set; } = string.Empty;
+    }
+
+    private List<OpcionCombo> nivelesAcademicos = new()
+    {
+        new OpcionCombo { Id = 0, Texto = "No Especificado" },
+        new OpcionCombo { Id = 1, Texto = "Técnico" },
+        new OpcionCombo { Id = 2, Texto = "Tecnólogo" },
+        new OpcionCombo { Id = 3, Texto = "Pregrado / Licenciatura" },
+        new OpcionCombo { Id = 4, Texto = "Posgrado / Especialización" },
+        new OpcionCombo { Id = 5, Texto = "Maestría" },
+        new OpcionCombo { Id = 6, Texto = "Doctorado" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // TODO: Obtener el UsuarioId del claim del usuario autenticado
+            var usuarioId = Guid.Empty; // Se reemplazará con el claim real
+            modelo = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(usuarioId);
+            if (modelo == null)
+            {
+                modelo = new PerfilColaboradorModelo { UsuarioId = usuarioId };
+            }
+        }
+        catch
+        {
+            modelo = new PerfilColaboradorModelo();
+        }
+    }
+
+    private void AgregarElemento(List<string> lista, ref string valor)
+    {
+        if (!string.IsNullOrWhiteSpace(valor))
+        {
+            var limpio = valor.Trim();
+            if (!lista.Any(x => x.Equals(limpio, StringComparison.OrdinalIgnoreCase)))
+            {
+                lista.Add(limpio);
+                valor = "";
+            }
+        }
+    }
+
+    private void RemoverElemento(List<string> lista, string elemento)
+    {
+        lista.Remove(elemento);
+    }
+
+    private async Task GuardarPerfil()
+    {
+        if (modelo == null) return;
+
+        // Validaciones de negocio del frontend
+        if (modelo.CargaAcademicaIdeal > modelo.DisponibilidadHorasSemana && modelo.DisponibilidadHorasSemana > 0)
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Atención",
+                "La carga ideal no puede ser mayor que la disponibilidad horaria semanal.");
+            return;
+        }
+
+        procesando = true;
+        try
+        {
+            var exito = await PerfilColaboradorService.ActualizarPerfilColaboradorAsync(modelo);
+            if (exito)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Perfil Guardado",
+                    "Tu perfil profesional se ha actualizado correctamente.");
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Error",
+                    "No se pudo actualizar el perfil profesional.");
+            }
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error Crítico", ex.Message);
+        }
+        finally
+        {
+            procesando = false;
+        }
+    }
+}
