@@ -15,5 +15,6 @@ public record SolicitudAcademicaDto(
     bool EsUrgente,
     bool EntregaPorFases,
     int Estado,
-    Guid? AsesorId
+    Guid? AsesorId,
+    string? NombreAsesor = null
 );

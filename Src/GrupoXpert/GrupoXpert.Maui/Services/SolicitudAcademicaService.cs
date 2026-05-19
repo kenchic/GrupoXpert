@@ -70,4 +70,31 @@ public sealed class SolicitudAcademicaService(HttpClient http) : ISolicitudAcade
             return new List<SolicitudAcademicaDto>();
         }
     }
+
+    public async Task<SolicitudAcademicaDto?> ObtenerPorIdAsync(Guid id)
+    {
+        PrepararCliente();
+        try
+        {
+            return await _http.GetFromJsonAsync<SolicitudAcademicaDto>($"api/SolicitudesAcademicas/{id}");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> AsignarAsesorAsync(Guid solicitudId, Guid asesorId)
+    {
+        PrepararCliente();
+        try
+        {
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/{solicitudId}/asignar", asesorId);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

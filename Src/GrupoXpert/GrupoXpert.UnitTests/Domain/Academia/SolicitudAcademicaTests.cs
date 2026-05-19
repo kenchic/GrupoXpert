@@ -100,7 +100,7 @@ public class SolicitudAcademicaTests
     }
 
     [Fact]
-    public void AsignarAsesor_ConAsesorIdValido_DebeAsignarYCambiarEstadoAEnProceso()
+    public void AsignarAsesor_ConAsesorIdValido_DebeAsignarYCambiarEstadoAAsignada()
     {
         // Arrange
         var solicitud = SolicitudAcademica.Crear(
@@ -112,7 +112,8 @@ public class SolicitudAcademicaTests
 
         // Assert
         solicitud.AsesorId.Should().Be(asesorId);
-        solicitud.Estado.Should().Be(EstadoSolicitud.EnProceso);
+        solicitud.Estado.Should().Be(EstadoSolicitud.Asignada);
+        solicitud.EventosDominio.Should().ContainItemsAssignableTo<SolicitudAsignadaDomainEvent>();
     }
 
     [Fact]
@@ -135,7 +136,7 @@ public class SolicitudAcademicaTests
         // Arrange
         var solicitud = SolicitudAcademica.Crear(
             Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
-        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a EnProceso
+        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a Asignada
 
         // Act
         var accion = () => solicitud.AsignarAsesor(Guid.NewGuid());
@@ -145,12 +146,42 @@ public class SolicitudAcademicaTests
     }
 
     [Fact]
+    public void IniciarTrabajo_CuandoEstaAsignada_DebeCambiarEstadoAEnProceso()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a Asignada
+
+        // Act
+        solicitud.IniciarTrabajo();
+
+        // Assert
+        solicitud.Estado.Should().Be(EstadoSolicitud.EnProceso);
+    }
+
+    [Fact]
+    public void IniciarTrabajo_CuandoNoEstaAsignada_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+
+        // Act
+        var accion = () => solicitud.IniciarTrabajo();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*asignadas*");
+    }
+
+    [Fact]
     public void Completar_CuandoEstaEnProceso_DebeCambiarEstadoACompletada()
     {
         // Arrange
         var solicitud = SolicitudAcademica.Crear(
             Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
-        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a EnProceso
+        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a Asignada
+        solicitud.IniciarTrabajo(); // Pasa a EnProceso
 
         // Act
         solicitud.Completar();
@@ -184,7 +215,7 @@ public class SolicitudAcademicaTests
 
         var solicitud2 = SolicitudAcademica.Crear(
             Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
-        solicitud2.AsignarAsesor(Guid.NewGuid());
+        solicitud2.AsignarAsesor(Guid.NewGuid()); // Pasa a Asignada
         solicitud2.Cancelar();
         solicitud2.Estado.Should().Be(EstadoSolicitud.Cancelada);
     }
@@ -195,7 +226,8 @@ public class SolicitudAcademicaTests
         // Arrange
         var solicitud = SolicitudAcademica.Crear(
             Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
-        solicitud.AsignarAsesor(Guid.NewGuid());
+        solicitud.AsignarAsesor(Guid.NewGuid()); // Pasa a Asignada
+        solicitud.IniciarTrabajo(); // Pasa a EnProceso
         solicitud.Completar();
 
         // Act

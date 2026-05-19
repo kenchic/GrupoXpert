@@ -1,0 +1,396 @@
+@page "/solicitud-academica/{Id:guid}"
+@inject NavigationManager Navegador
+@inject GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService SolicitudService
+@using Microsoft.Maui.Storage
+@using GrupoXpert.Shared.UI.Modelos.Academia
+
+<PageTitle>Detalle de Solicitud - GrupoXpert</PageTitle>
+
+<div class="gx-mobile-content-container" style="padding: 16px; padding-bottom: env(safe-area-inset-bottom, 32px);">
+    
+    @* BOTÓN BACK *@
+    <div style="margin-bottom: 16px; display: flex; align-items: center;">
+        <button class="btn-volver-mobile" @onclick='() => Navegador.NavigateTo("/")'>
+            <span class="material-icons" style="font-size: 1.1rem;">arrow_back</span>
+            <span>Volver</span>
+        </button>
+    </div>
+
+    @if (estaCargando)
+    {
+        @* Skeleton loader for mobile *@
+        <div class="gx-card" style="padding: 16px; background: white; border-radius: 12px; animation: pulse 1.5s infinite ease-in-out;">
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: #e5e7eb;"></div>
+                <div style="flex: 1;">
+                    <div style="width: 150px; height: 16px; background: #e5e7eb; margin-bottom: 6px; border-radius: 4px;"></div>
+                    <div style="width: 100px; height: 10px; background: #e5e7eb; border-radius: 4px;"></div>
+                </div>
+            </div>
+            <div style="height: 100px; background: #f3f4f6; border-radius: 6px; margin-bottom: 12px;"></div>
+            <div style="height: 40px; background: #f3f4f6; border-radius: 6px;"></div>
+        </div>
+    }
+    else if (solicitud == null)
+    {
+        @* Solicitud no encontrada *@
+        <div class="gx-card" style="padding: 32px 16px; text-align: center; background: white; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 180px;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                <span class="material-icons" style="font-size: 2.2rem;">error_outline</span>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-texto); margin: 0;">No encontrada</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); max-width: 280px; margin: 0; line-height: 1.4;">
+                La solicitud académica especificada no se encuentra en el sistema o no está disponible en este momento.
+            </p>
+            <button class="btn-primary-mobile" @onclick='() => Navegador.NavigateTo("/")'>Regresar al Dashboard</button>
+        </div>
+    }
+    else
+    {
+        @* DETALLE DETALLADO EN MÓVIL *@
+        <div class="gx-card" style="position: relative; padding: 20px; border-left: 4px solid @ObtenerBordePorEstado(solicitud.Estado); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px;">
+            
+            @* Urgent badge *@
+            @if (solicitud.EsUrgente)
+            {
+                <div class="gx-urgente-badge-mobile" style="top: 16px; right: 16px;">
+                    <span class="material-icons" style="font-size: 0.75rem;">priority_high</span>
+                    <span>URGENTE</span>
+                </div>
+            }
+
+            @* HEADER DE SOLICITUD *@
+            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(solicitud.Id); color: white; font-weight: 800; font-size: 1.1rem; box-shadow: 0 3px 6px rgba(0,0,0,0.1); flex-shrink: 0;">
+                        @ObtenerInicialesArea(solicitud.AreaTematica)
+                    </div>
+                    <div style="min-width: 0; flex: 1;">
+                        <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0; white-space: normal; line-height: 1.25;">
+                            @solicitud.AreaTematica
+                        </h2>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+                    <div style="display: flex; gap: 6px; font-size: 0.76rem; color: var(--text-secondary); font-weight: 600;">
+                        <span class="badge-tag-mobile">@ObtenerNivelAcademicoTexto(solicitud.NivelAcademico)</span>
+                        <span class="badge-tag-mobile">@ObtenerTipoTrabajoTexto(solicitud.TipoTrabajo)</span>
+                    </div>
+
+                    @* Badge de Estado *@
+                    <span class="gx-badge-estado-mobile" style="background: @ObtenerFondoEstado(solicitud.Estado); color: @ObtenerColorTextoEstado(solicitud.Estado); padding: 4px 10px; border-radius: 12px;">
+                        <span class="material-icons" style="font-size: 0.82rem; margin-right: 2px;">@ObtenerIconoEstado(solicitud.Estado)</span>
+                        <span style="font-size: 0.74rem; font-weight: 700;">@ObtenerTextoEstado(solicitud.Estado)</span>
+                    </span>
+                </div>
+            </div>
+
+            @* GRID DE ESPECIFICACIONES MÓVIL *@
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; background: #fafafa; border-radius: 8px; padding: 14px; border: 1px solid var(--divider);">
+                <div class="info-item-mobile">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <span class="material-icons" style="font-size: 1.1rem;">auto_stories</span>
+                        <span class="info-label-mobile">Extensión de Trabajo:</span>
+                    </div>
+                    <span class="info-value-mobile">@solicitud.NumeroPaginasOPalabras págs / palabras</span>
+                </div>
+                <div class="info-item-mobile">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <span class="material-icons" style="font-size: 1.1rem;">format_quote</span>
+                        <span class="info-label-mobile">Norma de Citación:</span>
+                    </div>
+                    <span class="info-value-mobile">Normas @ObtenerNormaCitacionTexto(solicitud.NormaCitacion)</span>
+                </div>
+                <div class="info-item-mobile">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <span class="material-icons" style="font-size: 1.1rem;">language</span>
+                        <span class="info-label-mobile">Idioma Requerido:</span>
+                    </div>
+                    <span class="info-value-mobile">@ObtenerIdiomaTexto(solicitud.Idioma)</span>
+                </div>
+                <div class="info-item-mobile">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <span class="material-icons" style="font-size: 1.1rem;">event</span>
+                        <span class="info-label-mobile">Fecha de Entrega:</span>
+                    </div>
+                    <span class="info-value-mobile" style="color: var(--color-primario); font-weight: 700;">@solicitud.FechaEntrega.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="info-item-mobile">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <span class="material-icons" style="font-size: 1.1rem;">published_with_changes</span>
+                        <span class="info-label-mobile">Entrega por Fases:</span>
+                    </div>
+                    <span class="info-value-mobile">
+                        @(solicitud.EntregaPorFases ? "Sí, con avances parciales" : "No, entrega única final")
+                    </span>
+                </div>
+            </div>
+
+            @* FORMATO REQUERIDO MÓVIL *@
+            @if (!string.IsNullOrEmpty(solicitud.FormatoRequerido))
+            {
+                <div style="margin-bottom: 16px; background: #fafafa; border-radius: 8px; padding: 14px; border: 1px dashed var(--divider);">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--color-secundario); font-weight: 700; font-size: 0.8rem; margin-bottom: 6px;">
+                        <span class="material-icons" style="font-size: 1.1rem;">article</span>
+                        <span>Lineamientos de Formato</span>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-primary); margin: 0; line-height: 1.5;">
+                        @solicitud.FormatoRequerido
+                    </p>
+                </div>
+            }
+
+            @* INSTRUCCIONES MÓVIL *@
+            @if (!string.IsNullOrEmpty(solicitud.MaterialBase))
+            {
+                <div style="background: rgba(74, 118, 178, 0.03); border-left: 3px solid var(--color-secundario); padding: 14px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 0.8rem; border-top: 1px solid var(--divider); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider);">
+                    <div style="display: flex; align-items: center; gap: 6px; color: var(--color-secundario); font-weight: 700; margin-bottom: 6px;">
+                        <span class="material-icons" style="font-size: 1.1rem;">assignment</span>
+                        <span>Instrucciones y Apoyo</span>
+                    </div>
+                    <p style="margin: 0; line-height: 1.5; color: var(--text-primary); font-style: italic; white-space: pre-wrap;">
+                        @solicitud.MaterialBase
+                    </p>
+                </div>
+            }
+
+            @* ASESOR ENCUBIERTO U OFICIAL *@
+            <div style="border-top: 1px solid var(--divider); padding-top: 16px; margin-top: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid var(--divider);">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); flex-shrink: 0;">
+                        <span class="material-icons" style="font-size: 1.25rem;">person</span>
+                    </div>
+                    <div style="min-width: 0; flex: 1;">
+                        <span style="font-size: 0.68rem; color: var(--text-secondary); display: block; font-weight: 600;">Asesor Académico</span>
+                        <span style="font-size: 0.86rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                            @(!string.IsNullOrEmpty(solicitud.NombreAsesor) ? solicitud.NombreAsesor : "Buscando asesor...")
+                        </span>
+                    </div>
+                    <div style="flex-shrink: 0;">
+                        @if (!string.IsNullOrEmpty(solicitud.NombreAsesor))
+                        {
+                            <span class="material-icons" style="color: #26b050; font-size: 1.3rem;">check_circle</span>
+                        }
+                        else
+                        {
+                            <span class="material-icons" style="color: #d97706; font-size: 1.3rem;">hourglass_empty</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<style>
+    :root {
+        --color-primario-light: rgba(166, 38, 119, 0.08);
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --text-muted: #9ca3af;
+        --divider: #e5e7eb;
+    }
+
+    .btn-volver-mobile {
+        background: transparent;
+        border: 1px solid var(--divider);
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: 0.78rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .badge-tag-mobile {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .info-item-mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        gap: 10px;
+    }
+
+    .info-label-mobile {
+        font-weight: 600;
+    }
+
+    .info-value-mobile {
+        font-weight: 700;
+        color: var(--text-primary);
+        text-align: right;
+    }
+
+    .btn-primary-mobile {
+        background: var(--color-primario);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private SolicitudAcademicaDto? solicitud;
+    private bool estaCargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = Preferences.Default.Get("authToken", string.Empty);
+        if (string.IsNullOrEmpty(token))
+        {
+            Navegador.NavigateTo("/login");
+            return;
+        }
+
+        try
+        {
+            // Cargar detalle de solicitud
+            solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar detalle de solicitud en MAUI: {ex.Message}");
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    // UTILS
+    private string ObtenerBordePorEstado(int estado) => estado switch
+    {
+        1 => "#d97706",
+        2 => "#4a76b2",
+        3 => "#26b050",
+        4 => "#9ca3af",
+        5 => "#7c3aed",
+        _ => "#e5e7eb"
+    };
+
+    private string ObtenerFondoEstado(int estado) => estado switch
+    {
+        1 => "rgba(245, 158, 11, 0.08)",
+        2 => "rgba(74, 118, 178, 0.08)",
+        3 => "rgba(38, 176, 80, 0.08)",
+        4 => "rgba(156, 163, 175, 0.08)",
+        5 => "rgba(124, 58, 237, 0.08)",
+        _ => "#f3f4f6"
+    };
+
+    private string ObtenerColorTextoEstado(int estado) => estado switch
+    {
+        1 => "#d97706",
+        2 => "#4a76b2",
+        3 => "#26b050",
+        4 => "#4b5563",
+        5 => "#7c3aed",
+        _ => "#6b7280"
+    };
+
+    private string ObtenerTextoEstado(int estado) => estado switch
+    {
+        1 => "Pendiente",
+        2 => "En Proceso",
+        3 => "Completada",
+        4 => "Cancelada",
+        5 => "Asignada",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerIconoEstado(int estado) => estado switch
+    {
+        1 => "pending_actions",
+        2 => "engineering",
+        3 => "task_alt",
+        4 => "cancel",
+        5 => "assignment_ind",
+        _ => "help_outline"
+    };
+
+    private string ObtenerInicialesArea(string area)
+    {
+        if (string.IsNullOrWhiteSpace(area)) return "SA";
+        var parts = area.Split(new[] { ' ', '/', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "SA";
+        if (parts.Length == 1) return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0].ToUpper();
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+    }
+
+    private string ObtenerFondoGradiente(Guid id)
+    {
+        var hash = id.GetHashCode();
+        var num = Math.Abs(hash) % 4;
+        return num switch
+        {
+            0 => "linear-gradient(135deg, #a62677 0%, #6b2d5c 100%)",
+            1 => "linear-gradient(135deg, #4a76b2 0%, #2f5485 100%)",
+            2 => "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+            _ => "linear-gradient(135deg, #10b981 0%, #047857 100%)"
+        };
+    }
+
+    private string ObtenerNivelAcademicoTexto(int nivel) => nivel switch
+    {
+        0 => "Secundaria",
+        1 => "Pregrado",
+        2 => "Especialización",
+        3 => "Maestría",
+        4 => "Doctorado",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerTipoTrabajoTexto(int tipo) => tipo switch
+    {
+        0 => "Ensayo",
+        1 => "Tesis",
+        2 => "Artículo",
+        3 => "Monografía",
+        4 => "Proyecto de Grado",
+        5 => "Resumen",
+        6 => "Presentación",
+        _ => "Otro"
+    };
+
+    private string ObtenerNormaCitacionTexto(int norma) => norma switch
+    {
+        0 => "APA",
+        1 => "IEEE",
+        2 => "Vancouver",
+        3 => "Chicago",
+        4 => "Harvard",
+        _ => "Otra"
+    };
+
+    private string ObtenerIdiomaTexto(int idioma) => idioma switch
+    {
+        0 => "Español",
+        1 => "Inglés",
+        2 => "Portugués",
+        3 => "Francés",
+        _ => "Otro"
+    };
+}

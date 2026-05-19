@@ -43,7 +43,7 @@ public sealed class ObtenerSolicitudesDashboardHandler(
         else if (request.Rol == TipoUsuario.Administrador)
         {
             solicitudes = await solicitudRepository.ObtenerPorEstadosAsync(
-                new[] { EstadoSolicitud.Pendiente, EstadoSolicitud.EnProceso }, 
+                new[] { EstadoSolicitud.Pendiente, EstadoSolicitud.EnProceso, EstadoSolicitud.Asignada }, 
                 cancellationToken);
         }
 

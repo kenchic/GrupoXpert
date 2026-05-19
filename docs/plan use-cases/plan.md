@@ -25,7 +25,7 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [ ] | 9 | Generar Cotización Automática de Solicitud | 
 | [ ] | 10 | Realizar Pago de Solicitud (Pasarela y opciones de hitos) | 
 | [ ] | 11 | Asignar Solicitud Automáticamente (Algoritmo de Matching) | 
-| [ ] | 12 | Asignar Solicitud Manualmente (Rol Administrador) | 
+| [x] | 12 | Asignar Solicitud Manualmente (Rol Administrador) | 
 | [ ] | 13 | Visualizar Oportunidades de Proyecto (Dashboard Colaborador) | 
 | [ ] | 14 | Aceptar / Postular a Asignación de Proyecto (Colaborador) | 
 | [ ] | 15 | Gestionar Comunicación Interna (Chat Moderado Cliente-Asesor) | 
