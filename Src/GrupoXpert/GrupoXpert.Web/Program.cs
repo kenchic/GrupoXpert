@@ -15,12 +15,14 @@ builder.Services.AddRadzenComponents();
 // Configurar HttpClient para el servidor Blazor (llamadas server-to-api)
 builder.Services.AddScoped(sp => new HttpClient 
 { 
-    BaseAddress = new Uri("https://localhost:7298/") 
+    BaseAddress = new Uri("http://localhost:5237/") 
 });
 
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAutenticacionService, GrupoXpert.Web.Services.AutenticacionService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAdminService, GrupoXpert.Web.Services.AdminService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilService, GrupoXpert.Web.Services.PerfilService>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilColaboradorService, GrupoXpert.Web.Services.PerfilColaboradorService>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService, GrupoXpert.Web.Services.SolicitudAcademicaService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configurar servicios de autenticación y autorización basada en Cookies

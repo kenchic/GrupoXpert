@@ -1,6 +1,7 @@
 using GrupoXpert.Application.Common.Interfaces;
 using GrupoXpert.Domain.Identidad;
 using GrupoXpert.Domain.Perfil;
+using GrupoXpert.Domain.Academia;
 using GrupoXpert.Infrastructure.Persistence;
 using GrupoXpert.Infrastructure.Persistence.Repositories;
 using GrupoXpert.Infrastructure.Services;
@@ -31,6 +32,8 @@ public static class DependencyInjection
         // 2. Repositorios
         servicios.AddScoped<IUsuarioRepository, UsuarioRepository>();
         servicios.AddScoped<IPerfilClienteRepository, PerfilClienteRepository>();
+        servicios.AddScoped<IPerfilColaboradorRepository, PerfilColaboradorRepository>();
+        servicios.AddScoped<ISolicitudAcademicaRepository, SolicitudAcademicaRepository>();
 
         // 3. Servicios
         servicios.AddSingleton<IHashClaveService, HashClaveService>();

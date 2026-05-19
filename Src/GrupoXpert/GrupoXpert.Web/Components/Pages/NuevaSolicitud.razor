@@ -1,0 +1,8 @@
+@page "/solicitud-academica/nueva"
+@rendermode InteractiveServer
+@using GrupoXpert.Shared.UI.Componentes.Academia
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Estudiante")]
+
+<PageTitle>Nueva Solicitud Académica - GrupoXpert</PageTitle>
+
+<FormularioSolicitudAcademica />

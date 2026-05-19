@@ -1,0 +1,8 @@
+@page "/perfil-colaborador"
+@rendermode InteractiveServer
+@using GrupoXpert.Shared.UI.Componentes.Perfil
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Colaborador,Asesor")]
+
+<PageTitle>Perfil Profesional - GrupoXpert</PageTitle>
+
+<GestionarPerfilColaborador />

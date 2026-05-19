@@ -33,6 +33,15 @@
                 <span>Inscripciones</span>
             </a>
 
+            <AuthorizeView Roles="Estudiante">
+                <Authorized>
+                    <a href="/solicitud-academica/nueva" class="gx-nav-item @(EsRutaActiva("/solicitud-academica/nueva") ? "active" : "")">
+                        <span class="material-icons">add_circle_outline</span>
+                        <span>Nueva Solicitud</span>
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
             <AuthorizeView Roles="Administrador">
                 <Authorized>
                     <a href="/admin/gestion-usuarios" class="gx-nav-item @(EsRutaActiva("/admin") ? "active" : "")">
