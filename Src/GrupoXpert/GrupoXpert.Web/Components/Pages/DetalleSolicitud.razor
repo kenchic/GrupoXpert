@@ -13,14 +13,6 @@
 
 <div class="gx-container" style="max-width: 900px; margin: 0 auto; padding: 24px 16px;">
     
-    @* BOTÓN VOLVER *@
-    <div style="margin-bottom: 20px;">
-        <button class="btn-volver" @onclick='() => Navegador.NavigateTo("/")'>
-            <span class="material-icons" style="font-size: 1.2rem;">arrow_back</span>
-            <span>Volver al Dashboard</span>
-        </button>
-    </div>
-
     @if (estaCargando)
     {
         @* SKELETON LOADING *@
@@ -95,7 +87,7 @@
                 
                 @* COLUMNA 1: DATOS ACADÉMICOS *@
                 <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider);">
-                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-secundario); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
+                    <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
                         <span class="material-icons" style="font-size: 1.15rem;">school</span>
                         <span>Especificaciones Académicas</span>
                     </h3>
@@ -115,7 +107,7 @@
                         </div>
                         <div class="info-item">
                             <span class="info-label">Fecha Límite de Entrega</span>
-                            <span class="info-value" style="color: var(--color-primario); font-weight: 700;">@solicitud.FechaEntrega.ToString("dd/MM/yyyy")</span>
+                            <span class="info-value" style="color: var(--color-primario);">@solicitud.FechaEntrega.ToString("dd/MM/yyyy")</span>
                         </div>
                         <div class="info-item" style="margin-top: 4px;">
                             <span class="info-label">Modalidades de Entrega</span>
@@ -144,7 +136,7 @@
                     
                     @* Formato *@
                     <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider); flex: 1;">
-                        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
+                        <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
                             <span class="material-icons" style="font-size: 1.15rem;">article</span>
                             <span>Lineamientos de Formato</span>
                         </h3>
@@ -155,7 +147,7 @@
 
                     @* Material Base / Instrucciones *@
                     <div style="background: rgba(74, 118, 178, 0.03); border-left: 4px solid var(--color-secundario); border-radius: 0 12px 12px 0; padding: 20px; border-top: 1px solid var(--divider); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); flex: 1;">
-                        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
                             <span class="material-icons" style="font-size: 1.15rem;">assignment</span>
                             <span>Instrucciones y Material de Apoyo</span>
                         </h3>
@@ -174,7 +166,7 @@
                 {
                     @* ASIGNACIÓN POR EL ADMINISTRADOR *@
                     <div class="asignar-card">
-                        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                        <h3 style="font-size: 0.9rem; color: var(--text-primary); margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
                             <span class="material-icons" style="color: var(--color-primario);">assignment_ind</span>
                             <span>Asignación Manual de Asesor</span>
                         </h3>
@@ -315,15 +307,14 @@
     .info-label {
         font-size: 0.75rem;
         color: var(--text-secondary);
-        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 2px;
     }
 
     .info-value {
-        font-size: 0.92rem;
-        font-weight: 700;
+        font-size: 0.75rem;
+        font-weight: 600;
         color: var(--text-primary);
     }
 

@@ -8,14 +8,6 @@
 
 <div class="gx-mobile-content-container" style="padding: 16px; padding-bottom: env(safe-area-inset-bottom, 32px);">
     
-    @* BOTÓN BACK *@
-    <div style="margin-bottom: 16px; display: flex; align-items: center;">
-        <button class="btn-volver-mobile" @onclick='() => Navegador.NavigateTo("/")'>
-            <span class="material-icons" style="font-size: 1.1rem;">arrow_back</span>
-            <span>Volver</span>
-        </button>
-    </div>
-
     @if (estaCargando)
     {
         @* Skeleton loader for mobile *@
