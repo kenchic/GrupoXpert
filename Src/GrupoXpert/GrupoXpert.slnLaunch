@@ -9,6 +9,10 @@
       {
         "Path": "GrupoXpert.Maui\\GrupoXpert.Maui.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "GrupoXpert.Web\\GrupoXpert.Web.csproj",
+        "Action": "Start"
       }
     ]
   }

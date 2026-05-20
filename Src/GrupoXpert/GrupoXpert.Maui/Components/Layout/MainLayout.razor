@@ -1,8 +1,16 @@
 @inherits LayoutComponentBase
+@using Microsoft.Maui.Storage
 
 @* === MOBILE TOP BAR === *@
 <div class="gx-mobile-topbar">
-    <img class="gx-mobile-topbar-avatar" src="images/logo.jpg" alt="Perfil" />
+    @if (tieneImagen)
+    {
+        <img class="gx-mobile-topbar-avatar" src="@avatarUrl" alt="@nombreCompleto" @onclick="ToggleMenuPerfil" style="cursor: pointer;" />
+    }
+    else
+    {
+        <div class="gx-mobile-topbar-avatar-initials" @onclick="ToggleMenuPerfil">@iniciales</div>
+    }
     <div class="gx-mobile-search-container">
         <span class="material-icons">search</span>
         <input class="gx-mobile-topbar-search" type="text" placeholder="Buscar en GrupoXpert..." />
@@ -35,20 +43,177 @@
         <span class="material-icons">notifications</span>
         <span>Avisos</span>
     </NavLink>
-    <NavLink href="/perfil" class="gx-tab-item">
-        <span class="material-icons">person</span>
+    <div class="gx-tab-item @(EsRutaActiva("/perfil") ? "active" : "")" style="cursor: pointer;" @onclick="ToggleMenuPerfil">
+        @if (tieneImagen)
+        {
+            <img class="gx-tab-item-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+        }
+        else
+        {
+            <div class="gx-tab-item-avatar-initials">@iniciales</div>
+        }
         <span>Perfil</span>
-    </NavLink>
+    </div>
 </nav>
+
+@* === BOTTOM SHEET MENU === *@
+@if (mostrarMenuPerfil)
+{
+    <div class="gx-bottom-sheet-backdrop" @onclick="ToggleMenuPerfil">
+        <div class="gx-bottom-sheet" @onclick:stopPropagation>
+            <div class="gx-bottom-sheet-header">
+                @if (tieneImagen)
+                {
+                    <img class="gx-bottom-sheet-avatar" src="@avatarUrl" alt="@nombreCompleto" />
+                }
+                else
+                {
+                    <div class="gx-bottom-sheet-avatar-initials">@iniciales</div>
+                }
+                <div class="gx-bottom-sheet-user-details">
+                    <span class="gx-bottom-sheet-user-name">@nombreCompleto</span>
+                    @if (!string.IsNullOrEmpty(usuarioCorreo))
+                    {
+                        <span class="gx-bottom-sheet-user-email">@usuarioCorreo</span>
+                    }
+                </div>
+            </div>
+            <div class="gx-bottom-sheet-menu">
+                <button class="gx-bottom-sheet-item" @onclick='() => NavegarA("/perfil")'>
+                    <span class="material-icons">person</span>
+                    <span>Mi Perfil</span>
+                </button>
+                <button class="gx-bottom-sheet-item" @onclick="Configurar">
+                    <span class="material-icons">settings</span>
+                    <span>Configuración</span>
+                </button>
+                <button class="gx-bottom-sheet-item" @onclick="CerrarSesion">
+                    <span class="material-icons">logout</span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+            <button class="gx-bottom-sheet-close" @onclick="ToggleMenuPerfil">Cancelar</button>
+        </div>
+    </div>
+}
 
 <RadzenComponents />
 
 @code {
-    [Inject] private NavigationManager Navegacion { get; set; } = default!;
+    [Inject] private NavigationManager Navegador { get; set; } = default!;
+    [Inject] private NotificationService Notificaciones { get; set; } = default!;
+
+    private bool mostrarMenuPerfil = false;
+    private string nombreCompleto = "Usuario GrupoXpert";
+    private string usuarioCorreo = "";
+    private string avatarUrl = "";
+    private string iniciales = "GX";
+    private bool tieneImagen = false;
+
+    protected override void OnInitialized()
+    {
+        CargarDatosUsuario();
+    }
+
+    protected override void OnParametersSet()
+    {
+        CargarDatosUsuario();
+    }
+
+    private void CargarDatosUsuario()
+    {
+        try
+        {
+            var token = Preferences.Default.Get("authToken", string.Empty);
+            if (!string.IsNullOrEmpty(token))
+            {
+                nombreCompleto = Preferences.Default.Get("usuarioNombre", "Usuario GrupoXpert");
+                usuarioCorreo = Preferences.Default.Get("usuarioCorreo", "");
+                avatarUrl = Preferences.Default.Get("usuarioImagen", "");
+                tieneImagen = !string.IsNullOrEmpty(avatarUrl);
+            }
+            else
+            {
+                nombreCompleto = "Usuario GrupoXpert";
+                usuarioCorreo = "";
+                avatarUrl = "";
+                tieneImagen = false;
+            }
+        }
+        catch
+        {
+            nombreCompleto = "Usuario GrupoXpert";
+            usuarioCorreo = "";
+            avatarUrl = "";
+            tieneImagen = false;
+        }
+
+        iniciales = ObtenerIniciales(nombreCompleto);
+    }
+
+    private string ObtenerIniciales(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return "GX";
+
+        var parts = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0)
+            return "GX";
+
+        if (parts.Length == 1)
+        {
+            return parts[0].Length >= 2 
+                ? parts[0].Substring(0, 2).ToUpper() 
+                : parts[0].ToUpper();
+        }
+
+        if (parts.Length == 2)
+        {
+            return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+        }
+
+        // Si tiene 3 o más partes, se omite el segundo nombre (parte 1) y se usa la primera y la tercera parte.
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[2][0])}";
+    }
+
+    private void ToggleMenuPerfil()
+    {
+        var token = Preferences.Default.Get("authToken", string.Empty);
+        if (string.IsNullOrEmpty(token))
+        {
+            Navegador.NavigateTo("/login");
+            return;
+        }
+        mostrarMenuPerfil = !mostrarMenuPerfil;
+    }
+
+    private void NavegarA(string ruta)
+    {
+        mostrarMenuPerfil = false;
+        Navegador.NavigateTo(ruta);
+    }
+
+    private void Configurar()
+    {
+        mostrarMenuPerfil = false;
+        Notificaciones.Notify(NotificationSeverity.Info, "Configuración", "Esta sección se encuentra en construcción.");
+    }
+
+    private void CerrarSesion()
+    {
+        mostrarMenuPerfil = false;
+        Preferences.Default.Remove("authToken");
+        Preferences.Default.Remove("usuarioNombre");
+        Preferences.Default.Remove("usuarioCorreo");
+        Preferences.Default.Remove("usuarioImagen");
+        
+        Notificaciones.Notify(NotificationSeverity.Success, "Sesión Cerrada", "Ha cerrado sesión correctamente.");
+        Navegador.NavigateTo("/login");
+    }
 
     private bool EsRutaActiva(string ruta)
     {
-        var rutaActual = new Uri(Navegacion.Uri).AbsolutePath;
+        var rutaActual = new Uri(Navegador.Uri).AbsolutePath;
         if (ruta == "/") return rutaActual == "/";
         return rutaActual.StartsWith(ruta, StringComparison.OrdinalIgnoreCase);
     }
