@@ -242,3 +242,190 @@ h1:focus { outline:none; }
 .gx-nav-profile-name { font-size:0.8rem; font-weight:700; white-space:nowrap; max-width:100px; overflow:hidden; text-overflow:ellipsis; }
 .gx-nav-profile-role { font-size:0.68rem; opacity:0.85; white-space:nowrap; font-weight:500; }
 .gx-nav-profile-caret { font-size:1.1rem; color:rgba(255,255,255,0.8); }
+
+/* === MOBILE INTERACTIVE PROFILE ELEMENTS === */
+.gx-tab-item-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--divider);
+  margin-bottom: 2px;
+}
+
+.gx-tab-item-avatar-initials {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-acento) 100%);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  border: 1.5px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.gx-mobile-topbar-avatar-initials {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-acento) 100%);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 2px solid var(--color-primario);
+  box-shadow: 0 2px 4px rgba(166,38,119,0.2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* === MOBILE BOTTOM SHEET MENU === */
+.gx-bottom-sheet-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.gx-bottom-sheet {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px calc(20px + env(safe-area-inset-bottom, 16px)) 20px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gx-bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.gx-bottom-sheet-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid var(--color-primario);
+  box-shadow: 0 2px 6px rgba(166,38,119,0.25);
+}
+
+.gx-bottom-sheet-avatar-initials {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-acento) 100%);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 800;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.gx-bottom-sheet-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.gx-bottom-sheet-user-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.gx-bottom-sheet-user-email {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.gx-bottom-sheet-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gx-bottom-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #f8f9fa;
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  width: 100%;
+}
+
+.gx-bottom-sheet-item:active {
+  background: var(--hover-bg);
+  color: var(--color-primario);
+}
+
+.gx-bottom-sheet-item .material-icons {
+  font-size: 1.35rem;
+  color: var(--text-secondary);
+}
+
+.gx-bottom-sheet-item:active .material-icons {
+  color: var(--color-primario);
+}
+
+.gx-bottom-sheet-close {
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  background: white;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.gx-bottom-sheet-close:active {
+  background: #f8f9fa;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

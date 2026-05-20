@@ -125,6 +125,18 @@ public class SolicitudAcademica : AggregateRoot
         }
 
         AsesorId = asesorId;
+        Estado = EstadoSolicitud.Asignada;
+
+        AgregarEventoDominio(new SolicitudAsignadaDomainEvent(Id, asesorId));
+    }
+
+    public void IniciarTrabajo()
+    {
+        if (Estado != EstadoSolicitud.Asignada)
+        {
+            throw new Exceptions.ExcepcionDominio("Solo se puede iniciar el trabajo de solicitudes asignadas.");
+        }
+
         Estado = EstadoSolicitud.EnProceso;
     }
 

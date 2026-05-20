@@ -30,6 +30,8 @@
                 {
                     Preferences.Default.Set("authToken", resultado.TokenAcceso);
                     Preferences.Default.Set("usuarioCorreo", resultado.Correo);
+                    Preferences.Default.Set("usuarioNombre", resultado.Nombre);
+                    Preferences.Default.Set("usuarioImagen", resultado.Imagen ?? string.Empty);
                 }
 
                 Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Correo}");

@@ -19,4 +19,5 @@ public class SolicitudAcademicaDto
     public bool EntregaPorFases { get; set; }
     public int Estado { get; set; }
     public Guid? AsesorId { get; set; }
+    public string? NombreAsesor { get; set; }
 }

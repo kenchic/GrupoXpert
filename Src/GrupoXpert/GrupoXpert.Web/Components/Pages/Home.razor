@@ -55,7 +55,7 @@ else
     <div style="display: flex; flex-direction: column; gap: 16px;">
         @foreach (var sol in solicitudes)
         {
-            <div class="gx-card" style="position: relative; padding: 20px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white;">
+            <div class="gx-card" style="position: relative; padding: 20px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white; cursor: pointer;" @onclick='() => Navegador.NavigateTo($"/solicitud-academica/{sol.Id}")'>
                 @* Indicador de Urgencia Pulsante *@
                 @if (sol.EsUrgente)
                 {
@@ -213,6 +213,7 @@ else
         2 => "#4a76b2", // En Proceso: Azul
         3 => "#26b050", // Completada: Verde
         4 => "#9ca3af", // Cancelada: Gris
+        5 => "#7c3aed", // Asignada: Violeta
         _ => "#e5e7eb"
     };
 
@@ -222,6 +223,7 @@ else
         2 => "rgba(74, 118, 178, 0.08)",
         3 => "rgba(38, 176, 80, 0.08)",
         4 => "rgba(156, 163, 175, 0.08)",
+        5 => "rgba(124, 58, 237, 0.08)",
         _ => "#f3f4f6"
     };
 
@@ -231,6 +233,7 @@ else
         2 => "#4a76b2",
         3 => "#26b050",
         4 => "#4b5563",
+        5 => "#7c3aed",
         _ => "#6b7280"
     };
 
@@ -240,6 +243,7 @@ else
         2 => "En Proceso",
         3 => "Completada",
         4 => "Cancelada",
+        5 => "Asignada",
         _ => "Desconocido"
     };
 
@@ -249,6 +253,7 @@ else
         2 => "engineering",
         3 => "task_alt",
         4 => "cancel",
+        5 => "assignment_ind",
         _ => "help_outline"
     };
 

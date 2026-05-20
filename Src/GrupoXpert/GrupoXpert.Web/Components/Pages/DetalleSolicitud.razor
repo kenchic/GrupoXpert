@@ -1,0 +1,640 @@
+@page "/solicitud-academica/{Id:guid}"
+@rendermode InteractiveServer
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
+@inject GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService SolicitudService
+@inject GrupoXpert.Shared.UI.Abstracciones.IAdminService AdminService
+@inject GrupoXpert.Shared.UI.Abstracciones.IPerfilColaboradorService PerfilColaboradorService
+@inject NavigationManager Navegador
+@inject Radzen.NotificationService Notificaciones
+@using GrupoXpert.Shared.UI.Modelos.Academia
+@using GrupoXpert.Shared.UI.Modelos
+
+<PageTitle>Detalle de Solicitud - GrupoXpert</PageTitle>
+
+<div class="gx-container" style="max-width: 900px; margin: 0 auto; padding: 24px 16px;">
+    
+    @if (estaCargando)
+    {
+        @* SKELETON LOADING *@
+        <div class="gx-card animate-pulse" style="padding: 30px; background: white; border-radius: 12px;">
+            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
+                <div style="width: 60px; height: 60px; border-radius: 12px; background: #e5e7eb;"></div>
+                <div style="flex: 1;">
+                    <div style="width: 250px; height: 24px; background: #e5e7eb; margin-bottom: 8px; border-radius: 4px;"></div>
+                    <div style="width: 150px; height: 14px; background: #e5e7eb; border-radius: 4px;"></div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                <div style="height: 120px; background: #f3f4f6; border-radius: 8px;"></div>
+                <div style="height: 120px; background: #f3f4f6; border-radius: 8px;"></div>
+            </div>
+            <div style="height: 48px; background: #f3f4f6; border-radius: 8px;"></div>
+        </div>
+    }
+    else if (solicitud == null)
+    {
+        @* SOLICITUD NO ENCONTRADA *@
+        <div class="gx-card" style="padding: 48px 24px; text-align: center; background: white; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                <span class="material-icons" style="font-size: 3rem;">error_outline</span>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-texto); margin: 0;">Solicitud no encontrada</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 400px; margin: 0;">
+                No pudimos localizar la solicitud académica solicitada. Es posible que haya sido eliminada o que no tengas los permisos necesarios para verla.
+            </p>
+            <button class="btn btn-primary" @onclick='() => Navegador.NavigateTo("/")'>Regresar al Inicio</button>
+        </div>
+    }
+    else
+    {
+        @* DETALLE DE LA SOLICITUD *@
+        <div class="gx-card shadow-premium" style="position: relative; padding: 32px; background: white; border-radius: 16px; border-left: 6px solid @ObtenerBordePorEstado(solicitud.Estado); margin-bottom: 24px; overflow: hidden;">
+            
+            @* Marca de Urgente *@
+            @if (solicitud.EsUrgente)
+            {
+                <div class="gx-urgente-badge">
+                    <span class="material-icons" style="font-size: 1rem;">priority_high</span>
+                    <span>URGENTE</span>
+                </div>
+            }
+
+            @* HEADER DE LA SOLICITUD *@
+            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <div style="width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(solicitud.Id); color: white; font-weight: 800; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                        @ObtenerInicialesArea(solicitud.AreaTematica)
+                    </div>
+                    <div>
+                        <h1 style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.2;">@solicitud.AreaTematica</h1>
+                        <div style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <span class="badge-tag">@ObtenerNivelAcademicoTexto(solicitud.NivelAcademico)</span>
+                            <span>•</span>
+                            <span class="badge-tag">@ObtenerTipoTrabajoTexto(solicitud.TipoTrabajo)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                @* Badge de Estado *@
+                <span class="gx-badge-estado" style="background: @ObtenerFondoEstado(solicitud.Estado); color: @ObtenerColorTextoEstado(solicitud.Estado); padding: 8px 16px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <span class="material-icons" style="font-size: 1.1rem; margin-right: 4px;">@ObtenerIconoEstado(solicitud.Estado)</span>
+                    <span style="font-size: 0.88rem; font-weight: 700;">@ObtenerTextoEstado(solicitud.Estado)</span>
+                </span>
+            </div>
+
+            @* CONTENIDO DE DETALLE *@
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 24px;">
+                
+                @* COLUMNA 1: DATOS ACADÉMICOS *@
+                <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider);">
+                    <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
+                        <span class="material-icons" style="font-size: 1.15rem;">school</span>
+                        <span>Especificaciones Académicas</span>
+                    </h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        <div class="info-item">
+                            <span class="info-label">Extensión Requerida</span>
+                            <span class="info-value">@solicitud.NumeroPaginasOPalabras páginas / palabras</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Norma de Citación</span>
+                            <span class="info-value">Normas @ObtenerNormaCitacionTexto(solicitud.NormaCitacion)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Idioma del Trabajo</span>
+                            <span class="info-value">@ObtenerIdiomaTexto(solicitud.Idioma)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha Límite de Entrega</span>
+                            <span class="info-value" style="color: var(--color-primario);">@solicitud.FechaEntrega.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="info-item" style="margin-top: 4px;">
+                            <span class="info-label">Modalidades de Entrega</span>
+                            <div style="display: flex; gap: 8px; margin-top: 6px;">
+                                @if (solicitud.EntregaPorFases)
+                                {
+                                    <span class="gx-chip gx-chip-success" style="font-size: 0.72rem;">
+                                        <span class="material-icons" style="font-size: 0.85rem;">published_with_changes</span>
+                                        <span>Entrega por fases</span>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="gx-chip" style="font-size: 0.72rem;">
+                                        <span class="material-icons" style="font-size: 0.85rem;">check_circle_outline</span>
+                                        <span>Entrega única</span>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* COLUMNA 2: REQUERIMIENTOS Y MATERIAL *@
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    
+                    @* Formato *@
+                    <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider); flex: 1;">
+                        <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
+                            <span class="material-icons" style="font-size: 1.15rem;">article</span>
+                            <span>Lineamientos de Formato</span>
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.6; margin: 0;">
+                            @(!string.IsNullOrEmpty(solicitud.FormatoRequerido) ? solicitud.FormatoRequerido : "No se especificaron requisitos especiales de formato.")
+                        </p>
+                    </div>
+
+                    @* Material Base / Instrucciones *@
+                    <div style="background: rgba(74, 118, 178, 0.03); border-left: 4px solid var(--color-secundario); border-radius: 0 12px 12px 0; padding: 20px; border-top: 1px solid var(--divider); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); flex: 1;">
+                        <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="font-size: 1.15rem;">assignment</span>
+                            <span>Instrucciones y Material de Apoyo</span>
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.6; margin: 0; font-style: italic; white-space: pre-wrap;">
+                            @(!string.IsNullOrEmpty(solicitud.MaterialBase) ? solicitud.MaterialBase : "No se ingresaron instrucciones específicas adicionales.")
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            @* SECCIÓN DE ASIGNACIÓN *@
+            <div style="border-top: 1px solid var(--divider); padding-top: 24px; margin-top: 24px;">
+                
+                @if (rolUsuario == "Administrador" && solicitud.Estado == 1)
+                {
+                    @* ASIGNACIÓN POR EL ADMINISTRADOR *@
+                    <div class="asignar-card">
+                        <h3 style="font-size: 0.9rem; color: var(--text-primary); margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons" style="color: var(--color-primario);">assignment_ind</span>
+                            <span>Asignación Manual de Asesor</span>
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0 0 16px 0;">
+                            Como administrador del sistema, puedes asignar un colaborador idóneo para dar inicio a este requerimiento. Al confirmar, el cliente verá la solicitud en estado <strong>Asignada</strong> y el asesor la verá en su dashboard.
+                        </p>
+
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <RadzenDropDown TValue="Guid?" @bind-Value="asesorSeleccionadoId"
+                                                Data="@asesoresDisponibles"
+                                                TextProperty="Nombre"
+                                                ValueProperty="Id"
+                                                Placeholder="-- Seleccione un Colaborador / Asesor --"
+                                                class="w-100"
+                                                Style="border-radius: 8px; border: 1px solid #d1d5db; height: 42px; font-weight: 600;" />
+                            </div>
+                            <div>
+                                <RadzenButton Text="Confirmar Asignación"
+                                              Icon="save"
+                                              ButtonStyle="ButtonStyle.Primary"
+                                              Click="@GuardarAsignacion"
+                                              IsBusy="@guardando"
+                                              Disabled="@(asesorSeleccionadoId == null || asesorSeleccionadoId == Guid.Empty)"
+                                              Style="font-weight: 700; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: 42px;" />
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(mensajeError))
+                        {
+                            <div class="alert-danger-premium">
+                                <span class="material-icons">error</span>
+                                <span>@mensajeError</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(mensajeExito))
+                        {
+                            <div class="alert-success-premium">
+                                <span class="material-icons">check_circle</span>
+                                <span>@mensajeExito</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    @* VISTA DE SOLO LECTURA DEL ASESOR ASIGNADO *@
+                    <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario);">
+                                <span class="material-icons" style="font-size: 1.5rem;">person</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; font-weight: 600;">Asesor Encargado</span>
+                                <span style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">
+                                    @(!string.IsNullOrEmpty(solicitud.NombreAsesor) ? solicitud.NombreAsesor : "Pendiente de Asignación")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            @if (!string.IsNullOrEmpty(solicitud.NombreAsesor))
+                            {
+                                <span class="gx-chip gx-chip-success" style="padding: 6px 12px; font-size: 0.8rem;">
+                                    <span class="material-icons" style="font-size: 0.95rem;">check_circle</span>
+                                    <span>Colaborador Asignado</span>
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="gx-chip gx-chip-warning" style="padding: 6px 12px; font-size: 0.8rem;">
+                                    <span class="material-icons" style="font-size: 0.95rem;">schedule</span>
+                                    <span>Buscando Asesor Calificado</span>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<style>
+    :root {
+        --color-primario-light: rgba(166, 38, 119, 0.08);
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --text-muted: #9ca3af;
+        --divider: #e5e7eb;
+        --transition-fast: 0.15s ease;
+        --transition-medium: 0.25s ease;
+    }
+
+    .btn-volver {
+        background: transparent;
+        border: 1px solid var(--divider);
+        padding: 8px 16px;
+        border-radius: 8px;
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--transition-fast);
+    }
+
+    .btn-volver:hover {
+        background: #f9fafb;
+        color: var(--text-primary);
+        border-color: #d1d5db;
+        transform: translateX(-2px);
+    }
+
+    .shadow-premium {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    .badge-tag {
+        background: #f3f4f6;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .asignar-card {
+        background: rgba(124, 58, 237, 0.03);
+        border: 1px dashed #c084fc;
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .form-select-premium {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background-color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        transition: all var(--transition-fast);
+        outline: none;
+    }
+
+    .form-select-premium:focus {
+        border-color: var(--color-primario);
+        box-shadow: 0 0 0 3px var(--color-primario-light);
+    }
+
+    .alert-danger-premium {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .alert-success-premium {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .animate-pulse {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private SolicitudAcademicaDto? solicitud;
+    private bool estaCargando = true;
+    private string rolUsuario = "Estudiante";
+    private List<UsuarioListaDto> asesoresDisponibles = new();
+    private Guid? asesorSeleccionadoId;
+    private bool guardando = false;
+    private string mensajeError = "";
+    private string mensajeExito = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                rolUsuario = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Estudiante";
+            }
+            
+            // Cargar detalle de solicitud
+            solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+
+            // Cargar asesores si el usuario es Admin y la solicitud está Pendiente
+            if (rolUsuario == "Administrador" && solicitud?.Estado == 1)
+            {
+                var resultadoAdmins = await AdminService.ObtenerUsuariosPaginadoAsync(tipo: 2, estaAprobado: true, tamanoPagina: 100);
+                if (resultadoAdmins != null)
+                {
+                    asesoresDisponibles = resultadoAdmins.Elementos.ToList();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar detalle de solicitud: {ex.Message}");
+            mensajeError = "No se pudieron cargar los detalles de la solicitud.";
+        }
+        finally
+        {
+            estaCargando = false;
+        }
+    }
+
+    private async Task GuardarAsignacion()
+    {
+        if (asesorSeleccionadoId == null || asesorSeleccionadoId == Guid.Empty)
+        {
+            mensajeError = "Por favor seleccione un asesor.";
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Warning,
+                Summary = "Selección requerida",
+                Detail = mensajeError,
+                Duration = 4000
+            });
+            return;
+        }
+
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            // Obtener el perfil del colaborador para tener su Id real de PerfilColaborador
+            var perfil = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(asesorSeleccionadoId.Value);
+            if (perfil == null)
+            {
+                mensajeError = "No se encontró el perfil profesional del asesor seleccionado.";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error de Perfil",
+                    Detail = mensajeError,
+                    Duration = 5000
+                });
+                return;
+            }
+
+            var exito = await SolicitudService.AsignarAsesorAsync(Id, perfil.Id);
+            if (exito)
+            {
+                mensajeExito = "¡Asesor asignado y notificado exitosamente!";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Asignación Exitosa",
+                    Detail = mensajeExito,
+                    Duration = 4000
+                });
+                
+                // Recargar solicitud para actualizar estado y nombre del asesor en UI
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar asignar el asesor.";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error de Servidor",
+                    Detail = mensajeError,
+                    Duration = 5000
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error Inesperado",
+                Detail = mensajeError,
+                Duration = 5000
+            });
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    // UTILITIES DE DISEÑO COMPARTIDOS
+    private string ObtenerBordePorEstado(int estado) => estado switch
+    {
+        1 => "#d97706", // Pendiente: Amber
+        2 => "#4a76b2", // En Proceso: Azul
+        3 => "#26b050", // Completada: Verde
+        4 => "#9ca3af", // Cancelada: Gris
+        5 => "#7c3aed", // Asignada: Violeta
+        _ => "#e5e7eb"
+    };
+
+    private string ObtenerFondoEstado(int estado) => estado switch
+    {
+        1 => "rgba(245, 158, 11, 0.08)",
+        2 => "rgba(74, 118, 178, 0.08)",
+        3 => "rgba(38, 176, 80, 0.08)",
+        4 => "rgba(156, 163, 175, 0.08)",
+        5 => "rgba(124, 58, 237, 0.08)",
+        _ => "#f3f4f6"
+    };
+
+    private string ObtenerColorTextoEstado(int estado) => estado switch
+    {
+        1 => "#d97706",
+        2 => "#4a76b2",
+        3 => "#26b050",
+        4 => "#4b5563",
+        5 => "#7c3aed",
+        _ => "#6b7280"
+    };
+
+    private string ObtenerTextoEstado(int estado) => estado switch
+    {
+        1 => "Pendiente",
+        2 => "En Proceso",
+        3 => "Completada",
+        4 => "Cancelada",
+        5 => "Asignada",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerIconoEstado(int estado) => estado switch
+    {
+        1 => "pending_actions",
+        2 => "engineering",
+        3 => "task_alt",
+        4 => "cancel",
+        5 => "assignment_ind",
+        _ => "help_outline"
+    };
+
+    private string ObtenerInicialesArea(string area)
+    {
+        if (string.IsNullOrWhiteSpace(area)) return "SA";
+        var parts = area.Split(new[] { ' ', '/', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "SA";
+        if (parts.Length == 1) return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0].ToUpper();
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+    }
+
+    private string ObtenerFondoGradiente(Guid id)
+    {
+        var hash = id.GetHashCode();
+        var num = Math.Abs(hash) % 4;
+        return num switch
+        {
+            0 => "linear-gradient(135deg, #a62677 0%, #6b2d5c 100%)",
+            1 => "linear-gradient(135deg, #4a76b2 0%, #2f5485 100%)",
+            2 => "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+            _ => "linear-gradient(135deg, #10b981 0%, #047857 100%)"
+        };
+    }
+
+    private string ObtenerNivelAcademicoTexto(int nivel) => nivel switch
+    {
+        0 => "Secundaria",
+        1 => "Pregrado",
+        2 => "Especialización",
+        3 => "Maestría",
+        4 => "Doctorado",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerTipoTrabajoTexto(int tipo) => tipo switch
+    {
+        0 => "Ensayo",
+        1 => "Tesis",
+        2 => "Artículo",
+        3 => "Monografía",
+        4 => "Proyecto de Grado",
+        5 => "Resumen",
+        6 => "Presentación",
+        _ => "Otro"
+    };
+
+    private string ObtenerNormaCitacionTexto(int norma) => norma switch
+    {
+        0 => "APA",
+        1 => "IEEE",
+        2 => "Vancouver",
+        3 => "Chicago",
+        4 => "Harvard",
+        _ => "Otra"
+    };
+
+    private string ObtenerIdiomaTexto(int idioma) => idioma switch
+    {
+        0 => "Español",
+        1 => "Inglés",
+        2 => "Portugués",
+        3 => "Francés",
+        _ => "Otro"
+    };
+}
