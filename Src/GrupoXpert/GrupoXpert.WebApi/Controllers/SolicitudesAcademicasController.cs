@@ -51,4 +51,20 @@ public sealed class SolicitudesAcademicasController(IMediator mediator) : Contro
         await mediator.Send(new AsignarAsesorCommand(id, asesorId));
         return NoContent();
     }
+
+    [HttpPost("{id:guid}/postular")]
+    [Authorize(Roles = "Asesor")]
+    public async Task<ActionResult> Postular(Guid id, [FromBody] Guid colaboradorId)
+    {
+        await mediator.Send(new PostularASolicitudCommand(id, colaboradorId));
+        return NoContent();
+    }
+
+    [HttpPost("{id:guid}/seleccionar-postulado")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult> SeleccionarPostulado(Guid id, [FromBody] Guid colaboradorId)
+    {
+        await mediator.Send(new SeleccionarPostuladoCommand(id, colaboradorId));
+        return NoContent();
+    }
 }

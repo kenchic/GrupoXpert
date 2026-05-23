@@ -8,6 +8,7 @@
 @inject Radzen.NotificationService Notificaciones
 @using GrupoXpert.Shared.UI.Modelos.Academia
 @using GrupoXpert.Shared.UI.Modelos
+@using GrupoXpert.Shared.UI.Modelos.Perfil
 
 <PageTitle>Detalle de Solicitud - GrupoXpert</PageTitle>
 
@@ -164,6 +165,77 @@
                 
                 @if (rolUsuario == "Administrador" && solicitud.Estado == 1)
                 {
+                    @* SECCIÓN DE POSTULANTES *@
+                    <div class="gx-card-postulantes" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 1.1rem; color: var(--text-primary); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                            <span class="material-icons" style="color: var(--color-primario); font-size: 1.4rem;">people_outline</span>
+                            <span>Asesores Postulados (@(solicitud.Postulaciones?.Count ?? 0))</span>
+                        </h3>
+
+                        @if (solicitud.Postulaciones == null || !solicitud.Postulaciones.Any())
+                        {
+                            <div style="background: #fafafa; border: 1px dashed var(--divider); border-radius: 12px; padding: 32px 16px; text-align: center;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; color: var(--text-muted);">
+                                    <span class="material-icons">person_search</span>
+                                </div>
+                                <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sin postulaciones activas</span>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0; max-width: 400px; margin: 0 auto;">
+                                    Ningún asesor se ha postulado todavía a esta solicitud. Puedes esperar a que se postulen o realizar una asignación manual.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                @foreach (var post in solicitud.Postulaciones)
+                                {
+                                    <div class="postulante-item shadow-premium" style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: white; border-radius: 12px; border: 1px solid var(--divider); transition: all 0.2s ease;">
+                                        <div style="display: flex; align-items: center; gap: 14px;">
+                                            <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--color-primario-light); color: var(--color-primario); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; border: 1.5px solid var(--color-primario);">
+                                                @ObtenerInicialesNombre(post.NombreColaborador)
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: block;">
+                                                    @post.NombreColaborador
+                                                </span>
+                                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                                        Postulado: @post.FechaPostulacion.ToString("dd/MM/yyyy HH:mm")
+                                                    </span>
+                                                    <span>•</span>
+                                                    <div style="display: flex; align-items: center; gap: 2px;">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= Math.Round(post.EvaluacionCalidad))
+                                                            {
+                                                                <span class="material-icons" style="font-size: 0.95rem; color: #fbbf24;">star</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="material-icons" style="font-size: 0.95rem; color: #e5e7eb;">star_border</span>
+                                                            }
+                                                        }
+                                                        <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-left: 2px;">
+                                                            @post.EvaluacionCalidad.ToString("0.0")
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <RadzenButton Text="Aceptar y Asignar"
+                                                          Icon="done"
+                                                          ButtonStyle="ButtonStyle.Success"
+                                                          Click="@(() => AceptarPostulacion(post.ColaboradorId))"
+                                                          IsBusy="@guardando"
+                                                          Style="font-weight: 700; border-radius: 8px; font-size: 0.85rem;" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
                     @* ASIGNACIÓN POR EL ADMINISTRADOR *@
                     <div class="asignar-card">
                         <h3 style="font-size: 0.9rem; color: var(--text-primary); margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
@@ -206,6 +278,68 @@
                         @if (!string.IsNullOrEmpty(mensajeExito))
                         {
                             <div class="alert-success-premium">
+                                <span class="material-icons">check_circle</span>
+                                <span>@mensajeExito</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else if (rolUsuario == "Asesor" && solicitud.Estado == 1)
+                {
+                    @* VISTA DE POSTULACIÓN PARA EL ASESOR *@
+                    <div style="background: white; border-radius: 16px; border: 1.5px solid var(--divider); padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                        @if (yaPostulado)
+                        {
+                            <div style="background: linear-gradient(135deg, rgba(74, 118, 178, 0.04) 0%, rgba(74, 118, 178, 0.08) 100%); border-left: 5px solid var(--color-secundario); border-radius: 12px; padding: 24px; display: flex; align-items: flex-start; gap: 16px; border-top: 1px solid rgba(74, 118, 178, 0.15); border-right: 1px solid rgba(74, 118, 178, 0.15); border-bottom: 1px solid rgba(74, 118, 178, 0.15);">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(74, 118, 178, 0.1); color: var(--color-secundario); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span class="material-icons" style="font-size: 1.6rem;">check_circle</span>
+                                </div>
+                                <div>
+                                    <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">¡Ya te has postulado a este proyecto!</h4>
+                                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 0 12px 0; line-height: 1.5;">
+                                        Tu postulación ha sido registrada exitosamente. El equipo de administración revisará tu perfil profesional y promedio de calidad para tomar una decisión de asignación. Te notificaremos de inmediato si eres seleccionado.
+                                    </p>
+                                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-secundario); display: inline-flex; align-items: center; gap: 6px; background: rgba(74, 118, 178, 0.1); padding: 4px 12px; border-radius: 20px;">
+                                        <span class="material-icons" style="font-size: 0.9rem;">schedule</span>
+                                        <span>Postulación en Revisión</span>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="background: linear-gradient(135deg, rgba(166, 38, 119, 0.02) 0%, rgba(166, 38, 119, 0.05) 100%); border-left: 5px solid var(--color-primario); border-radius: 12px; padding: 24px; display: flex; align-items: flex-start; gap: 18px; border-top: 1px solid rgba(166, 38, 119, 0.1); border-right: 1px solid rgba(166, 38, 119, 0.1); border-bottom: 1px solid rgba(166, 38, 119, 0.1); flex-wrap: wrap;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--color-primario-light); color: var(--color-primario); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span class="material-icons" style="font-size: 1.6rem;">rocket_launch</span>
+                                </div>
+                                <div style="flex: 1; min-width: 250px;">
+                                    <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">¿Te interesa este proyecto académico?</h4>
+                                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 0 16px 0; line-height: 1.5;">
+                                        Como asesor calificado en la plataforma, puedes postularte a esta solicitud. Tu perfil, disponibilidad e historial de calidad se pondrán a consideración de los administradores del sistema para su respectiva aprobación.
+                                    </p>
+                                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                        <RadzenButton Text="Postularme Ahora"
+                                                      Icon="how_to_reg"
+                                                      ButtonStyle="ButtonStyle.Primary"
+                                                      Click="@Postularme"
+                                                      IsBusy="@guardando"
+                                                      Style="font-weight: 700; border-radius: 8px; box-shadow: 0 4px 12px rgba(166,38,119,0.25); height: 42px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(mensajeError))
+                        {
+                            <div class="alert-danger-premium" style="margin-top: 16px;">
+                                <span class="material-icons">error</span>
+                                <span>@mensajeError</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(mensajeExito))
+                        {
+                            <div class="alert-success-premium" style="margin-top: 16px;">
                                 <span class="material-icons">check_circle</span>
                                 <span>@mensajeExito</span>
                             </div>
@@ -407,6 +541,9 @@
     private bool guardando = false;
     private string mensajeError = "";
     private string mensajeExito = "";
+    private Guid usuarioId = Guid.Empty;
+    private PerfilColaboradorModelo? perfilColaboradorActual;
+    private bool yaPostulado = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -418,10 +555,26 @@
             if (user.Identity?.IsAuthenticated == true)
             {
                 rolUsuario = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Estudiante";
+                var idClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                           ?? user.FindFirst("sub")?.Value;
+                if (Guid.TryParse(idClaim, out var parsedId))
+                {
+                    usuarioId = parsedId;
+                }
             }
             
             // Cargar detalle de solicitud
             solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+
+            // Cargar perfil de colaborador si es asesor
+            if (rolUsuario == "Asesor" && usuarioId != Guid.Empty)
+            {
+                perfilColaboradorActual = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(usuarioId);
+                if (solicitud != null && perfilColaboradorActual != null)
+                {
+                    yaPostulado = solicitud.Postulaciones.Any(x => x.ColaboradorId == perfilColaboradorActual.Id);
+                }
+            }
 
             // Cargar asesores si el usuario es Admin y la solicitud está Pendiente
             if (rolUsuario == "Administrador" && solicitud?.Estado == 1)
@@ -522,6 +675,133 @@
         {
             guardando = false;
         }
+    }
+
+    private async Task Postularme()
+    {
+        if (perfilColaboradorActual == null)
+        {
+            mensajeError = "No se pudo obtener tu perfil profesional. Por favor, completa tu perfil antes de postularte.";
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Warning,
+                Summary = "Perfil Incompleto",
+                Detail = mensajeError,
+                Duration = 5000
+            });
+            return;
+        }
+
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            var exito = await SolicitudService.PostularASolicitudAsync(Id, perfilColaboradorActual.Id);
+            if (exito)
+            {
+                mensajeExito = "¡Te has postulado exitosamente! Tu perfil está bajo revisión de la administración.";
+                yaPostulado = true;
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Postulación Exitosa",
+                    Detail = mensajeExito,
+                    Duration = 5000
+                });
+                
+                // Recargar solicitud para actualizar la lista de postulaciones en UI
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar postularte.";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error al Postular",
+                    Detail = mensajeError,
+                    Duration = 5000
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error Inesperado",
+                Detail = mensajeError,
+                Duration = 5000
+            });
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    private async Task AceptarPostulacion(Guid colaboradorId)
+    {
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            var exito = await SolicitudService.SeleccionarPostuladoAsync(Id, colaboradorId);
+            if (exito)
+            {
+                mensajeExito = "¡Asesor seleccionado y asignado exitosamente al proyecto!";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Asignación Exitosa",
+                    Detail = mensajeExito,
+                    Duration = 5000
+                });
+                
+                // Recargar solicitud para actualizar estado y nombre del asesor en UI
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar aceptar la postulación.";
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error de Servidor",
+                    Detail = mensajeError,
+                    Duration = 5000
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error Inesperado",
+                Detail = mensajeError,
+                Duration = 5000
+            });
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    private string ObtenerInicialesNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre)) return "CO";
+        var parts = nombre.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "CO";
+        if (parts.Length == 1) return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0].ToUpper();
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[parts.Length - 1][0])}";
     }
 
     // UTILITIES DE DISEÑO COMPARTIDOS

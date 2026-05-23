@@ -4,6 +4,7 @@
 @using GrupoXpert.Shared.UI.Abstracciones
 @inject IPerfilColaboradorService PerfilColaboradorService
 @inject NotificationService NotificationService
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
 
 @* ─── ENCABEZADO ─── *@
 <div class="gx-card" style="padding: 2rem; margin-bottom: 1rem; position: relative; overflow: visible;">
@@ -258,16 +259,33 @@
     {
         try
         {
-            // TODO: Obtener el UsuarioId del claim del usuario autenticado
-            var usuarioId = Guid.Empty; // Se reemplazará con el claim real
-            modelo = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(usuarioId);
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var usuarioId = Guid.Empty;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var idClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                           ?? user.FindFirst("sub")?.Value;
+                if (Guid.TryParse(idClaim, out var parsedId))
+                {
+                    usuarioId = parsedId;
+                }
+            }
+
+            if (usuarioId != Guid.Empty)
+            {
+                modelo = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(usuarioId);
+            }
+
             if (modelo == null)
             {
                 modelo = new PerfilColaboradorModelo { UsuarioId = usuarioId };
             }
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"Error al inicializar perfil: {ex.Message}");
             modelo = new PerfilColaboradorModelo();
         }
     }

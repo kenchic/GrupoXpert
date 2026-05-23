@@ -43,7 +43,7 @@
         <span class="material-icons">notifications</span>
         <span>Avisos</span>
     </NavLink>
-    <div class="gx-tab-item @(EsRutaActiva("/perfil") ? "active" : "")" style="cursor: pointer;" @onclick="ToggleMenuPerfil">
+    <div class="gx-tab-item @(EsRutaActiva("/perfil") || EsRutaActiva("/perfil-colaborador") ? "active" : "")" style="cursor: pointer;" @onclick="ToggleMenuPerfil">
         @if (tieneImagen)
         {
             <img class="gx-tab-item-avatar" src="@avatarUrl" alt="@nombreCompleto" />
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div class="gx-bottom-sheet-menu">
-                <button class="gx-bottom-sheet-item" @onclick='() => NavegarA("/perfil")'>
+                <button class="gx-bottom-sheet-item" @onclick='() => NavegarA(perfilPath)'>
                     <span class="material-icons">person</span>
                     <span>Mi Perfil</span>
                 </button>
@@ -109,6 +109,8 @@
     private string avatarUrl = "";
     private string iniciales = "GX";
     private bool tieneImagen = false;
+    private string rolUsuario = "Estudiante";
+    private string perfilPath = "/perfil";
 
     protected override void OnInitialized()
     {
@@ -131,6 +133,8 @@
                 usuarioCorreo = Preferences.Default.Get("usuarioCorreo", "");
                 avatarUrl = Preferences.Default.Get("usuarioImagen", "");
                 tieneImagen = !string.IsNullOrEmpty(avatarUrl);
+                rolUsuario = ObtenerRolDelToken(token);
+                perfilPath = (rolUsuario == "Asesor" || rolUsuario == "Colaborador") ? "/perfil-colaborador" : "/perfil";
             }
             else
             {
@@ -138,6 +142,8 @@
                 usuarioCorreo = "";
                 avatarUrl = "";
                 tieneImagen = false;
+                rolUsuario = "Estudiante";
+                perfilPath = "/perfil";
             }
         }
         catch
@@ -146,9 +152,41 @@
             usuarioCorreo = "";
             avatarUrl = "";
             tieneImagen = false;
+            rolUsuario = "Estudiante";
+            perfilPath = "/perfil";
         }
 
         iniciales = ObtenerIniciales(nombreCompleto);
+    }
+
+    private string ObtenerRolDelToken(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                
+                if (doc.RootElement.TryGetProperty("role", out var roleProp))
+                {
+                    return roleProp.GetString() ?? "Estudiante";
+                }
+                if (doc.RootElement.TryGetProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var rolePropXml))
+                {
+                    return rolePropXml.GetString() ?? "Estudiante";
+                }
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+        return "Estudiante";
     }
 
     private string ObtenerIniciales(string nombre)

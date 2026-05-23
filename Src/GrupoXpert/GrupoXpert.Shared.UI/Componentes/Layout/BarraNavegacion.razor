@@ -79,7 +79,7 @@
                     </div>
                 </Template>
                 <ChildContent>
-                    <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" Path="/perfil" />
+                    <RadzenProfileMenuItem Text="Mi Perfil" Icon="person" Path="@perfilPath" />
                     <RadzenProfileMenuItem Text="Configuración" Icon="settings" Path="/configuracion" />
                     <RadzenProfileMenuItem Text="Cerrar Sesión" Icon="logout" Path="/api/auth/logout" />
                 </ChildContent>
@@ -97,6 +97,7 @@
     private string avatarUrl = "";
     private string iniciales = "GX";
     private bool tieneImagen = false;
+    private string perfilPath = "/perfil";
 
     [Inject] private NavigationManager Navegacion { get; set; } = default!;
 
@@ -120,6 +121,7 @@
                 {
                     rol = rolClaim;
                 }
+                perfilPath = (rol == "Asesor" || rol == "Colaborador") ? "/perfil-colaborador" : "/perfil";
 
                 var imagenClaim = user.FindFirst("imagen")?.Value;
                 if (!string.IsNullOrEmpty(imagenClaim))

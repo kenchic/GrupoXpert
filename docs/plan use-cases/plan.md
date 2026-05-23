@@ -27,7 +27,7 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [ ] | 11 | Asignar Solicitud Automáticamente (Algoritmo de Matching) | 
 | [x] | 12 | Asignar Solicitud Manualmente (Rol Administrador) | 
 | [x] | 13 | Visualizar Oportunidades de Proyecto (Dashboard Colaborador) | 
-| [ ] | 14 | Postular a Asignación de Proyecto (Colaborador) | 
+| [x] | 14 | Postular a Asignación de Proyecto (Colaborador) | 
 | [ ] | 15 | Gestionar Comunicación Interna (Chat Moderado Cliente-Asesor) | 
 | [ ] | 16 | Gestionar Notificaciones del Sistema (Email/In-App) | 
 | [ ] | 17 | Subir Entregable Parcial / Avance de Fase (Colaborador) | 

@@ -60,8 +60,7 @@ public sealed class SolicitudAcademicaConfiguracion : IEntityTypeConfiguration<S
 
         builder.Property(x => x.Estado)
             .IsRequired()
-            .HasConversion<int>()
-            .HasDefaultValue(EstadoSolicitud.Pendiente);
+            .HasConversion<int>();
 
         builder.Property(x => x.AsesorId)
             .IsRequired(false);
@@ -70,6 +69,14 @@ public sealed class SolicitudAcademicaConfiguracion : IEntityTypeConfiguration<S
             .WithMany()
             .HasForeignKey(x => x.AsesorId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(x => x.Postulaciones)
+            .WithOne()
+            .HasForeignKey(x => x.SolicitudId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Postulaciones)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.Ignore(x => x.EventosDominio);
     }

@@ -6,7 +6,7 @@ description: Standardizes the workflow for developing use cases in GrupoXpert, o
 You are the GrupoXpert workflow coordinator. Your goal is to guide each requirement through the 7 defined stages.
 
 ## The Workflow
-When the user invokes this flow to start a requirement, you must strictly follow this order:
+When the user invokes this flow to initiate a requirement, first read the graph to quickly locate yourself and then you must strictly follow this order::
 
 1.  **Architectural Analysis (Skill: architect)**: Domain context, bounded contexts, design decisions.
 2.  **Database Design (Skill: dba)**: Physical model, SQL DDL scripts, indexes.
