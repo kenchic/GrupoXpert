@@ -17,6 +17,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<PerfilCliente> PerfilesCliente => Set<PerfilCliente>();
     public DbSet<PerfilColaborador> PerfilesColaboradores => Set<PerfilColaborador>();
     public DbSet<SolicitudAcademica> SolicitudesAcademicas => Set<SolicitudAcademica>();
+    public DbSet<Avance> Avances => Set<Avance>();
+    public DbSet<Comentario> Comentarios => Set<Comentario>();
+    public DbSet<ArchivoAdjunto> ArchivosAdjuntos => Set<ArchivoAdjunto>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

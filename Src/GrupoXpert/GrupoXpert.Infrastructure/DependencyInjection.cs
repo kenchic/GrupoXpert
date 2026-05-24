@@ -34,6 +34,7 @@ public static class DependencyInjection
         servicios.AddScoped<IPerfilClienteRepository, PerfilClienteRepository>();
         servicios.AddScoped<IPerfilColaboradorRepository, PerfilColaboradorRepository>();
         servicios.AddScoped<ISolicitudAcademicaRepository, SolicitudAcademicaRepository>();
+        servicios.AddScoped<IAvanceRepository, AvanceRepository>();
 
         // 3. Servicios
         servicios.AddSingleton<IHashClaveService, HashClaveService>();

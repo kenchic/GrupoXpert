@@ -30,8 +30,8 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [x] | 14 | Postular a Asignación de Proyecto (Colaborador) | 
 | [ ] | 15 | Gestionar Comunicación Interna (Chat Moderado Cliente-Asesor) | 
 | [ ] | 16 | Gestionar Notificaciones del Sistema (Email/In-App) | 
-| [ ] | 17 | Subir Entregable Parcial / Avance de Fase (Colaborador) | 
-| [ ] | 18 | Subir Entregable Final para Revisión (Colaborador) | 
+| [x] | 17 | Subir Entregable Parcial / Avance de Fase (Colaborador) | 
+| [x] | 18 | Subir Entregable Final para Revisión (Colaborador) | 
 | [ ] | 19 | Realizar Revisión de Calidad Interna (Equipo de Calidad / Antiplagio) | 
 | [ ] | 20 | Visualizar y Descargar Entregables Aprobados (Cliente) | 
 | [ ] | 21 | Solicitar Correcciones al Entregable (Cliente) | 

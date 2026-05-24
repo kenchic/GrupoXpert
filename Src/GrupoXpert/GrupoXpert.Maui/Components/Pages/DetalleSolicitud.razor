@@ -340,6 +340,19 @@
                 }
             </div>
 
+            @* SECCION DE AVANCES Y ENTREGABLES *@
+            @if (solicitud.Estado == 2 || solicitud.Estado == 5)
+            {
+                <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
+                    SolicitudId="@Id"
+                    SolicitudAsesorId="@solicitud.AsesorId"
+                    PerfilColaboradorId="@(perfilColaboradorActual?.Id ?? Guid.Empty)"
+                    UsuarioId="@usuarioId"
+                    EsAsesor="@(rolUsuario == "Asesor")"
+                    EsAdmin="@(rolUsuario == "Administrador")"
+                    RecargarSolicitud="CargarSolicitud" />
+            }
+
         </div>
     }
 
@@ -501,6 +514,18 @@
         finally
         {
             estaCargando = false;
+        }
+    }
+
+    private async Task CargarSolicitud()
+    {
+        try
+        {
+            solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+        }
+        catch
+        {
+            // silencioso
         }
     }
 

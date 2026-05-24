@@ -125,4 +125,93 @@ public sealed class SolicitudAcademicaService(HttpClient http) : ISolicitudAcade
             return false;
         }
     }
+
+    public async Task<IReadOnlyList<AvanceDto>> ObtenerAvancesAsync(Guid solicitudId)
+    {
+        PrepararCliente();
+        try
+        {
+            return await _http.GetFromJsonAsync<List<AvanceDto>>($"api/SolicitudesAcademicas/{solicitudId}/avances")
+                   ?? new List<AvanceDto>();
+        }
+        catch
+        {
+            return new List<AvanceDto>();
+        }
+    }
+
+    public async Task<AvanceDto?> SubirAvanceAsync(Guid solicitudId, Guid asesorId, string descripcion, int numeroFase, int tipo)
+    {
+        PrepararCliente();
+        try
+        {
+            var comando = new { SolicitudId = solicitudId, AsesorId = asesorId, Descripcion = descripcion, NumeroFase = numeroFase, Tipo = tipo };
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/{solicitudId}/avances", comando);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadFromJsonAsync<AvanceDto>();
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> AgregarComentarioAsync(Guid avanceId, Guid autorId, string contenido)
+    {
+        PrepararCliente();
+        try
+        {
+            var comando = new { AvanceId = avanceId, AutorId = autorId, Contenido = contenido };
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/avances/{avanceId}/comentarios", comando);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> AgregarArchivoAsync(Guid avanceId, string nombreArchivo, string url, long tamanioBytes, string tipoContenido)
+    {
+        PrepararCliente();
+        try
+        {
+            var comando = new { AvanceId = avanceId, NombreArchivo = nombreArchivo, Url = url, TamanioBytes = tamanioBytes, TipoContenido = tipoContenido };
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/avances/{avanceId}/archivos", comando);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> AprobarAvanceAsync(Guid avanceId)
+    {
+        PrepararCliente();
+        try
+        {
+            var response = await _http.PostAsync($"api/SolicitudesAcademicas/avances/{avanceId}/aprobar", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RechazarAvanceAsync(Guid avanceId)
+    {
+        PrepararCliente();
+        try
+        {
+            var response = await _http.PostAsync($"api/SolicitudesAcademicas/avances/{avanceId}/rechazar", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

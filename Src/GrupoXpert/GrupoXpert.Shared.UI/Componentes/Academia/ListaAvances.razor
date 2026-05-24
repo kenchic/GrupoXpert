@@ -1,0 +1,446 @@
+@using Radzen
+@using Radzen.Blazor
+@using GrupoXpert.Shared.UI.Abstracciones
+@using GrupoXpert.Shared.UI.Modelos.Academia
+@inject ISolicitudAcademicaService SolicitudService
+@inject NotificationService Notificaciones
+
+<div class="gx-card" style="padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+        <span class="material-icons" style="color: var(--color-primario);">assignment_turned_in</span>
+        <span>Avances y Entregables (@avances.Count)</span>
+    </h3>
+
+    @* FORMULARIO SUBIR AVANCE (solo asesor asignado) *@
+    @if (EsAsesor && SolicitudAsesorId == PerfilColaboradorId)
+    {
+        <div style="background: rgba(166, 38, 119, 0.03); border: 1px dashed var(--color-primario); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-primario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 6px;">
+                <span class="material-icons" style="font-size: 1.2rem;">upload_file</span>
+                <span>Subir Nuevo Entregable</span>
+            </h4>
+
+            <RadzenTemplateForm TItem="ModeloAvance" Data="@modeloNuevoAvance" Submit="@ManejarSubirAvance">
+                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: end;">
+                    <RadzenFormField Text="Descripcion del Avance" Variant="Variant.Outlined">
+                        <RadzenTextArea @bind-Value="modeloNuevoAvance.Descripcion"
+                                        Name="Descripcion"
+                                        Rows="2"
+                                        Placeholder="Describe que has avanzado en esta fase..."
+                                        Style="width: 100%;" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Fase" Variant="Variant.Outlined">
+                        <RadzenNumeric @bind-Value="modeloNuevoAvance.NumeroFase"
+                                       Name="NumeroFase"
+                                       Min="1"
+                                       Style="width: 80px;" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Tipo" Variant="Variant.Outlined">
+                        <RadzenDropDown TValue="int" @bind-Value="modeloNuevoAvance.Tipo"
+                                        Name="Tipo"
+                                        Data="@tiposAvance"
+                                        TextProperty="Texto"
+                                        ValueProperty="Id"
+                                        Style="width: 140px;" />
+                    </RadzenFormField>
+                </div>
+                <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+                    <RadzenButton Text="Subir Entregable"
+                                  Icon="cloud_upload"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  ButtonType="ButtonType.Submit"
+                                  IsBusy="@subiendoAvance"
+                                  Style="font-weight: 700; border-radius: 8px;" />
+                </div>
+            </RadzenTemplateForm>
+        </div>
+    }
+
+    @* LISTA DE AVANCES *@
+    @if (estaCargando)
+    {
+        <div style="text-align: center; padding: 32px; color: var(--text-secondary);">
+            <RadzenProgressBarCircular Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Medium" />
+            <p style="margin-top: 12px;">Cargando avances...</p>
+        </div>
+    }
+    else if (avances.Count == 0)
+    {
+        <div style="background: #fafafa; border: 1px dashed var(--divider); border-radius: 12px; padding: 32px 16px; text-align: center;">
+            <span class="material-icons" style="font-size: 2.5rem; color: #9ca3af;">inbox</span>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 8px 0 0 0;">
+                No hay avances registrados para esta solicitud.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            @foreach (var avance in avances)
+            {
+                var estaExpandido = avancesExpandidos.Contains(avance.Id);
+                var comentarioModelo = modelosComentario.GetValueOrDefault(avance.Id, new ModeloComentario());
+
+                <div class="gx-card" style="padding: 20px; border: 1px solid var(--divider); border-radius: 12px; border-left: 5px solid @ObtenerBordeTipo(avance.Tipo);">
+                    @* HEADER *@
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); font-weight: 700; font-size: 0.85rem;">
+                                @ObtenerIniciales(avance.NombreAsesor)
+                            </div>
+                            <div>
+                                <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); display: block;">
+                                    @avance.NombreAsesor
+                                </span>
+                                <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap;">
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">
+                                        Fase #@avance.NumeroFase
+                                    </span>
+                                    <span style="font-size: 0.7rem; color: #d1d5db;">•</span>
+                                    <span class="gx-chip @(avance.Tipo == 2 ? "gx-chip-success" : "gx-chip")" style="font-size: 0.68rem; padding: 2px 8px;">
+                                        @(avance.Tipo == 2 ? "Final" : "Parcial")
+                                    </span>
+                                    <span style="font-size: 0.7rem; color: #d1d5db;">•</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                        @FormatearTiempo(avance.FechaSubida)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="gx-badge-estado" style="background: @ObtenerFondoEstadoAvance(avance.Estado); color: @ObtenerColorTextoEstadoAvance(avance.Estado); padding: 4px 12px; border-radius: 16px; font-size: 0.75rem; font-weight: 700;">
+                            <span class="material-icons" style="font-size: 0.85rem; vertical-align: middle;">@ObtenerIconoEstadoAvance(avance.Estado)</span>
+                            @ObtenerTextoEstadoAvance(avance.Estado)
+                        </span>
+                    </div>
+
+                    @* DESCRIPCION *@
+                    <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin: 0 0 12px 0; white-space: pre-wrap;">
+                        @avance.Descripcion
+                    </p>
+
+                    @* ARCHIVOS *@
+                    @if (avance.ArchivosAdjuntos.Count > 0)
+                    {
+                        <div style="background: #f9fafb; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+                                <span class="material-icons" style="font-size: 0.95rem;">attach_file</span>
+                                Archivos Adjuntos (@avance.ArchivosAdjuntos.Count)
+                            </span>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                @foreach (var archivo in avance.ArchivosAdjuntos)
+                                {
+                                    <a href="@archivo.Url" target="_blank"
+                                       style="display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--divider); border-radius: 8px; padding: 6px 12px; text-decoration: none; color: var(--color-secundario); font-size: 0.8rem; font-weight: 600; transition: all 0.15s ease;"
+                                       onmouseover="this.style.background='#f0f2f5'"
+                                       onmouseout="this.style.background='white'">
+                                        <span class="material-icons" style="font-size: 0.95rem;">description</span>
+                                        <span>@archivo.NombreArchivo</span>
+                                        <span style="font-size: 0.7rem; color: var(--text-muted);">(@FormatearTamano(archivo.TamanioBytes))</span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @* ACCIONES: Expandir comentarios, Aprobar/Rechazar *@
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <RadzenButton Text="@ObtenerTextoBotonComentarios(estaExpandido, avance.Comentarios.Count)"
+                                      Icon="@(estaExpandido ? "unfold_less" : "chat_bubble_outline")"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Size="ButtonSize.Small"
+                                      Click="@(() => AlternarExpansion(avance.Id))"
+                                      Style="font-weight: 600; font-size: 0.78rem;" />
+
+                        @if (EsAdmin && avance.Estado == 1)
+                        {
+                            <RadzenButton Text="Aprobar"
+                                          Icon="check_circle"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Size="ButtonSize.Small"
+                                          Click="@(() => AprobarAvance(avance.Id))"
+                                          Style="font-weight: 600; font-size: 0.78rem;" />
+                            <RadzenButton Text="Rechazar"
+                                          Icon="cancel"
+                                          ButtonStyle="ButtonStyle.Danger"
+                                          Size="ButtonSize.Small"
+                                          Click="@(() => RechazarAvance(avance.Id))"
+                                          Style="font-weight: 600; font-size: 0.78rem;" />
+                        }
+                    </div>
+
+                    @* SECCION EXPANDIBLE DE COMENTARIOS *@
+                    @if (estaExpandido)
+                    {
+                        <div style="border-top: 1px solid var(--divider); margin-top: 12px; padding-top: 12px;">
+                            @* COMENTARIOS EXISTENTES *@
+                            @foreach (var comentario in avance.Comentarios)
+                            {
+                                <div style="display: flex; gap: 10px; margin-bottom: 12px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-secundario); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; flex-shrink: 0;">
+                                        @ObtenerIniciales(comentario.NombreAutor)
+                                    </div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">@comentario.NombreAutor</span>
+                                            <span style="font-size: 0.7rem; color: var(--text-muted);">@FormatearTiempo(comentario.FechaCreacion)</span>
+                                        </div>
+                                        <p style="font-size: 0.84rem; color: var(--text-primary); margin: 0; line-height: 1.4; white-space: pre-wrap;">
+                                            @comentario.Contenido
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+
+                            @* FORMULARIO NUEVO COMENTARIO *@
+                            <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 8px;">
+                                <RadzenTextArea @bind-Value="comentarioModelo.Contenido"
+                                                Name="@($"comentario_{avance.Id}")"
+                                                Rows="2"
+                                                Placeholder="Escribe un comentario..."
+                                                Style="flex: 1; font-size: 0.84rem;" />
+                                <RadzenButton Text="Enviar"
+                                              Icon="send"
+                                              ButtonStyle="ButtonStyle.Primary"
+                                              Size="ButtonSize.Small"
+                                              Click="@(() => EnviarComentario(avance.Id, comentarioModelo.Contenido))"
+                                              Style="font-weight: 600; font-size: 0.78rem; margin-top: 4px;" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid SolicitudId { get; set; }
+    [Parameter] public Guid? SolicitudAsesorId { get; set; }
+    [Parameter] public Guid PerfilColaboradorId { get; set; }
+    [Parameter] public Guid UsuarioId { get; set; }
+    [Parameter] public bool EsAsesor { get; set; }
+    [Parameter] public bool EsAdmin { get; set; }
+    [Parameter] public EventCallback RecargarSolicitud { get; set; }
+
+    private List<AvanceDto> avances = new();
+    private bool estaCargando = true;
+    private bool subiendoAvance;
+    private readonly HashSet<Guid> avancesExpandidos = new();
+    private ModeloAvance modeloNuevoAvance = new();
+    private Dictionary<Guid, ModeloComentario> modelosComentario = new();
+
+    private readonly List<OpcionCombo> tiposAvance = new()
+    {
+        new(1, "Parcial"),
+        new(2, "Final")
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarAvances();
+    }
+
+    private async Task CargarAvances()
+    {
+        estaCargando = true;
+        try
+        {
+            var resultado = await SolicitudService.ObtenerAvancesAsync(SolicitudId);
+            avances = resultado?.ToList() ?? new();
+        }
+        catch
+        {
+            avances = new();
+        }
+        finally
+        {
+            estaCargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ManejarSubirAvance(ModeloAvance modelo)
+    {
+        if (string.IsNullOrWhiteSpace(modelo.Descripcion))
+        {
+            Notificaciones.Notify(NotificationSeverity.Warning, "Validacion", "La descripcion del avance es obligatoria.");
+            return;
+        }
+
+        subiendoAvance = true;
+        try
+        {
+            var resultado = await SolicitudService.SubirAvanceAsync(
+                SolicitudId, PerfilColaboradorId, modelo.Descripcion, modelo.NumeroFase, modelo.Tipo);
+
+            if (resultado != null)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance subido correctamente.");
+                modeloNuevoAvance = new ModeloAvance();
+                await CargarAvances();
+                await RecargarSolicitud.InvokeAsync();
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo subir el avance.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+        finally
+        {
+            subiendoAvance = false;
+        }
+    }
+
+    private async Task EnviarComentario(Guid avanceId, string contenido)
+    {
+        if (string.IsNullOrWhiteSpace(contenido))
+        {
+            Notificaciones.Notify(NotificationSeverity.Warning, "Validacion", "El comentario no puede estar vacio.");
+            return;
+        }
+
+        try
+        {
+            var ok = await SolicitudService.AgregarComentarioAsync(avanceId, UsuarioId, contenido);
+            if (ok)
+            {
+                modelosComentario[avanceId] = new ModeloComentario();
+                await CargarAvances();
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo enviar el comentario.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+    }
+
+    private async Task AprobarAvance(Guid avanceId)
+    {
+        try
+        {
+            var ok = await SolicitudService.AprobarAvanceAsync(avanceId);
+            if (ok)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance aprobado.");
+                await CargarAvances();
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+    }
+
+    private async Task RechazarAvance(Guid avanceId)
+    {
+        try
+        {
+            var ok = await SolicitudService.RechazarAvanceAsync(avanceId);
+            if (ok)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance rechazado.");
+                await CargarAvances();
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+    }
+
+    private void AlternarExpansion(Guid avanceId)
+    {
+        if (avancesExpandidos.Contains(avanceId))
+            avancesExpandidos.Remove(avanceId);
+        else
+            avancesExpandidos.Add(avanceId);
+    }
+
+    private string ObtenerTextoBotonComentarios(bool expandido, int conteo)
+    {
+        var prefijo = expandido ? "Ocultar comentarios" : "Comentarios";
+        return $"{prefijo} ({conteo})";
+    }
+
+    private string ObtenerBordeTipo(int tipo) => tipo == 2 ? "#26b050" : "#4a76b2";
+
+    private string ObtenerIniciales(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre)) return "??";
+        var partes = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (partes.Length == 0) return "??";
+        if (partes.Length == 1) return partes[0].Length >= 2 ? partes[0][..2].ToUpper() : partes[0].ToUpper();
+        return $"{char.ToUpper(partes[0][0])}{char.ToUpper(partes[^1][0])}";
+    }
+
+    private string FormatearTiempo(DateTime fecha)
+    {
+        var diferencia = DateTime.UtcNow - fecha;
+        if (diferencia.TotalMinutes < 1) return "Ahora mismo";
+        if (diferencia.TotalMinutes < 60) return $"Hace {(int)diferencia.TotalMinutes} min";
+        if (diferencia.TotalHours < 24) return $"Hace {(int)diferencia.TotalHours} h";
+        if (diferencia.TotalDays < 7) return $"Hace {(int)diferencia.TotalDays} d";
+        return fecha.ToString("dd/MM/yyyy");
+    }
+
+    private string FormatearTamano(long bytes)
+    {
+        if (bytes < 1024) return $"{bytes} B";
+        if (bytes < 1024 * 1024) return $"{bytes / 1024.0:F1} KB";
+        return $"{bytes / (1024.0 * 1024):F1} MB";
+    }
+
+    private string ObtenerTextoEstadoAvance(int estado) => estado switch
+    {
+        1 => "Pendiente",
+        2 => "Aprobado",
+        3 => "Rechazado",
+        _ => "Desconocido"
+    };
+
+    private string ObtenerFondoEstadoAvance(int estado) => estado switch
+    {
+        1 => "rgba(245, 158, 11, 0.10)",
+        2 => "rgba(38, 176, 80, 0.10)",
+        3 => "rgba(239, 68, 68, 0.10)",
+        _ => "#f3f4f6"
+    };
+
+    private string ObtenerColorTextoEstadoAvance(int estado) => estado switch
+    {
+        1 => "#d97706",
+        2 => "#26b050",
+        3 => "#ef4444",
+        _ => "#6b7280"
+    };
+
+    private string ObtenerIconoEstadoAvance(int estado) => estado switch
+    {
+        1 => "pending",
+        2 => "check_circle",
+        3 => "cancel",
+        _ => "help_outline"
+    };
+
+    private class ModeloAvance
+    {
+        public string Descripcion { get; set; } = string.Empty;
+        public int NumeroFase { get; set; } = 1;
+        public int Tipo { get; set; } = 1;
+    }
+
+    private class ModeloComentario
+    {
+        public string Contenido { get; set; } = string.Empty;
+    }
+
+    private record OpcionCombo(int Id, string Texto);
+}
