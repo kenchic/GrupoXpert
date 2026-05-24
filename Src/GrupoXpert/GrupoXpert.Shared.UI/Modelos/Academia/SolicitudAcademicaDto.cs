@@ -20,4 +20,5 @@ public class SolicitudAcademicaDto
     public int Estado { get; set; }
     public Guid? AsesorId { get; set; }
     public string? NombreAsesor { get; set; }
+    public System.Collections.Generic.List<PostulacionDto> Postulaciones { get; set; } = new();
 }

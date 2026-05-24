@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GrupoXpert.Application.Academia.Dtos;
@@ -34,6 +35,31 @@ public sealed class ObtenerSolicitudPorIdHandler(
             }
         }
 
+        var postulacionesDto = new List<PostulacionDto>();
+        foreach (var post in solicitud.Postulaciones)
+        {
+            var perfilColab = await perfilColaboradorRepositorio.ObtenerPorIdAsync(post.ColaboradorId, cancellationToken);
+            string nombreColab = "Colaborador Anónimo";
+            decimal evaluacion = 0m;
+            if (perfilColab != null)
+            {
+                evaluacion = perfilColab.EvaluacionCalidad;
+                var usuarioColab = await usuarioRepositorio.ObtenerPorIdAsync(perfilColab.UsuarioId, cancellationToken);
+                if (usuarioColab != null)
+                {
+                    nombreColab = usuarioColab.Nombre;
+                }
+            }
+            postulacionesDto.Add(new PostulacionDto(
+                post.Id,
+                post.ColaboradorId,
+                nombreColab,
+                evaluacion,
+                post.FechaPostulacion,
+                (int)post.Estado
+            ));
+        }
+
         return new SolicitudAcademicaDto(
             solicitud.Id,
             solicitud.ClienteId,
@@ -50,7 +76,8 @@ public sealed class ObtenerSolicitudPorIdHandler(
             solicitud.EntregaPorFases,
             (int)solicitud.Estado,
             solicitud.AsesorId,
-            nombreAsesor
+            nombreAsesor,
+            postulacionesDto
         );
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace GrupoXpert.Application.Academia.Dtos;
 
 public record SolicitudAcademicaDto(
@@ -16,5 +19,6 @@ public record SolicitudAcademicaDto(
     bool EntregaPorFases,
     int Estado,
     Guid? AsesorId,
-    string? NombreAsesor = null
+    string? NombreAsesor = null,
+    IReadOnlyList<PostulacionDto>? Postulaciones = null
 );

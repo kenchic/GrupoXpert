@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using GrupoXpert.Domain.Academia.Events;
 using GrupoXpert.Domain.Common;
 
@@ -19,6 +21,9 @@ public class SolicitudAcademica : AggregateRoot
     public bool EntregaPorFases { get; private set; }
     public EstadoSolicitud Estado { get; private set; }
     public Guid? AsesorId { get; private set; }
+
+    private readonly List<Postulacion> _postulaciones = new();
+    public IReadOnlyCollection<Postulacion> Postulaciones => _postulaciones.AsReadOnly();
 
     // Constructor vacío para EF Core
     private SolicitudAcademica() 
@@ -158,5 +163,51 @@ public class SolicitudAcademica : AggregateRoot
         }
 
         Estado = EstadoSolicitud.Cancelada;
+    }
+
+    /// <summary>
+    /// Permite a un asesor postularse para resolver esta solicitud académica.
+    /// </summary>
+    public void PostularAsesor(Guid colaboradorId)
+    {
+        if (Estado != EstadoSolicitud.Pendiente)
+        {
+            throw new Exceptions.ExcepcionDominio("Solo se puede postular a solicitudes que estén pendientes.");
+        }
+
+        if (_postulaciones.Any(p => p.ColaboradorId == colaboradorId))
+        {
+            throw new Exceptions.ExcepcionDominio("El colaborador ya se encuentra postulado a esta solicitud.");
+        }
+
+        _postulaciones.Add(new Postulacion(Id, colaboradorId));
+    }
+
+    /// <summary>
+    /// Permite al administrador seleccionar una postulación, aceptándola y rechazando las demás.
+    /// </summary>
+    public void SeleccionarPostulado(Guid colaboradorId)
+    {
+        if (Estado != EstadoSolicitud.Pendiente)
+        {
+            throw new Exceptions.ExcepcionDominio("Solo se puede seleccionar un postulado para solicitudes pendientes.");
+        }
+
+        var postulacion = _postulaciones.FirstOrDefault(p => p.ColaboradorId == colaboradorId);
+        if (postulacion == null)
+        {
+            throw new Exceptions.ExcepcionDominio("El colaborador no se ha postulado a esta solicitud.");
+        }
+
+        postulacion.Aceptar();
+
+        // Rechazar las demás postulaciones pendientes
+        foreach (var p in _postulaciones.Where(x => x.ColaboradorId != colaboradorId && x.Estado == EstadoPostulacion.Pendiente))
+        {
+            p.Rechazar();
+        }
+
+        // Asignar el asesor
+        AsignarAsesor(colaboradorId);
     }
 }

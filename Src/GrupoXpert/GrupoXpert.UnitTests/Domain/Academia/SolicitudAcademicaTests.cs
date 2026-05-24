@@ -236,4 +236,96 @@ public class SolicitudAcademicaTests
         // Assert
         accion.Should().Throw<ExcepcionDominio>().WithMessage("*completada*");
     }
+
+    [Fact]
+    public void PostularAsesor_ConAsesorValido_DebeAgregarPostulacion()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        var colaboradorId = Guid.NewGuid();
+
+        // Act
+        solicitud.PostularAsesor(colaboradorId);
+
+        // Assert
+        solicitud.Postulaciones.Should().HaveCount(1);
+        var post = solicitud.Postulaciones.Should().ContainSingle().Subject;
+        post.ColaboradorId.Should().Be(colaboradorId);
+        post.Estado.Should().Be(EstadoPostulacion.Pendiente);
+    }
+
+    [Fact]
+    public void PostularAsesor_CuandoYaEstaPostulado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        var colaboradorId = Guid.NewGuid();
+        solicitud.PostularAsesor(colaboradorId);
+
+        // Act
+        var accion = () => solicitud.PostularAsesor(colaboradorId);
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*ya se encuentra postulado*");
+    }
+
+    [Fact]
+    public void PostularAsesor_CuandoNoEstaPendiente_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        solicitud.AsignarAsesor(Guid.NewGuid()); // Cambia a Asignada
+        var colaboradorId = Guid.NewGuid();
+
+        // Act
+        var accion = () => solicitud.PostularAsesor(colaboradorId);
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*pendientes*");
+    }
+
+    [Fact]
+    public void SeleccionarPostulado_ConAsesorPostulado_DebeAceptarPostulacionYAsignarYRechazarOtros()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        var colabA = Guid.NewGuid();
+        var colabB = Guid.NewGuid();
+        solicitud.PostularAsesor(colabA);
+        solicitud.PostularAsesor(colabB);
+
+        // Act
+        solicitud.SeleccionarPostulado(colabA);
+
+        // Assert
+        solicitud.AsesorId.Should().Be(colabA);
+        solicitud.Estado.Should().Be(EstadoSolicitud.Asignada);
+
+        var postA = solicitud.Postulaciones.Should().Contain(x => x.ColaboradorId == colabA).Subject;
+        postA.Estado.Should().Be(EstadoPostulacion.Aceptada);
+
+        var postB = solicitud.Postulaciones.Should().Contain(x => x.ColaboradorId == colabB).Subject;
+        postB.Estado.Should().Be(EstadoPostulacion.Rechazada);
+    }
+
+    [Fact]
+    public void SeleccionarPostulado_CuandoAsesorNoEstaPostulado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var solicitud = SolicitudAcademica.Crear(
+            Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "IA", DateTime.UtcNow.AddDays(5), 10, NormaCitacion.APA, IdiomaRequerido.Espanol, "PDF", "Instrucciones", false, false);
+        var colabA = Guid.NewGuid();
+        solicitud.PostularAsesor(colabA);
+        var colabB = Guid.NewGuid();
+
+        // Act
+        var accion = () => solicitud.SeleccionarPostulado(colabB);
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*no se ha postulado*");
+    }
 }

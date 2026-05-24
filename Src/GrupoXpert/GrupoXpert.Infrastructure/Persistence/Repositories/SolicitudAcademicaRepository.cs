@@ -8,6 +8,7 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
     public async Task<SolicitudAcademica?> ObtenerPorIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await context.Set<SolicitudAcademica>()
+            .Include(x => x.Postulaciones)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
@@ -18,8 +19,33 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
 
     public async Task ActualizarAsync(SolicitudAcademica solicitud, CancellationToken cancellationToken = default)
     {
-        context.Set<SolicitudAcademica>().Update(solicitud);
-        await Task.CompletedTask;
+        // En EF Core, las entidades recuperadas y modificadas dentro de la misma Unidad de Trabajo
+        // son rastreadas automáticamente por el ChangeTracker. Llamar a .Update(solicitud) en una entidad
+        // ya rastreada puede cambiar erróneamente el estado de sus colecciones dependientes a 'Modified',
+        // provocando DbUpdateConcurrencyException al intentar ejecutar UPDATEs en filas que aún no existen
+        // o que deben ser insertadas/eliminadas de forma normal.
+        //
+        // Sin embargo, cuando se agrega una nueva entidad hija (ej. Postulacion) a una colección de navegación
+        // de una entidad ya rastreada, EF Core puede marcarla como 'Modified' en lugar de 'Added'
+        // porque detecta una PK asignada (Guid.NewGuid()) y no sabe que es una entidad nueva.
+        // Por eso, forzamos explícitamente el estado 'Added' para las postulaciones que no existen en BD.
+        var idsPostulaciones = solicitud.Postulaciones.Select(p => p.Id).ToList();
+        if (idsPostulaciones.Count != 0)
+        {
+            var idsExistentes = await context.Set<Postulacion>()
+                .AsNoTracking()
+                .Where(p => idsPostulaciones.Contains(p.Id))
+                .Select(p => p.Id)
+                .ToListAsync(cancellationToken);
+
+            foreach (var postulacion in solicitud.Postulaciones)
+            {
+                if (!idsExistentes.Contains(postulacion.Id))
+                {
+                    context.Entry(postulacion).State = EntityState.Added;
+                }
+            }
+        }
     }
 
     public async Task EliminarAsync(Guid id, CancellationToken cancellationToken = default)

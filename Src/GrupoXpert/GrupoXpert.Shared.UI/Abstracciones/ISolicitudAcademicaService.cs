@@ -8,4 +8,6 @@ public interface ISolicitudAcademicaService
     Task<IReadOnlyList<SolicitudAcademicaDto>> ObtenerSolicitudesDashboardAsync();
     Task<SolicitudAcademicaDto?> ObtenerPorIdAsync(Guid id);
     Task<bool> AsignarAsesorAsync(Guid solicitudId, Guid asesorId);
+    Task<bool> PostularASolicitudAsync(Guid solicitudId, Guid colaboradorId);
+    Task<bool> SeleccionarPostuladoAsync(Guid solicitudId, Guid colaboradorId);
 }

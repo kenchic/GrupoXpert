@@ -16,11 +16,13 @@ public class ActualizarPerfilColaboradorHandler(
     public async Task<Unit> Handle(ActualizarPerfilColaboradorCommand request, CancellationToken cancellationToken)
     {
         var perfil = await perfilColaboradorRepository.ObtenerPorUsuarioIdAsync(request.UsuarioId, cancellationToken);
+        var esNuevo = false;
 
         if (perfil == null)
         {
             perfil = PerfilColaborador.Crear(request.UsuarioId);
             await perfilColaboradorRepository.AgregarAsync(perfil, cancellationToken);
+            esNuevo = true;
         }
 
         perfil.ActualizarPerfil(
@@ -68,7 +70,10 @@ public class ActualizarPerfilColaboradorHandler(
         foreach (var norma in normasNuevas.Except(normasActuales))
             perfil.AgregarNormaCitacion(norma);
 
-        await perfilColaboradorRepository.ActualizarAsync(perfil, cancellationToken);
+        if (!esNuevo)
+        {
+            await perfilColaboradorRepository.ActualizarAsync(perfil, cancellationToken);
+        }
         await unidadDeTrabajo.GuardarCambiosAsync(cancellationToken);
 
         return Unit.Value;

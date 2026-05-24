@@ -97,4 +97,32 @@ public sealed class SolicitudAcademicaService(
             return false;
         }
     }
+
+    public async Task<bool> PostularASolicitudAsync(Guid solicitudId, Guid colaboradorId)
+    {
+        PrepararCliente();
+        try
+        {
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/{solicitudId}/postular", colaboradorId);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> SeleccionarPostuladoAsync(Guid solicitudId, Guid colaboradorId)
+    {
+        PrepararCliente();
+        try
+        {
+            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/{solicitudId}/seleccionar-postulado", colaboradorId);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

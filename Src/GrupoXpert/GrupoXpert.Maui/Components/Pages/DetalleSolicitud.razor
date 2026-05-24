@@ -1,8 +1,13 @@
 @page "/solicitud-academica/{Id:guid}"
 @inject NavigationManager Navegador
+@inject NotificationService Notificaciones
 @inject GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService SolicitudService
+@inject GrupoXpert.Shared.UI.Abstracciones.IAdminService AdminService
+@inject GrupoXpert.Shared.UI.Abstracciones.IPerfilColaboradorService PerfilColaboradorService
 @using Microsoft.Maui.Storage
 @using GrupoXpert.Shared.UI.Modelos.Academia
+@using GrupoXpert.Shared.UI.Modelos
+@using GrupoXpert.Shared.UI.Modelos.Perfil
 
 <PageTitle>Detalle de Solicitud - GrupoXpert</PageTitle>
 
@@ -147,29 +152,192 @@
                 </div>
             }
 
-            @* ASESOR ENCUBIERTO U OFICIAL *@
+            @* SECCIÓN DE ASIGNACIÓN / POSTULACIÓN *@
             <div style="border-top: 1px solid var(--divider); padding-top: 16px; margin-top: 16px;">
-                <div style="display: flex; align-items: center; gap: 10px; background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid var(--divider);">
-                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); flex-shrink: 0;">
-                        <span class="material-icons" style="font-size: 1.25rem;">person</span>
-                    </div>
-                    <div style="min-width: 0; flex: 1;">
-                        <span style="font-size: 0.68rem; color: var(--text-secondary); display: block; font-weight: 600;">Asesor Académico</span>
-                        <span style="font-size: 0.86rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
-                            @(!string.IsNullOrEmpty(solicitud.NombreAsesor) ? solicitud.NombreAsesor : "Buscando asesor...")
-                        </span>
-                    </div>
-                    <div style="flex-shrink: 0;">
-                        @if (!string.IsNullOrEmpty(solicitud.NombreAsesor))
+                
+                @if (rolUsuario == "Administrador" && solicitud.Estado == 1)
+                {
+                    @* SECCIÓN DE POSTULANTES *@
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 1rem; color: var(--text-primary); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                            <span class="material-icons" style="color: var(--color-primario); font-size: 1.3rem;">people_outline</span>
+                            <span>Asesores Postulados (@(solicitud.Postulaciones?.Count ?? 0))</span>
+                        </h3>
+
+                        @if (solicitud.Postulaciones == null || !solicitud.Postulaciones.Any())
                         {
-                            <span class="material-icons" style="color: #26b050; font-size: 1.3rem;">check_circle</span>
+                            <div style="background: #fafafa; border: 1px dashed var(--divider); border-radius: 12px; padding: 24px 16px; text-align: center;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; color: var(--text-muted);">
+                                    <span class="material-icons">person_search</span>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sin postulaciones activas</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">
+                                    Ningún asesor se ha postulado todavía a esta solicitud.
+                                </p>
+                            </div>
                         }
                         else
                         {
-                            <span class="material-icons" style="color: #d97706; font-size: 1.3rem;">hourglass_empty</span>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                @foreach (var post in solicitud.Postulaciones)
+                                {
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: white; border-radius: 12px; border: 1px solid var(--divider); box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                                        <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+                                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-primario-light); color: var(--color-primario); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0;">
+                                                @ObtenerInicialesNombre(post.NombreColaborador)
+                                            </div>
+                                            <div style="min-width: 0;">
+                                                <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); display: block;">@post.NombreColaborador</span>
+                                                <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">
+                                                    @post.FechaPostulacion.ToString("dd/MM/yyyy HH:mm")
+                                                </span>
+                                                <div style="display: flex; align-items: center; gap: 1px; margin-top: 2px;">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= Math.Round(post.EvaluacionCalidad))
+                                                        {
+                                                            <span class="material-icons" style="font-size: 0.85rem; color: #fbbf24;">star</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="material-icons" style="font-size: 0.85rem; color: #e5e7eb;">star_border</span>
+                                                        }
+                                                    }
+                                                    <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); margin-left: 2px;">@post.EvaluacionCalidad.ToString("0.0")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary-mobile" style="background: #16a34a; flex-shrink: 0; padding: 6px 10px; font-size: 0.72rem;"
+                                                @onclick="() => AceptarPostulacion(post.ColaboradorId)"
+                                                disabled="@guardando">
+                                            Aceptar
+                                        </button>
+                                    </div>
+                                }
+                            </div>
                         }
                     </div>
-                </div>
+
+                    @* ASIGNACIÓN MANUAL *@
+                    <div style="background: rgba(124, 58, 237, 0.03); border: 1px dashed #c084fc; border-radius: 12px; padding: 20px;">
+                        <h3 style="font-size: 0.85rem; color: var(--text-primary); margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px; font-weight: 700;">
+                            <span class="material-icons" style="color: var(--color-primario); font-size: 1.1rem;">assignment_ind</span>
+                            <span>Asignación Manual</span>
+                        </h3>
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0 0 14px 0;">
+                            Selecciona un colaborador para asignar directamente.
+                        </p>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <select class="form-select-premium-mobile" @bind="asesorSeleccionadoIdString">
+                                <option value="">-- Seleccione un Colaborador --</option>
+                                @foreach (var asesor in asesoresDisponibles)
+                                {
+                                    <option value="@asesor.Id">@asesor.Nombre</option>
+                                }
+                            </select>
+                            <button class="btn-primary-mobile" @onclick="GuardarAsignacion" disabled="@(!Guid.TryParse(asesorSeleccionadoIdString, out var _))">
+                                Confirmar Asignación
+                            </button>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(mensajeError))
+                        {
+                            <div class="alert-danger-premium" style="margin-top: 10px;">
+                                <span class="material-icons">error</span>
+                                <span>@mensajeError</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(mensajeExito))
+                        {
+                            <div class="alert-success-premium" style="margin-top: 10px;">
+                                <span class="material-icons">check_circle</span>
+                                <span>@mensajeExito</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else if (rolUsuario == "Asesor" && solicitud.Estado == 1)
+                {
+                    @* VISTA DE POSTULACIÓN PARA EL ASESOR *@
+                    <div style="background: white; border-radius: 16px; border: 1.5px solid var(--divider); padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                        @if (yaPostulado)
+                        {
+                            <div style="background: linear-gradient(135deg, rgba(74, 118, 178, 0.04) 0%, rgba(74, 118, 178, 0.08) 100%); border-left: 5px solid var(--color-secundario); border-radius: 12px; padding: 20px; display: flex; align-items: flex-start; gap: 14px; border-top: 1px solid rgba(74, 118, 178, 0.15); border-right: 1px solid rgba(74, 118, 178, 0.15); border-bottom: 1px solid rgba(74, 118, 178, 0.15);">
+                                <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(74, 118, 178, 0.1); color: var(--color-secundario); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span class="material-icons" style="font-size: 1.4rem;">check_circle</span>
+                                </div>
+                                <div>
+                                    <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">¡Ya te has postulado!</h4>
+                                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 10px 0; line-height: 1.4;">
+                                        Tu postulación está en revisión. Te notificaremos si eres seleccionado.
+                                    </p>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secundario); display: inline-flex; align-items: center; gap: 4px; background: rgba(74, 118, 178, 0.1); padding: 4px 10px; border-radius: 20px;">
+                                        <span class="material-icons" style="font-size: 0.8rem;">schedule</span>
+                                        <span>En Revisión</span>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="background: linear-gradient(135deg, rgba(166, 38, 119, 0.02) 0%, rgba(166, 38, 119, 0.05) 100%); border-left: 5px solid var(--color-primario); border-radius: 12px; padding: 20px; display: flex; align-items: flex-start; gap: 14px; border-top: 1px solid rgba(166, 38, 119, 0.1); border-right: 1px solid rgba(166, 38, 119, 0.1); border-bottom: 1px solid rgba(166, 38, 119, 0.1);">
+                                <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-primario-light); color: var(--color-primario); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span class="material-icons" style="font-size: 1.4rem;">rocket_launch</span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">¿Te interesa este proyecto?</h4>
+                                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 14px 0; line-height: 1.4;">
+                                        Postúlate para que la administración evalúe tu perfil.
+                                    </p>
+                                    <button class="btn-primary-mobile" @onclick="Postularme" disabled="@guardando" style="box-shadow: 0 4px 12px rgba(166,38,119,0.25);">
+                                        Postularme Ahora
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(mensajeError))
+                        {
+                            <div class="alert-danger-premium" style="margin-top: 12px;">
+                                <span class="material-icons">error</span>
+                                <span>@mensajeError</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(mensajeExito))
+                        {
+                            <div class="alert-success-premium" style="margin-top: 12px;">
+                                <span class="material-icons">check_circle</span>
+                                <span>@mensajeExito</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    @* VISTA DE SOLO LECTURA DEL ASESOR ASIGNADO *@
+                    <div style="display: flex; align-items: center; gap: 10px; background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid var(--divider);">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); flex-shrink: 0;">
+                            <span class="material-icons" style="font-size: 1.25rem;">person</span>
+                        </div>
+                        <div style="min-width: 0; flex: 1;">
+                            <span style="font-size: 0.68rem; color: var(--text-secondary); display: block; font-weight: 600;">Asesor Académico</span>
+                            <span style="font-size: 0.86rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                                @(!string.IsNullOrEmpty(solicitud.NombreAsesor) ? solicitud.NombreAsesor : "Buscando asesor...")
+                            </span>
+                        </div>
+                        <div style="flex-shrink: 0;">
+                            @if (!string.IsNullOrEmpty(solicitud.NombreAsesor))
+                            {
+                                <span class="material-icons" style="color: #26b050; font-size: 1.3rem;">check_circle</span>
+                            }
+                            else
+                            {
+                                <span class="material-icons" style="color: #d97706; font-size: 1.3rem;">hourglass_empty</span>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
 
         </div>
@@ -184,20 +352,6 @@
         --text-secondary: #4b5563;
         --text-muted: #9ca3af;
         --divider: #e5e7eb;
-    }
-
-    .btn-volver-mobile {
-        background: transparent;
-        border: 1px solid var(--divider);
-        padding: 6px 12px;
-        border-radius: 6px;
-        color: var(--text-secondary);
-        font-weight: 600;
-        font-size: 0.78rem;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
     }
 
     .badge-tag-mobile {
@@ -235,6 +389,54 @@
         cursor: pointer;
     }
 
+    .btn-primary-mobile:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .form-select-premium-mobile {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background-color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        outline: none;
+    }
+
+    .form-select-premium-mobile:focus {
+        border-color: var(--color-primario);
+        box-shadow: 0 0 0 3px var(--color-primario-light);
+    }
+
+    .alert-danger-premium {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .alert-success-premium {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
     @@keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
@@ -247,6 +449,15 @@
 
     private SolicitudAcademicaDto? solicitud;
     private bool estaCargando = true;
+    private string rolUsuario = "Estudiante";
+    private Guid usuarioId = Guid.Empty;
+    private List<UsuarioListaDto> asesoresDisponibles = new();
+    private string asesorSeleccionadoIdString = string.Empty;
+    private bool guardando = false;
+    private string mensajeError = "";
+    private string mensajeExito = "";
+    private PerfilColaboradorModelo? perfilColaboradorActual;
+    private bool yaPostulado = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -259,17 +470,221 @@
 
         try
         {
-            // Cargar detalle de solicitud
+            rolUsuario = ObtenerRolDelToken(token);
+            usuarioId = ObtenerUsuarioIdDelToken(token);
+
             solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+
+            if (rolUsuario == "Asesor" && usuarioId != Guid.Empty)
+            {
+                perfilColaboradorActual = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(usuarioId);
+                if (solicitud != null && perfilColaboradorActual != null)
+                {
+                    yaPostulado = solicitud.Postulaciones.Any(x => x.ColaboradorId == perfilColaboradorActual.Id);
+                }
+            }
+
+            if (rolUsuario == "Administrador" && solicitud?.Estado == 1)
+            {
+                var resultadoAdmins = await AdminService.ObtenerUsuariosPaginadoAsync(tipo: 2, estaAprobado: true, tamanoPagina: 100);
+                if (resultadoAdmins != null)
+                {
+                    asesoresDisponibles = resultadoAdmins.Elementos.ToList();
+                }
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al cargar detalle de solicitud en MAUI: {ex.Message}");
+            mensajeError = "No se pudieron cargar los detalles de la solicitud.";
         }
         finally
         {
             estaCargando = false;
         }
+    }
+
+    private async Task GuardarAsignacion()
+    {
+        if (!Guid.TryParse(asesorSeleccionadoIdString, out var asesorId) || asesorId == Guid.Empty)
+        {
+            mensajeError = "Por favor seleccione un asesor.";
+            Notificaciones.Notify(NotificationSeverity.Warning, "Selección requerida", mensajeError, 4000);
+            return;
+        }
+
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            var perfil = await PerfilColaboradorService.ObtenerPerfilColaboradorAsync(asesorId);
+            if (perfil == null)
+            {
+                mensajeError = "No se encontró el perfil profesional del asesor seleccionado.";
+                Notificaciones.Notify(NotificationSeverity.Error, "Error de Perfil", mensajeError, 5000);
+                return;
+            }
+
+            var exito = await SolicitudService.AsignarAsesorAsync(Id, perfil.Id);
+            if (exito)
+            {
+                mensajeExito = "¡Asesor asignado exitosamente!";
+                Notificaciones.Notify(NotificationSeverity.Success, "Asignación Exitosa", mensajeExito, 4000);
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar asignar el asesor.";
+                Notificaciones.Notify(NotificationSeverity.Error, "Error de Servidor", mensajeError, 5000);
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(NotificationSeverity.Error, "Error Inesperado", mensajeError, 5000);
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    private async Task Postularme()
+    {
+        if (perfilColaboradorActual == null)
+        {
+            mensajeError = "No se pudo obtener tu perfil profesional. Por favor, completa tu perfil antes de postularte.";
+            Notificaciones.Notify(NotificationSeverity.Warning, "Perfil Incompleto", mensajeError, 5000);
+            return;
+        }
+
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            var exito = await SolicitudService.PostularASolicitudAsync(Id, perfilColaboradorActual.Id);
+            if (exito)
+            {
+                mensajeExito = "¡Te has postulado exitosamente!";
+                yaPostulado = true;
+                Notificaciones.Notify(NotificationSeverity.Success, "Postulación Exitosa", mensajeExito, 5000);
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar postularte.";
+                Notificaciones.Notify(NotificationSeverity.Error, "Error al Postular", mensajeError, 5000);
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(NotificationSeverity.Error, "Error Inesperado", mensajeError, 5000);
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    private async Task AceptarPostulacion(Guid colaboradorId)
+    {
+        guardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+
+        try
+        {
+            var exito = await SolicitudService.SeleccionarPostuladoAsync(Id, colaboradorId);
+            if (exito)
+            {
+                mensajeExito = "¡Asesor seleccionado exitosamente!";
+                Notificaciones.Notify(NotificationSeverity.Success, "Asignación Exitosa", mensajeExito, 5000);
+                solicitud = await SolicitudService.ObtenerPorIdAsync(Id);
+            }
+            else
+            {
+                mensajeError = "Ocurrió un error en el servidor al intentar aceptar la postulación.";
+                Notificaciones.Notify(NotificationSeverity.Error, "Error de Servidor", mensajeError, 5000);
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error inesperado: {ex.Message}";
+            Notificaciones.Notify(NotificationSeverity.Error, "Error Inesperado", mensajeError, 5000);
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    // JWT MANUAL DECODERS
+    private string ObtenerRolDelToken(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("role", out var roleProp))
+                {
+                    return roleProp.GetString() ?? "Estudiante";
+                }
+                if (doc.RootElement.TryGetProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var rolePropXml))
+                {
+                    return rolePropXml.GetString() ?? "Estudiante";
+                }
+            }
+        }
+        catch { }
+        return "Estudiante";
+    }
+
+    private Guid ObtenerUsuarioIdDelToken(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("sub", out var subProp) && Guid.TryParse(subProp.GetString(), out var subId))
+                {
+                    return subId;
+                }
+                if (doc.RootElement.TryGetProperty("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier", out var nameIdProp) && Guid.TryParse(nameIdProp.GetString(), out var nameId))
+                {
+                    return nameId;
+                }
+            }
+        }
+        catch { }
+        return Guid.Empty;
+    }
+
+    private string ObtenerInicialesNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre)) return "CO";
+        var parts = nombre.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "CO";
+        if (parts.Length == 1) return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0].ToUpper();
+        return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[parts.Length - 1][0])}";
     }
 
     // UTILS
