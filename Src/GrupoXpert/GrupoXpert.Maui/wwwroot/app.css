@@ -125,8 +125,8 @@ html, body {
 .gx-mobile-topbar-action .material-symbols-outlined, .gx-mobile-topbar-action .material-icons { font-size: 1.6rem; }
 
 /* MOBILE CONTENT */
-.gx-mobile-content { padding: calc(var(--navbar-height) + env(safe-area-inset-top) + 12px) 0 calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + 12px); min-height: 100vh; width: 100%; }
-.gx-mobile-content > * { margin: 0 12px 12px; }
+.gx-mobile-content { padding: calc(var(--navbar-height) + env(safe-area-inset-top) + 5px) 0 calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + 12px); min-height: 100vh; width: 100%; }
+.gx-mobile-content > * { margin: 0 1px 1px; }
 
 /* BOTTOM TAB BAR */
 .gx-tab-bar { 

@@ -5,53 +5,60 @@
 @inject ISolicitudAcademicaService SolicitudService
 @inject NotificationService Notificaciones
 
-<div class="gx-card" style="padding: 24px; border-radius: 12px; margin-bottom: 24px;">
-    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
-        <span class="material-icons" style="color: var(--color-primario);">assignment_turned_in</span>
+<div class="gx-card" style="padding: 8px; border-radius: 10px; margin-top: 12px;">
+    <h3 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0; display: flex; align-items: center; gap: 4px;">
+        <span class="material-icons" style="font-size: 0.9rem; color: var(--color-primario);">assignment_turned_in</span>
         <span>Avances y Entregables (@avances.Count)</span>
     </h3>
 
     @* FORMULARIO SUBIR AVANCE (solo asesor asignado) *@
     @if (EsAsesor && SolicitudAsesorId == PerfilColaboradorId)
     {
-        <div style="background: rgba(166, 38, 119, 0.03); border: 1px dashed var(--color-primario); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-primario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 6px;">
-                <span class="material-icons" style="font-size: 1.2rem;">upload_file</span>
+        <div style="background: rgba(166, 38, 119, 0.03); border: 1px dashed var(--color-primario); border-radius: 8px; padding: 8px; margin-bottom: 10px;">
+            <h4 style="font-size: 0.75rem; font-weight: 700; color: var(--color-primario); margin: 0 0 4px 0; display: flex; align-items: center; gap: 3px;">
+                <span class="material-icons" style="font-size: 0.85rem;">upload_file</span>
                 <span>Subir Nuevo Entregable</span>
             </h4>
 
             <RadzenTemplateForm TItem="ModeloAvance" Data="@modeloNuevoAvance" Submit="@ManejarSubirAvance">
-                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: end;">
-                    <RadzenFormField Text="Descripcion del Avance" Variant="Variant.Outlined">
+                <RadzenRow Gap="0.25rem">
+                    <RadzenColumn Size="4">
+                        <RadzenFormField Text="Fase #" Variant="Variant.Outlined">
+                            <RadzenNumeric @bind-Value="modeloNuevoAvance.NumeroFase"
+                                           Name="NumeroFase"
+                                           Min="1"                                           
+                                           Style="font-size: 0.75rem; height:2rem;" />
+                        </RadzenFormField>
+                    </RadzenColumn>
+                    <RadzenColumn Size="8">
+                        <RadzenFormField Text="Tipo" Variant="Variant.Outlined">
+                            <RadzenDropDown TValue="int" @bind-Value="modeloNuevoAvance.Tipo"
+                                            Name="Tipo"
+                                            Data="@tiposAvance"
+                                            TextProperty="Texto"
+                                            ValueProperty="Id"
+                                            Style="font-size: 0.75rem; height:2rem; width:100%" />
+                        </RadzenFormField>
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow Gap="0.25rem" class="rz-align-items-center">
+                    <RadzenColumn Size="12">
                         <RadzenTextArea @bind-Value="modeloNuevoAvance.Descripcion"
                                         Name="Descripcion"
-                                        Rows="2"
-                                        Placeholder="Describe que has avanzado en esta fase..."
-                                        Style="width: 100%;" />
-                    </RadzenFormField>
-                    <RadzenFormField Text="Fase" Variant="Variant.Outlined">
-                        <RadzenNumeric @bind-Value="modeloNuevoAvance.NumeroFase"
-                                       Name="NumeroFase"
-                                       Min="1"
-                                       Style="width: 80px;" />
-                    </RadzenFormField>
-                    <RadzenFormField Text="Tipo" Variant="Variant.Outlined">
-                        <RadzenDropDown TValue="int" @bind-Value="modeloNuevoAvance.Tipo"
-                                        Name="Tipo"
-                                        Data="@tiposAvance"
-                                        TextProperty="Texto"
-                                        ValueProperty="Id"
-                                        Style="width: 140px;" />
-                    </RadzenFormField>
-                </div>
-                <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
-                    <RadzenButton Text="Subir Entregable"
-                                  Icon="cloud_upload"
-                                  ButtonStyle="ButtonStyle.Primary"
-                                  ButtonType="ButtonType.Submit"
-                                  IsBusy="@subiendoAvance"
-                                  Style="font-weight: 700; border-radius: 8px;" />
-                </div>
+                                        Rows="5"
+                                        Placeholder="Descripcion..."
+                                        Style="width: 100%; font-size: 0.75rem; min-height: 32px; line-height: 1.2; resize: none; margin-top:2px;" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="4" class="rz-text-align-right">
+                        <RadzenButton Text="Subir"
+                                      Icon="cloud_upload"
+                                      ButtonStyle="ButtonStyle.Primary"
+                                      ButtonType="ButtonType.Submit"
+                                      IsBusy="@subiendoAvance"
+                                      Size="ButtonSize.Small"
+                                      Style="font-weight: 700; border-radius: 6px; font-size: 0.7rem; width: 100%; padding: 4px 6px; margin-top: 4px;" />
+                    </RadzenColumn>
+                </RadzenRow>
             </RadzenTemplateForm>
         </div>
     }
@@ -59,97 +66,95 @@
     @* LISTA DE AVANCES *@
     @if (estaCargando)
     {
-        <div style="text-align: center; padding: 32px; color: var(--text-secondary);">
-            <RadzenProgressBarCircular Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Medium" />
-            <p style="margin-top: 12px;">Cargando avances...</p>
+        <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+            <RadzenProgressBarCircular Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Small" />
+            <p style="margin-top: 8px; font-size: 0.75rem;">Cargando avances...</p>
         </div>
     }
     else if (avances.Count == 0)
     {
-        <div style="background: #fafafa; border: 1px dashed var(--divider); border-radius: 12px; padding: 32px 16px; text-align: center;">
-            <span class="material-icons" style="font-size: 2.5rem; color: #9ca3af;">inbox</span>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 8px 0 0 0;">
-                No hay avances registrados para esta solicitud.
+        <div style="background: #fafafa; border: 1px dashed var(--divider); border-radius: 8px; padding: 20px 8px; text-align: center;">
+            <span class="material-icons" style="font-size: 1.5rem; color: #9ca3af;">inbox</span>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 4px 0 0 0;">
+                Sin avances registrados.
             </p>
         </div>
     }
     else
     {
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
             @foreach (var avance in avances)
             {
                 var estaExpandido = avancesExpandidos.Contains(avance.Id);
                 var comentarioModelo = modelosComentario.GetValueOrDefault(avance.Id, new ModeloComentario());
 
-                <div class="gx-card" style="padding: 20px; border: 1px solid var(--divider); border-radius: 12px; border-left: 5px solid @ObtenerBordeTipo(avance.Tipo);">
+                <div class="gx-card" style="padding: 10px; border: 1px solid var(--divider); border-radius: 8px; border-left: 3px solid @ObtenerBordeTipo(avance.Tipo);">
                     @* HEADER *@
-                    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); font-weight: 700; font-size: 0.85rem;">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario); font-weight: 700; font-size: 0.7rem;">
                                 @ObtenerIniciales(avance.NombreAsesor)
                             </div>
                             <div>
-                                <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); display: block;">
+                                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block;">
                                     @avance.NombreAsesor
                                 </span>
-                                <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap;">
-                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">
+                                <div style="display: flex; align-items: center; gap: 4px; margin-top: 1px; flex-wrap: wrap;">
+                                    <span style="font-size: 0.68rem; color: var(--text-secondary);">
                                         Fase #@avance.NumeroFase
                                     </span>
-                                    <span style="font-size: 0.7rem; color: #d1d5db;">•</span>
-                                    <span class="gx-chip @(avance.Tipo == 2 ? "gx-chip-success" : "gx-chip")" style="font-size: 0.68rem; padding: 2px 8px;">
+                                    <span style="font-size: 0.6rem; color: #d1d5db;">•</span>
+                                    <span class="gx-chip @(avance.Tipo == 2 ? "gx-chip-success" : "gx-chip")" style="font-size: 0.62rem; padding: 1px 5px;">
                                         @(avance.Tipo == 2 ? "Final" : "Parcial")
                                     </span>
-                                    <span style="font-size: 0.7rem; color: #d1d5db;">•</span>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                    <span style="font-size: 0.6rem; color: #d1d5db;">•</span>
+                                    <span style="font-size: 0.68rem; color: var(--text-muted);">
                                         @FormatearTiempo(avance.FechaSubida)
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <span class="gx-badge-estado" style="background: @ObtenerFondoEstadoAvance(avance.Estado); color: @ObtenerColorTextoEstadoAvance(avance.Estado); padding: 4px 12px; border-radius: 16px; font-size: 0.75rem; font-weight: 700;">
-                            <span class="material-icons" style="font-size: 0.85rem; vertical-align: middle;">@ObtenerIconoEstadoAvance(avance.Estado)</span>
+                        <span class="gx-badge-estado" style="background: @ObtenerFondoEstadoAvance(avance.Estado); color: @ObtenerColorTextoEstadoAvance(avance.Estado); padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">
+                            <span class="material-icons" style="font-size: 0.7rem; vertical-align: middle;">@ObtenerIconoEstadoAvance(avance.Estado)</span>
                             @ObtenerTextoEstadoAvance(avance.Estado)
                         </span>
                     </div>
 
                     @* DESCRIPCION *@
-                    <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin: 0 0 12px 0; white-space: pre-wrap;">
+                    <p style="font-size: 0.78rem; color: var(--text-primary); line-height: 1.4; margin: 0 0 8px 0; white-space: pre-wrap;">
                         @avance.Descripcion
                     </p>
 
                     @* ARCHIVOS *@
                     @if (avance.ArchivosAdjuntos.Count > 0)
                     {
-                        <div style="background: #f9fafb; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-                                <span class="material-icons" style="font-size: 0.95rem;">attach_file</span>
-                                Archivos Adjuntos (@avance.ArchivosAdjuntos.Count)
+                        <div style="background: #f9fafb; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px;">
+                            <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 3px; margin-bottom: 4px;">
+                                <span class="material-icons" style="font-size: 0.8rem;">attach_file</span>
+                                Archivos (@avance.ArchivosAdjuntos.Count)
                             </span>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                                 @foreach (var archivo in avance.ArchivosAdjuntos)
                                 {
                                     <a href="@archivo.Url" target="_blank"
-                                       style="display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--divider); border-radius: 8px; padding: 6px 12px; text-decoration: none; color: var(--color-secundario); font-size: 0.8rem; font-weight: 600; transition: all 0.15s ease;"
-                                       onmouseover="this.style.background='#f0f2f5'"
-                                       onmouseout="this.style.background='white'">
-                                        <span class="material-icons" style="font-size: 0.95rem;">description</span>
+                                       style="display: inline-flex; align-items: center; gap: 4px; background: white; border: 1px solid var(--divider); border-radius: 5px; padding: 3px 8px; text-decoration: none; color: var(--color-secundario); font-size: 0.7rem; font-weight: 600;">
+                                        <span class="material-icons" style="font-size: 0.8rem;">description</span>
                                         <span>@archivo.NombreArchivo</span>
-                                        <span style="font-size: 0.7rem; color: var(--text-muted);">(@FormatearTamano(archivo.TamanioBytes))</span>
+                                        <span style="font-size: 0.65rem; color: var(--text-muted);">(@FormatearTamano(archivo.TamanioBytes))</span>
                                     </a>
                                 }
                             </div>
                         </div>
                     }
 
-                    @* ACCIONES: Expandir comentarios, Aprobar/Rechazar *@
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    @* ACCIONES *@
+                    <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
                         <RadzenButton Text="@ObtenerTextoBotonComentarios(estaExpandido, avance.Comentarios.Count)"
                                       Icon="@(estaExpandido ? "unfold_less" : "chat_bubble_outline")"
                                       ButtonStyle="ButtonStyle.Light"
                                       Size="ButtonSize.Small"
                                       Click="@(() => AlternarExpansion(avance.Id))"
-                                      Style="font-weight: 600; font-size: 0.78rem;" />
+                                      Style="font-weight: 600; font-size: 0.7rem;" />
 
                         @if (EsAdmin && avance.Estado == 1)
                         {
@@ -158,52 +163,51 @@
                                           ButtonStyle="ButtonStyle.Success"
                                           Size="ButtonSize.Small"
                                           Click="@(() => AprobarAvance(avance.Id))"
-                                          Style="font-weight: 600; font-size: 0.78rem;" />
+                                          Style="font-weight: 600; font-size: 0.7rem;" />
                             <RadzenButton Text="Rechazar"
                                           Icon="cancel"
                                           ButtonStyle="ButtonStyle.Danger"
                                           Size="ButtonSize.Small"
                                           Click="@(() => RechazarAvance(avance.Id))"
-                                          Style="font-weight: 600; font-size: 0.78rem;" />
+                                          Style="font-weight: 600; font-size: 0.7rem;" />
                         }
                     </div>
 
-                    @* SECCION EXPANDIBLE DE COMENTARIOS *@
+                    @* COMENTARIOS *@
                     @if (estaExpandido)
                     {
-                        <div style="border-top: 1px solid var(--divider); margin-top: 12px; padding-top: 12px;">
-                            @* COMENTARIOS EXISTENTES *@
+                        <div style="border-top: 1px solid var(--divider); margin-top: 6px; padding-top: 6px;">
                             @foreach (var comentario in avance.Comentarios)
                             {
-                                <div style="display: flex; gap: 10px; margin-bottom: 12px; padding: 10px; background: #f9fafb; border-radius: 8px;">
-                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-secundario); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; flex-shrink: 0;">
+                                <div style="display: flex; gap: 6px; margin-bottom: 6px; padding: 6px; background: #f9fafb; border-radius: 5px;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--color-secundario); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.6rem; flex-shrink: 0;">
                                         @ObtenerIniciales(comentario.NombreAutor)
                                     </div>
                                     <div style="flex: 1; min-width: 0;">
-                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                                            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">@comentario.NombreAutor</span>
-                                            <span style="font-size: 0.7rem; color: var(--text-muted);">@FormatearTiempo(comentario.FechaCreacion)</span>
+                                        <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                                            <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-primary);">@comentario.NombreAutor</span>
+                                            <span style="font-size: 0.62rem; color: var(--text-muted);">@FormatearTiempo(comentario.FechaCreacion)</span>
                                         </div>
-                                        <p style="font-size: 0.84rem; color: var(--text-primary); margin: 0; line-height: 1.4; white-space: pre-wrap;">
+                                        <p style="font-size: 0.72rem; color: var(--text-primary); margin: 0; line-height: 1.3; white-space: pre-wrap;">
                                             @comentario.Contenido
                                         </p>
                                     </div>
                                 </div>
                             }
 
-                            @* FORMULARIO NUEVO COMENTARIO *@
-                            <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 8px;">
+                            @* NUEVO COMENTARIO *@
+                            <div style="display: flex; gap: 6px; align-items: flex-start; margin-top: 6px;">
                                 <RadzenTextArea @bind-Value="comentarioModelo.Contenido"
                                                 Name="@($"comentario_{avance.Id}")"
-                                                Rows="2"
+                                                Rows="1"
                                                 Placeholder="Escribe un comentario..."
-                                                Style="flex: 1; font-size: 0.84rem;" />
+                                                Style="flex: 1; font-size: 0.75rem;" />
                                 <RadzenButton Text="Enviar"
                                               Icon="send"
                                               ButtonStyle="ButtonStyle.Primary"
                                               Size="ButtonSize.Small"
                                               Click="@(() => EnviarComentario(avance.Id, comentarioModelo.Contenido))"
-                                              Style="font-weight: 600; font-size: 0.78rem; margin-top: 4px;" />
+                                              Style="font-weight: 600; font-size: 0.7rem; margin-top: 2px;" />
                             </div>
                         </div>
                     }

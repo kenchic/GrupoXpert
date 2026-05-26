@@ -12,7 +12,7 @@
 
 <PageTitle>Detalle de Solicitud - GrupoXpert</PageTitle>
 
-<div class="gx-container" style="max-width: 900px; margin: 0 auto; padding: 24px 16px;">
+<div class="gx-container" style="max-width: 900px;">
     
     @if (estaCargando)
     {
@@ -49,19 +49,12 @@
     else
     {
         @* DETALLE DE LA SOLICITUD *@
-        <div class="gx-card shadow-premium" style="position: relative; padding: 32px; background: white; border-radius: 16px; border-left: 6px solid @ObtenerBordePorEstado(solicitud.Estado); margin-bottom: 24px; overflow: hidden;">
+        <div class="gx-card" style="position: relative; padding: 7px; background: white; border-radius: 16px; border-left: 6px solid @ObtenerBordePorEstado(solicitud.Estado); margin-bottom: 24px; overflow: hidden;">
             
-            @* Marca de Urgente *@
-            @if (solicitud.EsUrgente)
-            {
-                <div class="gx-urgente-badge">
-                    <span class="material-icons" style="font-size: 1rem;">priority_high</span>
-                    <span>URGENTE</span>
-                </div>
-            }
+           
 
             @* HEADER DE LA SOLICITUD *@
-            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 7px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
                 <div style="display: flex; gap: 16px; align-items: center;">
                     <div style="width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(solicitud.Id); color: white; font-weight: 800; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
                         @ObtenerInicialesArea(solicitud.AreaTematica)
@@ -76,18 +69,29 @@
                     </div>
                 </div>
                 
-                @* Badge de Estado *@
-                <span class="gx-badge-estado" style="background: @ObtenerFondoEstado(solicitud.Estado); color: @ObtenerColorTextoEstado(solicitud.Estado); padding: 8px 16px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <span class="material-icons" style="font-size: 1.1rem; margin-right: 4px;">@ObtenerIconoEstado(solicitud.Estado)</span>
-                    <span style="font-size: 0.88rem; font-weight: 700;">@ObtenerTextoEstado(solicitud.Estado)</span>
-                </span>
+                <div>
+                    @* Badge de Estado *@
+                    <span class="gx-badge-estado" style="background: @ObtenerFondoEstado(solicitud.Estado); color: @ObtenerColorTextoEstado(solicitud.Estado);">
+                        <span class="material-icons" style="font-size: 0.9rem;">@ObtenerIconoEstado(solicitud.Estado)</span>
+                        <span style="font-size: 0.8rem; font-weight: 700;">@ObtenerTextoEstado(solicitud.Estado)</span>
+                    </span>
+
+                    @* Marca de Urgente *@
+                    @if (solicitud.EsUrgente)
+                    {
+                        <div class="gx-urgente-badge">
+                            <span class="material-icons" style="font-size: 1rem;">priority_high</span>
+                            <span>URGENTE</span>
+                        </div>
+                    }
+                </div>
             </div>
 
             @* CONTENIDO DE DETALLE *@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 24px;">
                 
                 @* COLUMNA 1: DATOS ACADÉMICOS *@
-                <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider);">
+                <div style="background: #fafafa; border-radius: 12px; padding: 7px; border: 1px solid var(--divider);">
                     <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
                         <span class="material-icons" style="font-size: 1.15rem;">school</span>
                         <span>Especificaciones Académicas</span>
@@ -223,7 +227,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <RadzenButton Text="Aceptar y Asignar"
+                                            <RadzenButton Text=""
                                                           Icon="done"
                                                           ButtonStyle="ButtonStyle.Success"
                                                           Click="@(() => AceptarPostulacion(post.ColaboradorId))"
@@ -257,7 +261,7 @@
                                                 Style="border-radius: 8px; border: 1px solid #d1d5db; height: 42px; font-weight: 600;" />
                             </div>
                             <div>
-                                <RadzenButton Text="Confirmar Asignación"
+                                <RadzenButton Text="Asignar"
                                               Icon="save"
                                               ButtonStyle="ButtonStyle.Primary"
                                               Click="@GuardarAsignacion"
@@ -386,14 +390,16 @@
             @* SECCION DE AVANCES Y ENTREGABLES *@
             @if (solicitud.Estado == 2 || solicitud.Estado == 5)
             {
-                <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
-                    SolicitudId="@Id"
-                    SolicitudAsesorId="@solicitud.AsesorId"
-                    PerfilColaboradorId="@(perfilColaboradorActual?.Id ?? Guid.Empty)"
-                    UsuarioId="@usuarioId"
-                    EsAsesor="@(rolUsuario == "Asesor")"
-                    EsAdmin="@(rolUsuario == "Administrador")"
-                    RecargarSolicitud="CargarSolicitud" />
+                 <div>
+                    <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
+                        SolicitudId="@Id"
+                        SolicitudAsesorId="@solicitud.AsesorId"
+                        PerfilColaboradorId="@(perfilColaboradorActual?.Id ?? Guid.Empty)"
+                        UsuarioId="@usuarioId"
+                        EsAsesor="@(rolUsuario == "Asesor")"
+                        EsAdmin="@(rolUsuario == "Administrador")"
+                        RecargarSolicitud="CargarSolicitud" />
+                 </div>
             }
 
         </div>

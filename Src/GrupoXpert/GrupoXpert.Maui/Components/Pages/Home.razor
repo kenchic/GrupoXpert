@@ -45,15 +45,8 @@
         <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
             @foreach (var sol in solicitudes)
             {
-                <div class="gx-card" style="position: relative; padding: 16px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white; cursor: pointer;" @onclick='() => Navegador.NavigateTo($"/solicitud-academica/{sol.Id}")'>
-                    @* Pulsing urgent badge *@
-                    @if (sol.EsUrgente)
-                    {
-                        <div class="gx-urgente-badge-mobile">
-                            <span class="material-icons" style="font-size: 0.8rem;">priority_high</span>
-                            <span>URGENTE</span>
-                        </div>
-                    }
+                <div class="gx-card" style="position: relative; padding: 7px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white; cursor: pointer;" @onclick='() => Navegador.NavigateTo($"/solicitud-academica/{sol.Id}")'>
+                    
 
                     <div style="border-bottom: 1px solid var(--divider); padding-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
                         <div style="display: flex; gap: 10px; align-items: center; max-width: 70%;">
@@ -70,11 +63,22 @@
                             </div>
                         </div>
                         
+                        <div>
                         @* State Badge *@
-                        <span class="gx-badge-estado-mobile" style="background: @ObtenerFondoEstado(sol.Estado); color: @ObtenerColorTextoEstado(sol.Estado);">
-                            <span class="material-icons" style="font-size: 0.8rem;">@ObtenerIconoEstado(sol.Estado)</span>
-                            <span style="font-size: 0.72rem; font-weight: 700;">@ObtenerTextoEstado(sol.Estado)</span>
-                        </span>
+                            <span class="gx-badge-estado-mobile" style="background: @ObtenerFondoEstado(sol.Estado); color: @ObtenerColorTextoEstado(sol.Estado);">
+                                <span class="material-icons" style="font-size: 0.8rem;">@ObtenerIconoEstado(sol.Estado)</span>
+                                <span style="font-size: 0.72rem; font-weight: 700;">@ObtenerTextoEstado(sol.Estado)</span>
+                            </span>
+
+                            @* Pulsing urgent badge *@
+                            @if (sol.EsUrgente)
+                            {
+                                <div class="gx-urgente-badge-mobile">
+                                    <span class="material-icons" style="font-size: 0.8rem;">priority_high</span>
+                                    <span>URGENTE</span>
+                                </div>
+                            }
+                        </div>
                     </div>
 
                     <div style="font-size: 0.84rem; line-height: 1.5; color: var(--text-primary);">
