@@ -47,14 +47,7 @@
         @* DETALLE DETALLADO EN MÓVIL *@
         <div class="gx-card" style="position: relative; padding: 7px; border-left: 4px solid @ObtenerBordePorEstado(solicitud.Estado); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px;">
             
-            @* Urgent badge *@
-            @if (solicitud.EsUrgente)
-            {
-                <div class="gx-urgente-badge-mobile" style="top: 16px; right: 16px;">
-                    <span class="material-icons" style="font-size: 0.75rem;">priority_high</span>
-                    <span>URGENTE</span>
-                </div>
-            }
+           
 
             @* HEADER DE SOLICITUD *@
             <div style="border-bottom: 1px solid var(--divider); padding-bottom: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
@@ -62,25 +55,35 @@
                     <div style="width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(solicitud.Id); color: white; font-weight: 800; font-size: 1.1rem; box-shadow: 0 3px 6px rgba(0,0,0,0.1); flex-shrink: 0;">
                         @ObtenerInicialesArea(solicitud.AreaTematica)
                     </div>
-                    <div style="min-width: 0; flex: 1;">
+                    <div>
                         <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0; white-space: normal; line-height: 1.25;">
                             @solicitud.AreaTematica
                         </h2>
+                        <div style="display: flex; gap: 6px; font-size: 0.76rem; color: var(--text-secondary); font-weight: 600;">
+                            <span class="badge-tag-mobile">@ObtenerNivelAcademicoTexto(solicitud.NivelAcademico)</span>
+                            <span class="badge-tag-mobile">@ObtenerTipoTrabajoTexto(solicitud.TipoTrabajo)</span>
+                        </div>        
                     </div>
+                    
                 </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
-                    <div style="display: flex; gap: 6px; font-size: 0.76rem; color: var(--text-secondary); font-weight: 600;">
-                        <span class="badge-tag-mobile">@ObtenerNivelAcademicoTexto(solicitud.NivelAcademico)</span>
-                        <span class="badge-tag-mobile">@ObtenerTipoTrabajoTexto(solicitud.TipoTrabajo)</span>
-                    </div>
-
+                <div>
                     @* Badge de Estado *@
                     <span class="gx-badge-estado-mobile" style="background: @ObtenerFondoEstado(solicitud.Estado); color: @ObtenerColorTextoEstado(solicitud.Estado); padding: 4px 10px; border-radius: 12px;">
-                        <span class="material-icons" style="font-size: 0.82rem; margin-right: 2px;">@ObtenerIconoEstado(solicitud.Estado)</span>
+                        <span class="material-icons" style="font-size: 0.82rem;">@ObtenerIconoEstado(solicitud.Estado)</span>
                         <span style="font-size: 0.74rem; font-weight: 700;">@ObtenerTextoEstado(solicitud.Estado)</span>
                     </span>
+
+                    @* Urgent badge *@
+                    @if (solicitud.EsUrgente)
+                    {
+                        <div class="gx-urgente-badge-mobile">
+                            <span class="material-icons" style="font-size: 0.75rem;">priority_high</span>
+                            <span>URGENTE</span>
+                        </div>
+                    }
                 </div>
+                
+
             </div>
 
             @* GRID DE ESPECIFICACIONES MÓVIL *@

@@ -153,3 +153,58 @@ h1:focus { outline:none; }
 .darker-border-checkbox.form-check-input { border-color:#929292; }
 
 .rz-profile-menu .rz-button { color:white !important; background:transparent !important; }
+
+/* === BADGES & CHIPS (Global - used across pages) === */
+@keyframes pulse-red {
+    0% { transform: scale(1); box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 2px 10px rgba(239, 68, 68, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4); }
+}
+
+.gx-badge-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.gx-urgente-badge {
+    background: #ef4444;
+    color: white;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    margin-top: 5px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
+    animation: pulse-red 2s infinite;
+    z-index: 10;
+}
+
+.gx-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.gx-chip-success {
+    background: rgba(38, 176, 80, 0.08);
+    color: #26b050;
+}
+
+.gx-chip-warning {
+    background: rgba(245, 158, 11, 0.08);
+    color: #d97706;
+}

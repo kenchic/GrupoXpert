@@ -429,3 +429,56 @@ h1:focus { outline:none; }
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
+
+/* === BADGES & CHIPS (Global - used across pages) === */
+@keyframes pulse-red-mobile {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.gx-badge-estado-mobile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.gx-urgente-badge-mobile {
+    background: #ef4444;
+    color: white;
+    font-weight: 800;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    margin-top: 3px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    animation: pulse-red-mobile 2s infinite;
+    z-index: 10;
+}
+
+.gx-chip-mobile {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f3f4f6;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.gx-chip-success-mobile {
+    background: rgba(38, 176, 80, 0.08);
+    color: #26b050;
+}
+
+.gx-chip-warning-mobile {
+    background: rgba(245, 158, 11, 0.08);
+    color: #d97706;
+}
