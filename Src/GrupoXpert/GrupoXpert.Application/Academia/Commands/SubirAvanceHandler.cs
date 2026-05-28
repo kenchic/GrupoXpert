@@ -12,15 +12,16 @@ public sealed class SubirAvanceHandler(
     ISolicitudAcademicaRepository solicitudRepositorio,
     IPerfilColaboradorRepository perfilColaboradorRepositorio,
     IUsuarioRepository usuarioRepositorio,
+    IArchivoStorageService archivoStorage,
     IUnidadDeTrabajo unidadDeTrabajo)
     : IRequestHandler<SubirAvanceCommand, AvanceDto>
 {
     public async Task<AvanceDto> Handle(SubirAvanceCommand comando, CancellationToken cancelacion)
     {
         var solicitud = await solicitudRepositorio.ObtenerPorIdAsync(comando.SolicitudId, cancelacion)
-            ?? throw new InvalidOperationException("La solicitud académica no existe.");
+            ?? throw new InvalidOperationException("La solicitud academica no existe.");
 
-        if (solicitud.Estado != EstadoSolicitud.EnProceso)
+        if (solicitud.Estado != EstadoSolicitud.EnProceso || solicitud.Estado != EstadoSolicitud.Asignada)
             throw new InvalidOperationException("Solo se pueden subir avances a solicitudes en proceso.");
 
         if (solicitud.AsesorId != comando.AsesorId)
@@ -32,6 +33,21 @@ public sealed class SubirAvanceHandler(
             comando.Descripcion,
             comando.NumeroFase,
             (TipoAvance)comando.Tipo);
+
+        foreach (var archivoInput in comando.Archivos)
+        {
+            var url = await archivoStorage.GuardarAsync(
+                archivoInput.NombreArchivo,
+                archivoInput.Contenido,
+                archivoInput.TipoContenido,
+                cancelacion);
+
+            avance.AgregarArchivo(
+                archivoInput.NombreArchivo,
+                url,
+                archivoInput.TamanioBytes,
+                archivoInput.TipoContenido);
+        }
 
         await avanceRepositorio.AgregarAsync(avance, cancelacion);
         await unidadDeTrabajo.GuardarCambiosAsync(cancelacion);
@@ -56,6 +72,13 @@ public sealed class SubirAvanceHandler(
             (int)avance.Estado,
             avance.FechaSubida,
             Array.Empty<ComentarioDto>(),
-            Array.Empty<ArchivoAdjuntoDto>());
+            avance.ArchivosAdjuntos.Select(a => new ArchivoAdjuntoDto(
+                a.Id,
+                a.AvanceId,
+                a.NombreArchivo,
+                a.Url,
+                a.TamanioBytes,
+                a.TipoContenido,
+                a.FechaSubida)).ToList());
     }
 }

@@ -49,12 +49,12 @@
     else
     {
         @* DETALLE DE LA SOLICITUD *@
-        <div class="gx-card" style="position: relative; padding: 7px; background: white; border-radius: 16px; border-left: 6px solid @ObtenerBordePorEstado(solicitud.Estado); margin-bottom: 24px; overflow: hidden;">
+        <div class="gx-card" style="position: relative; padding: 7px; background: white; border-radius: 16px; border-left: 6px solid @ObtenerBordePorEstado(solicitud.Estado); margin-bottom: 20px; overflow: hidden;">
             
            
 
             @* HEADER DE LA SOLICITUD *@
-            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 7px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+            <div style="border-bottom: 1px solid var(--divider); padding-bottom: 7px; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; gap: 16px; align-items: center;">
                     <div style="width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: @ObtenerFondoGradiente(solicitud.Id); color: white; font-weight: 800; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
                         @ObtenerInicialesArea(solicitud.AreaTematica)
@@ -88,7 +88,7 @@
             </div>
 
             @* CONTENIDO DE DETALLE *@
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 12px;">
                 
                 @* COLUMNA 1: DATOS ACADÉMICOS *@
                 <div style="background: #fafafa; border-radius: 12px; padding: 7px; border: 1px solid var(--divider);">
@@ -137,10 +137,10 @@
                 </div>
 
                 @* COLUMNA 2: REQUERIMIENTOS Y MATERIAL *@
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
                     
                     @* Formato *@
-                    <div style="background: #fafafa; border-radius: 12px; padding: 20px; border: 1px solid var(--divider); flex: 1;">
+                    <div style="background: #fafafa; border-radius: 12px; padding: 7px; border: 1px solid var(--divider); flex: 1;">
                         <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--divider); padding-bottom: 8px;">
                             <span class="material-icons" style="font-size: 1.15rem;">article</span>
                             <span>Lineamientos de Formato</span>
@@ -151,7 +151,7 @@
                     </div>
 
                     @* Material Base / Instrucciones *@
-                    <div style="background: rgba(74, 118, 178, 0.03); border-left: 4px solid var(--color-secundario); border-radius: 0 12px 12px 0; padding: 20px; border-top: 1px solid var(--divider); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); flex: 1;">
+                    <div style="background: rgba(74, 118, 178, 0.03); border-left: 4px solid var(--color-secundario); border-radius: 0 12px 12px 0; padding: 7px; border-top: 1px solid var(--divider); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); flex: 1;">
                         <h3 style="font-size: 0.9rem; color: var(--color-secundario); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
                             <span class="material-icons" style="font-size: 1.15rem;">assignment</span>
                             <span>Instrucciones y Material de Apoyo</span>
@@ -165,7 +165,7 @@
             </div>
 
             @* SECCIÓN DE ASIGNACIÓN *@
-            <div style="border-top: 1px solid var(--divider); padding-top: 24px; margin-top: 24px;">
+            <div style="border-top: 1px solid var(--divider); padding-top: 12px;">
                 
                 @if (rolUsuario == "Administrador" && solicitud.Estado == 1)
                 {

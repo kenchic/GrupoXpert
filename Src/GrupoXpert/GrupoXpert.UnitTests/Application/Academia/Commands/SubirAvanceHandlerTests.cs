@@ -15,6 +15,7 @@ public class SubirAvanceHandlerTests
     private readonly ISolicitudAcademicaRepository _solicitudRepositorio;
     private readonly GrupoXpert.Domain.Perfil.IPerfilColaboradorRepository _perfilColaboradorRepositorio;
     private readonly IUsuarioRepository _usuarioRepositorio;
+    private readonly IArchivoStorageService _archivoStorage;
     private readonly IUnidadDeTrabajo _unidadDeTrabajo;
     private readonly SubirAvanceHandler _manejador;
 
@@ -24,12 +25,14 @@ public class SubirAvanceHandlerTests
         _solicitudRepositorio = Substitute.For<ISolicitudAcademicaRepository>();
         _perfilColaboradorRepositorio = Substitute.For<GrupoXpert.Domain.Perfil.IPerfilColaboradorRepository>();
         _usuarioRepositorio = Substitute.For<IUsuarioRepository>();
+        _archivoStorage = Substitute.For<IArchivoStorageService>();
         _unidadDeTrabajo = Substitute.For<IUnidadDeTrabajo>();
         _manejador = new SubirAvanceHandler(
             _avanceRepositorio,
             _solicitudRepositorio,
             _perfilColaboradorRepositorio,
             _usuarioRepositorio,
+            _archivoStorage,
             _unidadDeTrabajo);
     }
 
@@ -49,7 +52,7 @@ public class SubirAvanceHandlerTests
             "asesor@test.com", "hash123", "Juan Pérez", "token", tipo: TipoUsuario.Asesor);
         var perfil = GrupoXpert.Domain.Perfil.PerfilColaborador.Crear(usuarioAsesor.Id);
 
-        var comando = new SubirAvanceCommand(solicitud.Id, asesorId, "Avance del capítulo 1", 1, (int)TipoAvance.Parcial);
+        var comando = new SubirAvanceCommand(solicitud.Id, asesorId, "Avance del capítulo 1", 1, (int)TipoAvance.Parcial, Array.Empty<ArchivoAdjuntoInput>());
 
         _solicitudRepositorio.ObtenerPorIdAsync(solicitud.Id, Arg.Any<CancellationToken>())
             .Returns(solicitud);
@@ -76,7 +79,7 @@ public class SubirAvanceHandlerTests
     {
         var solicitudId = Guid.NewGuid();
         var asesorId = Guid.NewGuid();
-        var comando = new SubirAvanceCommand(solicitudId, asesorId, "Avance", 1, (int)TipoAvance.Parcial);
+        var comando = new SubirAvanceCommand(solicitudId, asesorId, "Avance", 1, (int)TipoAvance.Parcial, Array.Empty<ArchivoAdjuntoInput>());
 
         _solicitudRepositorio.ObtenerPorIdAsync(solicitudId, Arg.Any<CancellationToken>())
             .Returns((SolicitudAcademica?)null);
@@ -84,7 +87,7 @@ public class SubirAvanceHandlerTests
         var accion = () => _manejador.Handle(comando, CancellationToken.None);
 
         await accion.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("*solicitud académica no existe*");
+            .WithMessage("*solicitud academica no existe*");
 
         await _avanceRepositorio.DidNotReceive().AgregarAsync(Arg.Any<Avance>(), Arg.Any<CancellationToken>());
         await _unidadDeTrabajo.DidNotReceive().GuardarCambiosAsync(Arg.Any<CancellationToken>());
@@ -100,7 +103,7 @@ public class SubirAvanceHandlerTests
         var asesorId = Guid.NewGuid();
         solicitud.AsignarAsesor(asesorId);
 
-        var comando = new SubirAvanceCommand(solicitud.Id, asesorId, "Avance", 1, (int)TipoAvance.Parcial);
+        var comando = new SubirAvanceCommand(solicitud.Id, asesorId, "Avance", 1, (int)TipoAvance.Parcial, Array.Empty<ArchivoAdjuntoInput>());
 
         _solicitudRepositorio.ObtenerPorIdAsync(solicitud.Id, Arg.Any<CancellationToken>())
             .Returns(solicitud);
@@ -125,7 +128,7 @@ public class SubirAvanceHandlerTests
         solicitud.AsignarAsesor(asesorAsignado);
         solicitud.IniciarTrabajo();
 
-        var comando = new SubirAvanceCommand(solicitud.Id, otroAsesor, "Avance no autorizado", 1, (int)TipoAvance.Parcial);
+        var comando = new SubirAvanceCommand(solicitud.Id, otroAsesor, "Avance no autorizado", 1, (int)TipoAvance.Parcial, Array.Empty<ArchivoAdjuntoInput>());
 
         _solicitudRepositorio.ObtenerPorIdAsync(solicitud.Id, Arg.Any<CancellationToken>())
             .Returns(solicitud);

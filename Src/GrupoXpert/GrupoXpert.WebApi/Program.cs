@@ -61,6 +61,7 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseStaticFiles();
 
     // 4. Endpoints de Identidad (Minimal APIs)
     var authGroup = app.MapGroup("/api/autenticacion").WithTags("Autenticación");

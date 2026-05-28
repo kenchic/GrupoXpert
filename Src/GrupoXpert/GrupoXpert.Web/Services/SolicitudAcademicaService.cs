@@ -140,13 +140,26 @@ public sealed class SolicitudAcademicaService(
         }
     }
 
-    public async Task<AvanceDto?> SubirAvanceAsync(Guid solicitudId, Guid asesorId, string descripcion, int numeroFase, int tipo)
+    public async Task<AvanceDto?> SubirAvanceAsync(Guid solicitudId, Guid asesorId, string descripcion, int numeroFase, int tipo, IReadOnlyList<ArchivoSubidaModelo> archivos)
     {
         PrepararCliente();
         try
         {
-            var comando = new { SolicitudId = solicitudId, AsesorId = asesorId, Descripcion = descripcion, NumeroFase = numeroFase, Tipo = tipo };
-            var response = await _http.PostAsJsonAsync($"api/SolicitudesAcademicas/{solicitudId}/avances", comando);
+            var content = new MultipartFormDataContent();
+            content.Add(new StringContent(solicitudId.ToString()), "solicitudId");
+            content.Add(new StringContent(asesorId.ToString()), "asesorId");
+            content.Add(new StringContent(descripcion), "descripcion");
+            content.Add(new StringContent(numeroFase.ToString()), "numeroFase");
+            content.Add(new StringContent(tipo.ToString()), "tipo");
+
+            foreach (var archivo in archivos)
+            {
+                var streamContent = new StreamContent(archivo.Contenido);
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(archivo.TipoContenido);
+                content.Add(streamContent, "archivos", archivo.NombreArchivo);
+            }
+
+            var response = await _http.PostAsync($"api/SolicitudesAcademicas/{solicitudId}/avances", content);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadFromJsonAsync<AvanceDto>();
             return null;

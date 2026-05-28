@@ -78,10 +78,25 @@ public sealed class SolicitudesAcademicasController(IMediator mediator) : Contro
 
     [HttpPost("{id:guid}/avances")]
     [Authorize(Roles = "Asesor")]
-    public async Task<ActionResult<AvanceDto>> SubirAvance(Guid id, SubirAvanceCommand comando)
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<AvanceDto>> SubirAvance(Guid id,
+        [FromForm] Guid solicitudId,
+        [FromForm] Guid asesorId,
+        [FromForm] string descripcion,
+        [FromForm] int numeroFase,
+        [FromForm] int tipo,
+        [FromForm] List<IFormFile> archivos)
     {
-        if (comando.SolicitudId != id)
+        if (solicitudId != id)
             return BadRequest(new { mensaje = "El ID de la solicitud en la URL no coincide con el cuerpo." });
+
+        var archivosInput = archivos.Select(a => new ArchivoAdjuntoInput(
+            a.FileName,
+            a.ContentType,
+            a.Length,
+            a.OpenReadStream())).ToList();
+
+        var comando = new SubirAvanceCommand(solicitudId, asesorId, descripcion, numeroFase, tipo, archivosInput);
 
         var resultado = await mediator.Send(comando);
         return CreatedAtAction(nameof(ObtenerAvances), new { id }, resultado);

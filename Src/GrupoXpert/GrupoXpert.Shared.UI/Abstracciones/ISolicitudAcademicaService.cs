@@ -12,7 +12,7 @@ public interface ISolicitudAcademicaService
     Task<bool> SeleccionarPostuladoAsync(Guid solicitudId, Guid colaboradorId);
 
     Task<IReadOnlyList<AvanceDto>> ObtenerAvancesAsync(Guid solicitudId);
-    Task<AvanceDto?> SubirAvanceAsync(Guid solicitudId, Guid asesorId, string descripcion, int numeroFase, int tipo);
+    Task<AvanceDto?> SubirAvanceAsync(Guid solicitudId, Guid asesorId, string descripcion, int numeroFase, int tipo, IReadOnlyList<ArchivoSubidaModelo> archivos);
     Task<bool> AgregarComentarioAsync(Guid avanceId, Guid autorId, string contenido);
     Task<bool> AgregarArchivoAsync(Guid avanceId, string nombreArchivo, string url, long tamanioBytes, string tipoContenido);
     Task<bool> AprobarAvanceAsync(Guid avanceId);

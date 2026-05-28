@@ -42,6 +42,7 @@ public static class DependencyInjection
         servicios.AddScoped<IGeneradorTokenService, GeneradorTokenService>();
         servicios.AddScoped<IUrlActivacionService, UrlActivacionService>();
         servicios.AddScoped<ICorreoElectronicoService, CorreoElectronicoService>();
+        servicios.AddScoped<IArchivoStorageService, LocalArchivoStorageService>();
 
         return servicios;
     }

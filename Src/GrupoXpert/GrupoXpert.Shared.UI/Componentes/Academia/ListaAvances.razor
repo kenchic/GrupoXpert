@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Components.Forms
 @using Radzen
 @using Radzen.Blazor
 @using GrupoXpert.Shared.UI.Abstracciones
@@ -14,53 +15,65 @@
     @* FORMULARIO SUBIR AVANCE (solo asesor asignado) *@
     @if (EsAsesor && SolicitudAsesorId == PerfilColaboradorId)
     {
-        <div style="background: rgba(166, 38, 119, 0.03); border: 1px dashed var(--color-primario); border-radius: 8px; padding: 8px; margin-bottom: 10px;">
-            <h4 style="font-size: 0.75rem; font-weight: 700; color: var(--color-primario); margin: 0 0 4px 0; display: flex; align-items: center; gap: 3px;">
-                <span class="material-icons" style="font-size: 0.85rem;">upload_file</span>
-                <span>Subir Nuevo Entregable</span>
-            </h4>
-
-            <RadzenTemplateForm TItem="ModeloAvance" Data="@modeloNuevoAvance" Submit="@ManejarSubirAvance">
-                <RadzenRow Gap="0.25rem">
-                    <RadzenColumn Size="4">
-                        <RadzenFormField Text="Fase #" Variant="Variant.Outlined">
-                            <RadzenNumeric @bind-Value="modeloNuevoAvance.NumeroFase"
-                                           Name="NumeroFase"
-                                           Min="1"                                           
-                                           Style="font-size: 0.75rem; height:2rem;" />
-                        </RadzenFormField>
-                    </RadzenColumn>
-                    <RadzenColumn Size="8">
-                        <RadzenFormField Text="Tipo" Variant="Variant.Outlined">
-                            <RadzenDropDown TValue="int" @bind-Value="modeloNuevoAvance.Tipo"
-                                            Name="Tipo"
-                                            Data="@tiposAvance"
-                                            TextProperty="Texto"
-                                            ValueProperty="Id"
-                                            Style="font-size: 0.75rem; height:2rem; width:100%" />
-                        </RadzenFormField>
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow Gap="0.25rem" class="rz-align-items-center">
-                    <RadzenColumn Size="12">
-                        <RadzenTextArea @bind-Value="modeloNuevoAvance.Descripcion"
-                                        Name="Descripcion"
-                                        Rows="5"
-                                        Placeholder="Descripcion..."
-                                        Style="width: 100%; font-size: 0.75rem; min-height: 32px; line-height: 1.2; resize: none; margin-top:2px;" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="4" class="rz-text-align-right">
-                        <RadzenButton Text="Subir"
-                                      Icon="cloud_upload"
-                                      ButtonStyle="ButtonStyle.Primary"
-                                      ButtonType="ButtonType.Submit"
-                                      IsBusy="@subiendoAvance"
-                                      Size="ButtonSize.Small"
-                                      Style="font-weight: 700; border-radius: 6px; font-size: 0.7rem; width: 100%; padding: 4px 6px; margin-top: 4px;" />
-                    </RadzenColumn>
-                </RadzenRow>
-            </RadzenTemplateForm>
-        </div>
+        <RadzenTemplateForm TItem="ModeloAvance" Data="@modeloNuevoAvance" Submit="@ManejarSubirAvance">
+            <RadzenRow Gap="0.25rem">
+                <RadzenColumn Size="4">
+                    <RadzenFormField Text="Fase #" Variant="Variant.Outlined">
+                        <RadzenNumeric @bind-Value="modeloNuevoAvance.NumeroFase"
+                                       Name="NumeroFase"
+                                       Min="1"
+                                       Style="font-size: 0.75rem; height:2rem;" />
+                    </RadzenFormField>
+                </RadzenColumn>
+                <RadzenColumn Size="8">
+                    <RadzenFormField Text="Tipo" Variant="Variant.Outlined" Style="width:100%">
+                        <RadzenDropDown TValue="int" @bind-Value="modeloNuevoAvance.Tipo"
+                                        Name="Tipo"
+                                        Data="@tiposAvance"
+                                        TextProperty="Texto"
+                                        ValueProperty="Id"
+                                        Style="font-size: 0.75rem; height:2rem;" />
+                    </RadzenFormField>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow Gap="0.25rem" class="rz-align-items-center">
+                <RadzenColumn Size="12">
+                    <RadzenTextArea @bind-Value="modeloNuevoAvance.Descripcion"
+                                    Name="Descripcion"
+                                    Rows="5"
+                                    Placeholder="Descripcion..."
+                                    Style="width: 100%; font-size: 0.75rem; min-height: 32px; line-height: 1.2; resize: none; margin-top:2px;" />
+                </RadzenColumn>
+                    
+            </RadzenRow>
+            <RadzenRow Gap="0.25rem">
+                <RadzenColumn Size="8">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-secondary);">
+                        <InputFile OnChange="@CargarArchivos" multiple id="inputFileAvance" style="display: none;" />
+                        <label for="inputFileAvance" style="cursor: pointer; display: inline-flex; align-items: center; gap: 3px; color: var(--color-primario); font-weight: 600;">
+                            <span class="material-icons" style="font-size: 0.8rem;">attach_file</span>
+                            <span>Adjuntar</span>
+                        </label>
+                        @if (archivosSeleccionados.Count > 0)
+                        {
+                            <span style="color: var(--text-muted);">
+                                @archivosSeleccionados.Count archivo@(archivosSeleccionados.Count > 1 ? "s" : ""):
+                                @string.Join(", ", archivosSeleccionados.Select(a => a.Name))
+                            </span>
+                        }
+                    </div>
+                </RadzenColumn>
+                <RadzenColumn Size="4" class="rz-text-align-right">
+                    <RadzenButton Text="Subir"
+                                  Icon="cloud_upload"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  ButtonType="ButtonType.Submit"
+                                  IsBusy="@subiendoAvance"
+                                  Size="ButtonSize.Small"
+                                  Style="font-weight: 700; border-radius: 6px; font-size: 0.7rem; width: 100%; padding: 4px 6px; margin-top: 4px;" />
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenTemplateForm>
     }
 
     @* LISTA DE AVANCES *@
@@ -137,7 +150,7 @@
                                 @foreach (var archivo in avance.ArchivosAdjuntos)
                                 {
                                     <a href="@archivo.Url" target="_blank"
-                                       style="display: inline-flex; align-items: center; gap: 4px; background: white; border: 1px solid var(--divider); border-radius: 5px; padding: 3px 8px; text-decoration: none; color: var(--color-secundario); font-size: 0.7rem; font-weight: 600;">
+                                           style="display: inline-flex; align-items: center; gap: 4px; background: white; border: 1px solid var(--divider); border-radius: 5px; padding: 3px 8px; text-decoration: none; color: var(--color-secundario); font-size: 0.7rem; font-weight: 600;">
                                         <span class="material-icons" style="font-size: 0.8rem;">description</span>
                                         <span>@archivo.NombreArchivo</span>
                                         <span style="font-size: 0.65rem; color: var(--text-muted);">(@FormatearTamano(archivo.TamanioBytes))</span>
@@ -232,6 +245,7 @@
     private readonly HashSet<Guid> avancesExpandidos = new();
     private ModeloAvance modeloNuevoAvance = new();
     private Dictionary<Guid, ModeloComentario> modelosComentario = new();
+    private List<IBrowserFile> archivosSeleccionados = new();
 
     private readonly List<OpcionCombo> tiposAvance = new()
     {
@@ -263,6 +277,11 @@
         }
     }
 
+    private void CargarArchivos(InputFileChangeEventArgs e)
+    {
+        archivosSeleccionados = e.GetMultipleFiles(maximumFileCount: 5).ToList();
+    }
+
     private async Task ManejarSubirAvance(ModeloAvance modelo)
     {
         if (string.IsNullOrWhiteSpace(modelo.Descripcion))
@@ -274,13 +293,26 @@
         subiendoAvance = true;
         try
         {
+            var archivos = new List<ArchivoSubidaModelo>();
+            foreach (var archivo in archivosSeleccionados)
+            {
+                archivos.Add(new ArchivoSubidaModelo
+                {
+                    NombreArchivo = archivo.Name,
+                    TipoContenido = archivo.ContentType,
+                    TamanioBytes = archivo.Size,
+                    Contenido = archivo.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)
+                });
+            }
+
             var resultado = await SolicitudService.SubirAvanceAsync(
-                SolicitudId, PerfilColaboradorId, modelo.Descripcion, modelo.NumeroFase, modelo.Tipo);
+                SolicitudId, PerfilColaboradorId, modelo.Descripcion, modelo.NumeroFase, modelo.Tipo, archivos);
 
             if (resultado != null)
             {
                 Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance subido correctamente.");
                 modeloNuevoAvance = new ModeloAvance();
+                archivosSeleccionados = new();
                 await CargarAvances();
                 await RecargarSolicitud.InvokeAsync();
             }
