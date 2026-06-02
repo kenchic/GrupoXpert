@@ -21,7 +21,7 @@ public sealed class SubirAvanceHandler(
         var solicitud = await solicitudRepositorio.ObtenerPorIdAsync(comando.SolicitudId, cancelacion)
             ?? throw new InvalidOperationException("La solicitud academica no existe.");
 
-        if (solicitud.Estado != EstadoSolicitud.EnProceso || solicitud.Estado != EstadoSolicitud.Asignada)
+        if (solicitud.Estado != EstadoSolicitud.EnProceso && solicitud.Estado != EstadoSolicitud.Asignada)
             throw new InvalidOperationException("Solo se pueden subir avances a solicitudes en proceso.");
 
         if (solicitud.AsesorId != comando.AsesorId)

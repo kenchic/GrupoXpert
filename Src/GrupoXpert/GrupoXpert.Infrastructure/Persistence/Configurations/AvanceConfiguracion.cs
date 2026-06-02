@@ -34,7 +34,11 @@ public sealed class AvanceConfiguracion : IEntityTypeConfiguration<Avance>
             .HasConversion<int>();
 
         builder.Property(x => x.FechaSubida)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                v => new DateTimeOffset(v, TimeSpan.Zero),
+                v => v.UtcDateTime
+            );
 
         builder.HasOne<GrupoXpert.Domain.Perfil.PerfilColaborador>()
             .WithMany()

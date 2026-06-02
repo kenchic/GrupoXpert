@@ -31,6 +31,10 @@ public sealed class ArchivoAdjuntoConfiguracion : IEntityTypeConfiguration<Archi
             .HasMaxLength(200);
 
         builder.Property(x => x.FechaSubida)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                v => new DateTimeOffset(v, TimeSpan.Zero),
+                v => v.UtcDateTime
+            );
     }
 }

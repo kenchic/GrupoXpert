@@ -23,6 +23,10 @@ public sealed class ComentarioConfiguracion : IEntityTypeConfiguration<Comentari
             .HasMaxLength(4000);
 
         builder.Property(x => x.FechaCreacion)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                v => new DateTimeOffset(v, TimeSpan.Zero),
+                v => v.UtcDateTime
+            );
     }
 }
