@@ -5,6 +5,8 @@
 @using GrupoXpert.Shared.UI.Modelos.Academia
 @inject ISolicitudAcademicaService SolicitudService
 @inject NotificationService Notificaciones
+@inject IDescargadorArchivos Descargador
+@inject HttpClient Http
 
 <div class="gx-card" style="padding: 8px; border-radius: 10px; margin-top: 12px;">
     <h3 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0; display: flex; align-items: center; gap: 4px;">
@@ -149,12 +151,12 @@
                             <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                                 @foreach (var archivo in avance.ArchivosAdjuntos)
                                 {
-                                    <a href="@archivo.Url" target="_blank"
-                                           style="display: inline-flex; align-items: center; gap: 4px; background: white; border: 1px solid var(--divider); border-radius: 5px; padding: 3px 8px; text-decoration: none; color: var(--color-secundario); font-size: 0.7rem; font-weight: 600;">
+                                    <span @onclick="() => DescargarArchivo(archivo.Url)" @onclick:stopPropagation="true"
+                                          style="display: inline-flex; align-items: center; gap: 4px; background: white; border: 1px solid var(--divider); border-radius: 5px; padding: 3px 8px; color: var(--color-secundario); font-size: 0.7rem; font-weight: 600; cursor: pointer;">
                                         <span class="material-icons" style="font-size: 0.8rem;">description</span>
                                         <span>@archivo.NombreArchivo</span>
                                         <span style="font-size: 0.65rem; color: var(--text-muted);">(@FormatearTamano(archivo.TamanioBytes))</span>
-                                    </a>
+                                    </span>
                                 }
                             </div>
                         </div>
@@ -398,6 +400,13 @@
             avancesExpandidos.Remove(avanceId);
         else
             avancesExpandidos.Add(avanceId);
+    }
+
+    private async Task DescargarArchivo(string urlRelativa)
+    {
+        var baseUrl = Http.BaseAddress?.ToString().TrimEnd('/') ?? "";
+        var urlAbsoluta = $"{baseUrl}{urlRelativa}";
+        await Descargador.DescargarAsync(urlAbsoluta);
     }
 
     private string ObtenerTextoBotonComentarios(bool expandido, int conteo)

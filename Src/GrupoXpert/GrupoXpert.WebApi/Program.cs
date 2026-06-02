@@ -8,6 +8,7 @@ using GrupoXpert.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
 try
@@ -61,7 +62,19 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
-    app.UseStaticFiles();
+    app.UseStaticFiles(); // wwwroot por defecto
+
+    var rutaUploads = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+    if (!Directory.Exists(rutaUploads))
+    {
+        Directory.CreateDirectory(rutaUploads);
+    }
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(rutaUploads),
+        RequestPath = "/uploads"
+    });
 
     // 4. Endpoints de Identidad (Minimal APIs)
     var authGroup = app.MapGroup("/api/autenticacion").WithTags("Autenticación");
