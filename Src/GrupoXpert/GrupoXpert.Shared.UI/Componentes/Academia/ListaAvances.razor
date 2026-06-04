@@ -173,21 +173,7 @@
                                       Click="@(() => AlternarExpansion(avance.Id))"
                                       Style="font-weight: 600; font-size: 0.7rem;" />
 
-                        @if (EsAdmin && avance.Estado == 1)
-                        {
-                            <RadzenButton Text="Aprobar"
-                                          Icon="check_circle"
-                                          ButtonStyle="ButtonStyle.Success"
-                                          Size="ButtonSize.Small"
-                                          Click="@(() => AprobarAvance(avance.Id))"
-                                          Style="font-weight: 600; font-size: 0.7rem;" />
-                            <RadzenButton Text="Rechazar"
-                                          Icon="cancel"
-                                          ButtonStyle="ButtonStyle.Danger"
-                                          Size="ButtonSize.Small"
-                                          Click="@(() => RechazarAvance(avance.Id))"
-                                          Style="font-weight: 600; font-size: 0.7rem;" />
-                        }
+
                     </div>
 
                     @* COMENTARIOS *@
@@ -354,40 +340,6 @@
             else
             {
                 Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo enviar el comentario.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
-        }
-    }
-
-    private async Task AprobarAvance(Guid avanceId)
-    {
-        try
-        {
-            var ok = await SolicitudService.AprobarAvanceAsync(avanceId);
-            if (ok)
-            {
-                Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance aprobado.");
-                await CargarAvances();
-            }
-        }
-        catch (Exception ex)
-        {
-            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
-        }
-    }
-
-    private async Task RechazarAvance(Guid avanceId)
-    {
-        try
-        {
-            var ok = await SolicitudService.RechazarAvanceAsync(avanceId);
-            if (ok)
-            {
-                Notificaciones.Notify(NotificationSeverity.Success, "Exito", "Avance rechazado.");
-                await CargarAvances();
             }
         }
         catch (Exception ex)
