@@ -101,7 +101,9 @@
             @foreach (var avance in avances)
             {
                 var estaExpandido = avancesExpandidos.Contains(avance.Id);
-                var comentarioModelo = modelosComentario.GetValueOrDefault(avance.Id, new ModeloComentario());
+                if (!modelosComentario.ContainsKey(avance.Id))
+                    modelosComentario[avance.Id] = new ModeloComentario();
+                var comentarioModelo = modelosComentario[avance.Id];
 
                 <div class="gx-card" style="padding: 10px; border: 1px solid var(--divider); border-radius: 8px; border-left: 3px solid @ObtenerBordeTipo(avance.Tipo);">
                     @* HEADER *@
@@ -192,7 +194,7 @@
                     @if (estaExpandido)
                     {
                         <div style="border-top: 1px solid var(--divider); margin-top: 6px; padding-top: 6px;">
-                            @foreach (var comentario in avance.Comentarios)
+                            @foreach (var comentario in avance.Comentarios.OrderByDescending(c => c.FechaCreacion))
                             {
                                 <div style="display: flex; gap: 6px; margin-bottom: 6px; padding: 6px; background: #f9fafb; border-radius: 5px;">
                                     <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--color-secundario); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.6rem; flex-shrink: 0;">
@@ -266,7 +268,7 @@
         try
         {
             var resultado = await SolicitudService.ObtenerAvancesAsync(SolicitudId);
-            avances = resultado?.ToList() ?? new();
+            avances = resultado?.OrderByDescending(a => a.FechaSubida).ToList() ?? new();
         }
         catch
         {
@@ -400,6 +402,7 @@
             avancesExpandidos.Remove(avanceId);
         else
             avancesExpandidos.Add(avanceId);
+        StateHasChanged();
     }
 
     private async Task DescargarArchivo(string urlRelativa)

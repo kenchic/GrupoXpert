@@ -33,8 +33,8 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [x] | 17 | Subir Entregable Parcial / Avance de Fase (Colaborador) | 
 | [x] | 18 | Subir Entregable Final para Revisión (Colaborador) | 
 | [ ] | 19 | Realizar Revisión de Calidad Interna (Equipo de Calidad / Antiplagio) | 
-| [ ] | 20 | Visualizar y Descargar Entregables Aprobados (Cliente) | 
-| [ ] | 21 | Solicitar Correcciones al Entregable (Cliente) | 
+| [x] | 20 | Visualizar y Descargar Entregables Aprobados (Cliente) | 
+| [x] | 21 | Solicitar Correcciones al Entregable (Cliente) | 
 | [ ] | 22 | Aprobar Entregable Final y Cerrar Proyecto (Cliente) | 
 | [ ] | 23 | Calificar Servicio y Colaborador (Sistema de Evaluación) | 
 | [ ] | 24 | Procesar Liberación de Pago a Colaborador (Sistema) | 
