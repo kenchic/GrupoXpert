@@ -7,5 +7,6 @@ public enum TipoUsuario
 {
     Estudiante = 1,
     Asesor = 2,
-    Administrador = 3
+    Administrador = 3,
+    Revisor = 4
 }

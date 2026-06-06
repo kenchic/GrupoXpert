@@ -46,6 +46,10 @@ public sealed class ObtenerSolicitudesDashboardHandler(
                 new[] { EstadoSolicitud.Pendiente, EstadoSolicitud.EnProceso, EstadoSolicitud.Asignada }, 
                 cancellationToken);
         }
+        else if (request.Rol == TipoUsuario.Revisor)
+        {
+            solicitudes = await solicitudRepository.ObtenerConAvanceFinalPendienteRevisionAsync(cancellationToken);
+        }
 
         return solicitudes.Select(x => new SolicitudAcademicaDto(
             x.Id,

@@ -388,19 +388,20 @@
             </div>
 
             @* SECCION DE AVANCES Y ENTREGABLES *@
-            @if (solicitud.Estado == 2 || solicitud.Estado == 5)
-            {
-                 <div>
-                    <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
-                        SolicitudId="@Id"
-                        SolicitudAsesorId="@solicitud.AsesorId"
-                        PerfilColaboradorId="@(perfilColaboradorActual?.Id ?? Guid.Empty)"
-                        UsuarioId="@usuarioId"
-                        EsAsesor="@(rolUsuario == "Asesor")"
-                        EsAdmin="@(rolUsuario == "Administrador")"
-                        RecargarSolicitud="CargarSolicitud" />
-                 </div>
-            }
+@if (solicitud.Estado == 2 || solicitud.Estado == 5 || rolUsuario == "Revisor")
+             {
+                  <div>
+                     <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
+                         SolicitudId="@Id"
+                         SolicitudAsesorId="@solicitud.AsesorId"
+                         PerfilColaboradorId="@(perfilColaboradorActual?.Id ?? Guid.Empty)"
+                         UsuarioId="@usuarioId"
+                         EsAsesor="@(rolUsuario == "Asesor")"
+                         EsAdmin="@(rolUsuario == "Administrador")"
+                         EsRevisor="@(rolUsuario == "Revisor")"
+                         RecargarSolicitud="CargarSolicitud" />
+                  </div>
+             }
 
         </div>
     }

@@ -2,6 +2,7 @@ using GrupoXpert.Application.Common.Interfaces;
 using GrupoXpert.Domain.Identidad;
 using GrupoXpert.Domain.Perfil;
 using GrupoXpert.Domain.Academia;
+using GrupoXpert.Domain.Calidad;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrupoXpert.Infrastructure.Persistence;
@@ -20,6 +21,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Avance> Avances => Set<Avance>();
     public DbSet<Comentario> Comentarios => Set<Comentario>();
     public DbSet<ArchivoAdjunto> ArchivosAdjuntos => Set<ArchivoAdjunto>();
+    public DbSet<RevisionCalidad> RevisionesCalidad => Set<RevisionCalidad>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

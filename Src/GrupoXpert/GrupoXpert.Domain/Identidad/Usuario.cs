@@ -105,7 +105,7 @@ public sealed class Usuario : AggregateRoot
         Imagen = imagen;
         Tipo = tipo;
         EstaActivo = false;
-        EstaAprobado = tipo == TipoUsuario.Estudiante || tipo == TipoUsuario.Administrador;
+        EstaAprobado = tipo == TipoUsuario.Estudiante || tipo == TipoUsuario.Administrador || tipo == TipoUsuario.Revisor;
         EstadoVerificacion = tipo == TipoUsuario.Asesor ? EstadoVerificacion.Pendiente : EstadoVerificacion.Aprobado;
         TokenActivacion = tokenActivacion;
         TokenActivacionExpira = DateTimeOffset.UtcNow.AddHours(24);

@@ -76,4 +76,17 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
             .Where(x => estados.Contains(x.Estado))
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerConAvanceFinalPendienteRevisionAsync(CancellationToken cancellationToken = default)
+    {
+        var solicitudIds = await context.Set<Avance>()
+            .Where(a => a.Tipo == TipoAvance.Final && a.Estado == EstadoAvance.PendienteRevision)
+            .Select(a => a.SolicitudId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return await context.Set<SolicitudAcademica>()
+            .Where(s => solicitudIds.Contains(s.Id))
+            .ToListAsync(cancellationToken);
+    }
 }

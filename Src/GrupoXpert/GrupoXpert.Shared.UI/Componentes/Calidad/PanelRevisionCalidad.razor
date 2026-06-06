@@ -1,0 +1,358 @@
+@using GrupoXpert.Shared.UI.Modelos.Calidad
+@using GrupoXpert.Shared.UI.Modelos.Academia
+
+<div class="gx-card" style="margin-bottom: 1rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="material-icons" style="color: var(--color-primario); font-size: 1.5rem;">verified</span>
+            <h2 style="margin: 0; font-size: 1.2rem; font-weight: 700;">Revisión de Calidad</h2>
+        </div>
+        @if (_pendientes > 0)
+        {
+            <span class="gx-chip gx-chip-warning" style="font-weight: 600;">
+                @_pendientes pendiente@(_pendientes != 1 ? "s" : "")
+            </span>
+        }
+    </div>
+
+    @if (_estaCargando)
+    {
+        <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem 0;">
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="animate-pulse" style="background: #f3f4f6; border-radius: 12px; padding: 1.25rem; border: 1px solid #e5e7eb;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 10px; background: #e5e7eb;"></div>
+                        <div style="flex: 1;">
+                            <div style="width: 200px; height: 16px; background: #e5e7eb; border-radius: 4px; margin-bottom: 6px;"></div>
+                            <div style="width: 140px; height: 12px; background: #e5e7eb; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (_revisiones.Count == 0)
+    {
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--color-texto-secundario);">
+            <span class="material-icons" style="font-size: 3rem; color: #d1d5db; margin-bottom: 0.5rem; display: block;">task_alt</span>
+            <p style="font-size: 0.95rem; margin: 0;">No hay revisiones de calidad pendientes.</p>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            @foreach (var revision in _revisiones)
+            {
+                var avance = _avances.FirstOrDefault(a => a.Id == revision.AvanceId);
+                var colorEstado = revision.Estado switch
+                {
+                    1 => "#f59e0b",
+                    2 => "#10b981",
+                    3 => "#ef4444",
+                    _ => "#6b7280"
+                };
+                var textoEstado = revision.Estado switch
+                {
+                    1 => "Pendiente",
+                    2 => "Aprobado",
+                    3 => "Rechazado",
+                    _ => "Desconocido"
+                };
+                var iconoEstado = revision.Estado switch
+                {
+                    1 => "hourglass_empty",
+                    2 => "check_circle",
+                    3 => "cancel",
+                    _ => "help_outline"
+                };
+
+                <div class="gx-card" style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid @colorEstado; border-radius: 12px; padding: 1rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                        <div style="width: 44px; height: 44px; border-radius: 10px; background: @colorEstado; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                            <span class="material-icons" style="font-size: 1.3rem;">@iconoEstado</span>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                                <div>
+                                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; word-break: break-word;">
+                                        @if (avance != null)
+                                        {
+                                            <span>Avance #@avance.NumeroFase — @(avance.Descripcion.Length > 80 ? avance.Descripcion[..80] + "..." : avance.Descripcion)</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Avance @revision.AvanceId.ToString()[..8]...</span>
+                                        }
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--color-texto-secundario); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                        <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <span class="material-icons" style="font-size: 0.85rem;">person</span>
+                                            @revision.NombreRevisor ?? "Revisor"
+                                        </span>
+                                        <span>•</span>
+                                        <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <span class="material-icons" style="font-size: 0.85rem;">schedule</span>
+                                            @ObtenerTiempoRelativo(revision.FechaRevision)
+                                        </span>
+                                        <span>•</span>
+                                        <span class="gx-chip @(revision.Estado == 1 ? "gx-chip-warning" : revision.Estado == 2 ? "gx-chip-success" : "gx-chip-error")" style="font-size: 0.7rem;">
+                                            @textoEstado
+                                        </span>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(revision.Observaciones))
+                                    {
+                                        <div style="margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: #fef2f2; border-radius: 8px; font-size: 0.82rem; color: #991b1b; border: 1px solid #fecaca;">
+                                            <span class="material-icons" style="font-size: 0.85rem; vertical-align: middle; margin-right: 0.25rem;">feedback</span>
+                                            @revision.Observaciones
+                                        </div>
+                                    }
+                                </div>
+                                @if (revision.Estado == 1)
+                                {
+                                    <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                                        <RadzenButton Text="Visto Bueno"
+                                                      Icon="check_circle"
+                                                      ButtonStyle="ButtonStyle.Success"
+                                                      Size="ButtonSize.Small"
+                                                      Click="@(() => ManejarVistoBueno(revision))"
+                                                      Disabled="@(_accionEnProgreso == revision.Id)" />
+                                        <RadzenButton Text="Rechazar"
+                                                      Icon="cancel"
+                                                      ButtonStyle="ButtonStyle.Danger"
+                                                      Size="ButtonSize.Small"
+                                                      Click="@(() => AbrirDialogoRechazo(revision))"
+                                                      Disabled="@(_accionEnProgreso == revision.Id)" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Inject] private Abstracciones.IRevisionCalidadService RevisionService { get; set; } = default!;
+    [Inject] private Abstracciones.ISolicitudAcademicaService SolicitudService { get; set; } = default!;
+    [Inject] private NotificationService Notificaciones { get; set; } = default!;
+    [Inject] private DialogService DialogoService { get; set; } = default!;
+
+    private List<RevisionCalidadDto> _revisiones = new();
+    private List<AvanceDto> _avances = new();
+    private bool _estaCargando = true;
+    private int _pendientes;
+    private Guid? _accionEnProgreso;
+
+    private string _observacionesRechazo = string.Empty;
+    private RevisionCalidadDto? _revisionARechazar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatosAsync();
+    }
+
+    private async Task CargarDatosAsync()
+    {
+        _estaCargando = true;
+        StateHasChanged();
+
+        try
+        {
+            _revisiones = (await RevisionService.ObtenerPendientesAsync()).ToList();
+            _pendientes = _revisiones.Count(r => r.Estado == 1);
+
+            var idsAvance = _revisiones.Select(r => r.AvanceId).Distinct().ToList();
+            var avancesCargados = new List<AvanceDto>();
+            foreach (var id in idsAvance)
+            {
+                var avance = await ObtenerAvancePorIdAsync(id);
+                if (avance is not null)
+                    avancesCargados.Add(avance);
+            }
+            _avances = avancesCargados;
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"No se pudieron cargar las revisiones: {ex.Message}",
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            _estaCargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<AvanceDto?> ObtenerAvancePorIdAsync(Guid avanceId)
+    {
+        try
+        {
+            var solicitudes = await SolicitudService.ObtenerSolicitudesDashboardAsync();
+            foreach (var sol in solicitudes)
+            {
+                var avances = await SolicitudService.ObtenerAvancesAsync(sol.Id);
+                var avance = avances.FirstOrDefault(a => a.Id == avanceId);
+                if (avance is not null) return avance;
+            }
+        }
+        catch { }
+        return null;
+    }
+
+    private async Task ManejarVistoBueno(RevisionCalidadDto revision)
+    {
+        _accionEnProgreso = revision.Id;
+        StateHasChanged();
+
+        try
+        {
+            var resultado = await RevisionService.OtorgarVistoBuenoAsync(revision.Id);
+            if (resultado is not null)
+            {
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Visto Bueno Otorgado",
+                    Detail = "El avance ha sido liberado y está disponible para el cliente.",
+                    Duration = 5000
+                });
+                await CargarDatosAsync();
+            }
+            else
+            {
+                throw new Exception("No se recibió respuesta del servidor.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"No se pudo otorgar el visto bueno: {ex.Message}",
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            _accionEnProgreso = null;
+            StateHasChanged();
+        }
+    }
+
+    private async Task AbrirDialogoRechazo(RevisionCalidadDto revision)
+    {
+        _revisionARechazar = revision;
+        _observacionesRechazo = string.Empty;
+
+        RenderFragment<DialogService> contenido = ds => builder =>
+        {
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "style", "display: flex; flex-direction: column; gap: 1rem; min-width: 400px;");
+
+            builder.OpenElement(2, "p");
+            builder.AddAttribute(3, "style", "margin: 0; font-size: 0.9rem;");
+            builder.AddContent(4, "Describe el motivo del rechazo para que el asesor pueda corregir el documento:");
+            builder.CloseElement();
+
+            builder.OpenComponent<RadzenTextArea>(5);
+            builder.AddAttribute(6, "Value", _observacionesRechazo);
+            builder.AddAttribute(7, "ValueChanged", EventCallback.Factory.Create<string>(this, v => _observacionesRechazo = v));
+            builder.AddAttribute(8, "Rows", 4);
+            builder.AddAttribute(9, "Placeholder", "Escribe las observaciones del rechazo...");
+            builder.AddAttribute(10, "Style", "width: 100%;");
+            builder.CloseComponent();
+
+            builder.OpenElement(11, "div");
+            builder.AddAttribute(12, "style", "display: flex; gap: 0.5rem; justify-content: flex-end; padding-top: 0.5rem;");
+
+            builder.OpenComponent<RadzenButton>(13);
+            builder.AddAttribute(14, "Text", "Cancelar");
+            builder.AddAttribute(15, "ButtonStyle", ButtonStyle.Secondary);
+            builder.AddAttribute(16, "Click", EventCallback.Factory.Create(this, () => ds.Close(false)));
+            builder.CloseComponent();
+
+            builder.OpenComponent<RadzenButton>(17);
+            builder.AddAttribute(18, "Text", "Confirmar Rechazo");
+            builder.AddAttribute(19, "ButtonStyle", ButtonStyle.Danger);
+            builder.AddAttribute(20, "Disabled", string.IsNullOrWhiteSpace(_observacionesRechazo));
+            builder.AddAttribute(21, "Click", EventCallback.Factory.Create(this, () => ds.Close(true)));
+            builder.CloseComponent();
+
+            builder.CloseElement();
+            builder.CloseElement();
+        };
+
+        var resultadoObj = await DialogoService.OpenAsync("Rechazar Revisión", contenido);
+        if (resultadoObj is true)
+            await ConfirmarRechazo();
+    }
+
+    private async Task ConfirmarRechazo()
+    {
+        if (_revisionARechazar is null || string.IsNullOrWhiteSpace(_observacionesRechazo)) return;
+
+        _accionEnProgreso = _revisionARechazar.Id;
+        StateHasChanged();
+
+        try
+        {
+            var resultado = await RevisionService.RechazarRevisionAsync(_revisionARechazar.Id, _observacionesRechazo.Trim());
+            if (resultado is not null)
+            {
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = "Revisión Rechazada",
+                    Detail = "Se ha notificado al asesor con las observaciones indicadas.",
+                    Duration = 5000
+                });
+                await CargarDatosAsync();
+            }
+            else
+            {
+                throw new Exception("No se recibió respuesta del servidor.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"No se pudo rechazar: {ex.Message}",
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            _accionEnProgreso = null;
+            _revisionARechazar = null;
+            _observacionesRechazo = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    private static string ObtenerTiempoRelativo(DateTime fecha)
+    {
+        var diferencia = DateTime.UtcNow - fecha;
+        if (diferencia.TotalMinutes < 1) return "ahora mismo";
+        if (diferencia.TotalMinutes < 60) return $"hace {(int)diferencia.TotalMinutes} min";
+        if (diferencia.TotalHours < 24) return $"hace {(int)diferencia.TotalHours} h";
+        if (diferencia.TotalDays < 7) return $"hace {(int)diferencia.TotalDays} d";
+        return fecha.ToString("dd/MM/yyyy");
+    }
+}
+
+@* Helper de extensión para truncar texto *@
+@code {
+    // El método de extensión Truncar se define como static en un archivo aparte o se puede usar directamente
+}

@@ -8,5 +8,6 @@ public interface ISolicitudAcademicaRepository
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerPendientesYAsignadasAAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerPorEstadosAsync(IEnumerable<EstadoSolicitud> estados, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SolicitudAcademica>> ObtenerConAvanceFinalPendienteRevisionAsync(CancellationToken cancellationToken = default);
     Task EliminarAsync(Guid id, CancellationToken cancellationToken = default);
 }

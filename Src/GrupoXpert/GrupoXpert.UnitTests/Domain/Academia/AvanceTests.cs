@@ -330,4 +330,77 @@ public class AvanceTests
         // Assert
         accion.Should().Throw<ExcepcionDominio>().WithMessage("*pendientes de revisión*");
     }
+
+    [Fact]
+    public void Liberar_CuandoAvanceEsFinalYPendiente_DebeCambiarEstadoALiberado()
+    {
+        // Arrange
+        var avance = Avance.Subir(
+            Guid.NewGuid(), Guid.NewGuid(), "Entrega final de la tesis", 3, TipoAvance.Final);
+
+        // Act
+        avance.Liberar();
+
+        // Assert
+        avance.Estado.Should().Be(EstadoAvance.Liberado);
+    }
+
+    [Fact]
+    public void Liberar_CuandoAvanceEsFinalYAprobado_DebeCambiarEstadoALiberado()
+    {
+        // Arrange
+        var avance = Avance.Subir(
+            Guid.NewGuid(), Guid.NewGuid(), "Entrega final aprobada", 3, TipoAvance.Final);
+        avance.Aprobar();
+
+        // Act
+        avance.Liberar();
+
+        // Assert
+        avance.Estado.Should().Be(EstadoAvance.Liberado);
+    }
+
+    [Fact]
+    public void Liberar_CuandoAvanceEsParcial_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var avance = Avance.Subir(
+            Guid.NewGuid(), Guid.NewGuid(), "Avance parcial", 1, TipoAvance.Parcial);
+
+        // Act
+        var accion = () => avance.Liberar();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*tipo final*");
+    }
+
+    [Fact]
+    public void Liberar_CuandoAvanceYaEstaLiberado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var avance = Avance.Subir(
+            Guid.NewGuid(), Guid.NewGuid(), "Entrega final ya liberada", 3, TipoAvance.Final);
+        avance.Liberar();
+
+        // Act
+        var accion = () => avance.Liberar();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*pendientes de revisión*");
+    }
+
+    [Fact]
+    public void Liberar_CuandoAvanceEstaRechazado_DebeLanzarExcepcionDominio()
+    {
+        // Arrange
+        var avance = Avance.Subir(
+            Guid.NewGuid(), Guid.NewGuid(), "Entrega final rechazada", 3, TipoAvance.Final);
+        avance.Rechazar();
+
+        // Act
+        var accion = () => avance.Liberar();
+
+        // Assert
+        accion.Should().Throw<ExcepcionDominio>().WithMessage("*pendientes de revisión*");
+    }
 }

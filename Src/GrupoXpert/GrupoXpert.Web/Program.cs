@@ -23,6 +23,7 @@ builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IAdminService, Gru
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilService, GrupoXpert.Web.Services.PerfilService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IPerfilColaboradorService, GrupoXpert.Web.Services.PerfilColaboradorService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademicaService, GrupoXpert.Web.Services.SolicitudAcademicaService>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IRevisionCalidadService, GrupoXpert.Web.Services.RevisionCalidadService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IDescargadorArchivos, GrupoXpert.Web.Services.DescargadorArchivos>();
 builder.Services.AddHttpContextAccessor();
 

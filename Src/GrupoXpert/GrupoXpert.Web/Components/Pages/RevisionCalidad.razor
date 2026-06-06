@@ -1,0 +1,9 @@
+@page "/calidad/revisiones"
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Administrador,Revisor")]
+@using Microsoft.AspNetCore.Authorization
+@using GrupoXpert.Shared.UI.Componentes.Calidad
+
+<PageTitle>Revisión de Calidad - GrupoXpert</PageTitle>
+
+<PanelRevisionCalidad />

@@ -346,7 +346,7 @@
             </div>
 
             @* SECCION DE AVANCES Y ENTREGABLES *@
-            @if (solicitud.Estado == 2 || solicitud.Estado == 5)
+            @if (solicitud.Estado == 2 || solicitud.Estado == 5 || rolUsuario == "Revisor")
             {
                 <GrupoXpert.Shared.UI.Componentes.Academia.ListaAvances
                     SolicitudId="@Id"
@@ -355,6 +355,7 @@
                     UsuarioId="@usuarioId"
                     EsAsesor="@(rolUsuario == "Asesor")"
                     EsAdmin="@(rolUsuario == "Administrador")"
+                    EsRevisor="@(rolUsuario == "Revisor")"
                     RecargarSolicitud="CargarSolicitud" />
             }
 

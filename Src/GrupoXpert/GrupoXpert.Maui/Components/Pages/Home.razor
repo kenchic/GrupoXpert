@@ -32,9 +32,11 @@
             <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-texto); margin: 0;">Sin solicitudes registradas</h3>
             <p style="font-size: 0.8rem; color: var(--text-secondary); max-width: 320px; margin: 0; line-height: 1.4;">
                 @(rolUsuario == "Estudiante" 
-                    ? "Aún no tienes solicitudes académicas registradas en tu cuenta." 
+                    ? "Aun no tienes solicitudes academicas registradas en tu cuenta." 
+                    : rolUsuario == "Revisor"
+                    ? "No hay solicitudes con documento final pendiente de revision en este momento."
                     : rolUsuario == "Asesor"
-                    ? "No tienes solicitudes pendientes de asignación o asignadas actualmente."
+                    ? "No tienes solicitudes pendientes de asignacion o asignadas actualmente."
                     : "No se registran solicitudes pendientes o en proceso en la plataforma.")
             </p>
         </div>

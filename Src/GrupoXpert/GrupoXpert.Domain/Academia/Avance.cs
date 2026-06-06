@@ -109,4 +109,15 @@ public class Avance : AggregateRoot
 
         Estado = EstadoAvance.Rechazado;
     }
+
+    public void Liberar()
+    {
+        if (Tipo != TipoAvance.Final)
+            throw new ExcepcionDominio("Solo se pueden liberar avances de tipo final.");
+
+        if (Estado != EstadoAvance.PendienteRevision && Estado != EstadoAvance.Aprobado)
+            throw new ExcepcionDominio("Solo se pueden liberar avances pendientes de revisión o aprobados.");
+
+        Estado = EstadoAvance.Liberado;
+    }
 }

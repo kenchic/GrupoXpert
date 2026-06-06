@@ -3,10 +3,13 @@
 @using Radzen.Blazor
 @using GrupoXpert.Shared.UI.Abstracciones
 @using GrupoXpert.Shared.UI.Modelos.Academia
+@using GrupoXpert.Shared.UI.Modelos.Calidad
 @inject ISolicitudAcademicaService SolicitudService
+@inject IRevisionCalidadService RevisionCalidadService
 @inject NotificationService Notificaciones
 @inject IDescargadorArchivos Descargador
 @inject HttpClient Http
+@inject DialogService DialogoService
 
 <div class="gx-card" style="padding: 8px; border-radius: 10px; margin-top: 12px;">
     <h3 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0; display: flex; align-items: center; gap: 4px;">
@@ -173,6 +176,23 @@
                                       Click="@(() => AlternarExpansion(avance.Id))"
                                       Style="font-weight: 600; font-size: 0.7rem;" />
 
+                        @if ((EsRevisor || EsAdmin) && avance.Tipo == 2 && avance.Estado == 1)
+                        {
+                            <RadzenButton Text="Dar Visto Bueno"
+                                          Icon="verified"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Size="ButtonSize.Small"
+                                          Click="@(() => DarVistoBueno(avance.Id))"
+                                          IsBusy="@(_vistoBuenoEnProgreso == avance.Id)"
+                                          Style="font-weight: 600; font-size: 0.7rem;" />
+                            <RadzenButton Text="Rechazar"
+                                          Icon="cancel"
+                                          ButtonStyle="ButtonStyle.Danger"
+                                          Size="ButtonSize.Small"
+                                          Click="@(() => AbrirDialogoRechazo(avance))"
+                                          Style="font-weight: 600; font-size: 0.7rem;" />
+                        }
+
 
                     </div>
 
@@ -227,6 +247,7 @@
     [Parameter] public Guid UsuarioId { get; set; }
     [Parameter] public bool EsAsesor { get; set; }
     [Parameter] public bool EsAdmin { get; set; }
+    [Parameter] public bool EsRevisor { get; set; }
     [Parameter] public EventCallback RecargarSolicitud { get; set; }
 
     private List<AvanceDto> avances = new();
@@ -236,6 +257,10 @@
     private ModeloAvance modeloNuevoAvance = new();
     private Dictionary<Guid, ModeloComentario> modelosComentario = new();
     private List<IBrowserFile> archivosSeleccionados = new();
+    private Guid? _vistoBuenoEnProgreso;
+    private string _observacionesRechazo = string.Empty;
+    private AvanceDto? _avanceARechazar;
+    private bool _rechazando;
 
     private readonly List<OpcionCombo> tiposAvance = new()
     {
@@ -403,6 +428,7 @@
         1 => "Pendiente",
         2 => "Aprobado",
         3 => "Rechazado",
+        4 => "Liberado",
         _ => "Desconocido"
     };
 
@@ -411,6 +437,7 @@
         1 => "rgba(245, 158, 11, 0.10)",
         2 => "rgba(38, 176, 80, 0.10)",
         3 => "rgba(239, 68, 68, 0.10)",
+        4 => "rgba(16, 185, 129, 0.10)",
         _ => "#f3f4f6"
     };
 
@@ -419,6 +446,7 @@
         1 => "#d97706",
         2 => "#26b050",
         3 => "#ef4444",
+        4 => "#10b981",
         _ => "#6b7280"
     };
 
@@ -427,8 +455,151 @@
         1 => "pending",
         2 => "check_circle",
         3 => "cancel",
+        4 => "verified",
         _ => "help_outline"
     };
+
+    private async Task DarVistoBueno(Guid avanceId)
+    {
+        _vistoBuenoEnProgreso = avanceId;
+        try
+        {
+            var revisionExistente = await RevisionCalidadService.ObtenerPorAvanceAsync(avanceId);
+            Guid revisionId;
+
+            if (revisionExistente != null)
+            {
+                revisionId = revisionExistente.Id;
+            }
+            else
+            {
+                var nuevaRevision = await RevisionCalidadService.CrearRevisionAsync(avanceId, UsuarioId);
+                if (nuevaRevision == null)
+                {
+                    Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo crear la revision.");
+                    return;
+                }
+                revisionId = nuevaRevision.Id;
+            }
+
+            var resultado = await RevisionCalidadService.OtorgarVistoBuenoAsync(revisionId);
+            if (resultado != null)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Visto Bueno", "Se otorgo el visto bueno correctamente.");
+                await CargarAvances();
+                await RecargarSolicitud.InvokeAsync();
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo otorgar el visto bueno.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+        finally
+        {
+            _vistoBuenoEnProgreso = null;
+        }
+    }
+
+    private async Task AbrirDialogoRechazo(AvanceDto avance)
+    {
+        _avanceARechazar = avance;
+        _observacionesRechazo = string.Empty;
+
+        RenderFragment<DialogService> contenido = ds => builder =>
+        {
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "style", "display: flex; flex-direction: column; gap: 1rem; min-width: 400px;");
+
+            builder.OpenElement(2, "p");
+            builder.AddAttribute(3, "style", "margin: 0; font-size: 0.9rem;");
+            builder.AddContent(4, "Describe el motivo del rechazo para que el asesor pueda corregir el documento:");
+            builder.CloseElement();
+
+            builder.OpenComponent<RadzenTextArea>(5);
+            builder.AddAttribute(6, "Value", _observacionesRechazo);
+            builder.AddAttribute(7, "ValueChanged", EventCallback.Factory.Create<string>(this, v => _observacionesRechazo = v));
+            builder.AddAttribute(8, "Rows", 4);
+            builder.AddAttribute(9, "Placeholder", "Escribe las observaciones del rechazo...");
+            builder.AddAttribute(10, "Style", "width: 100%;");
+            builder.CloseComponent();
+
+            builder.OpenElement(11, "div");
+            builder.AddAttribute(12, "style", "display: flex; gap: 0.5rem; justify-content: flex-end; padding-top: 0.5rem;");
+
+            builder.OpenComponent<RadzenButton>(13);
+            builder.AddAttribute(14, "Text", "Cancelar");
+            builder.AddAttribute(15, "ButtonStyle", ButtonStyle.Secondary);
+            builder.AddAttribute(16, "Click", EventCallback.Factory.Create(this, () => ds.Close(false)));
+            builder.CloseComponent();
+
+            builder.OpenComponent<RadzenButton>(17);
+            builder.AddAttribute(18, "Text", "Confirmar Rechazo");
+            builder.AddAttribute(19, "ButtonStyle", ButtonStyle.Danger);
+            builder.AddAttribute(20, "Disabled", string.IsNullOrWhiteSpace(_observacionesRechazo));
+            builder.AddAttribute(21, "Click", EventCallback.Factory.Create(this, () => ds.Close(true)));
+            builder.CloseComponent();
+
+            builder.CloseElement();
+            builder.CloseElement();
+        };
+
+        var resultadoObj = await DialogoService.OpenAsync("Rechazar Revision", contenido);
+        if (resultadoObj is true)
+            await ConfirmarRechazo();
+    }
+
+    private async Task ConfirmarRechazo()
+    {
+        if (_avanceARechazar == null || string.IsNullOrWhiteSpace(_observacionesRechazo)) return;
+
+        _rechazando = true;
+        try
+        {
+            var revisionExistente = await RevisionCalidadService.ObtenerPorAvanceAsync(_avanceARechazar.Id);
+            Guid revisionId;
+
+            if (revisionExistente != null)
+            {
+                revisionId = revisionExistente.Id;
+            }
+            else
+            {
+                var nuevaRevision = await RevisionCalidadService.CrearRevisionAsync(_avanceARechazar.Id, UsuarioId);
+                if (nuevaRevision == null)
+                {
+                    Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo crear la revision.");
+                    return;
+                }
+                revisionId = nuevaRevision.Id;
+            }
+
+            var resultado = await RevisionCalidadService.RechazarRevisionAsync(revisionId, _observacionesRechazo);
+            if (resultado != null)
+            {
+                Notificaciones.Notify(NotificationSeverity.Success, "Rechazado", "Se rechazo la revision correctamente.");
+                await CargarAvances();
+                await RecargarSolicitud.InvokeAsync();
+            }
+            else
+            {
+                Notificaciones.Notify(NotificationSeverity.Error, "Error", "No se pudo rechazar la revision.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(NotificationSeverity.Error, "Error", ex.Message);
+        }
+        finally
+        {
+            _rechazando = false;
+            _avanceARechazar = null;
+            _observacionesRechazo = string.Empty;
+        }
+    }
 
     private class ModeloAvance
     {

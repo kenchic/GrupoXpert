@@ -30,15 +30,19 @@ else if (solicitudes == null || !solicitudes.Any())
     @* PREMIUM EMPTY STATE *@
     <div class="gx-card" style="padding: 48px 24px; text-align: center; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 250px;">
         <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--color-primario-light); display: flex; align-items: center; justify-content: center; color: var(--color-primario);">
-            <span class="material-icons" style="font-size: 3rem;">inbox</span>
+            <span class="material-icons" style="font-size: 3rem;">@(rolUsuario == "Revisor" ? "verified" : "inbox")</span>
         </div>
-        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-texto); margin: 0;">No se encontraron solicitudes académicas</h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-texto); margin: 0;">
+            @(rolUsuario == "Revisor" ? "No hay solicitudes pendientes de revision" : "No se encontraron solicitudes academicas")
+        </h3>
         <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 450px; margin: 0; line-height: 1.5;">
-            @(rolUsuario == "Estudiante" 
-                ? "Aún no has registrado ninguna solicitud académica. Comienza creando una nueva solicitud y un asesor calificado te ayudará a lograr tus metas." 
+            @(rolUsuario == "Revisor" 
+                ? "No hay solicitudes con documento final pendiente de revision en este momento. Cuando un asesor suba un documento final, aparecera aqui para que puedas dar tu visto bueno." 
+                : rolUsuario == "Estudiante" 
+                ? "Aun no has registrado ninguna solicitud academica. Comienza creando una nueva solicitud y un asesor calificado te ayudara a lograr tus metas." 
                 : rolUsuario == "Asesor"
-                ? "No hay solicitudes académicas pendientes de asignación o asignadas a ti en este momento. ¡Vuelve más tarde!"
-                : "No se registran solicitudes académicas pendientes o en proceso en la plataforma actualmente.")
+                ? "No hay solicitudes academicas pendientes de asignacion o asignadas a ti en este momento. Vuelve mas tarde!"
+                : "No se registran solicitudes academicas pendientes o en proceso en la plataforma actualmente.")
         </p>
         @if (rolUsuario == "Estudiante")
         {
@@ -53,6 +57,16 @@ else
 {
     @* FEED DE SOLICITUDES *@
     <div style="display: flex; flex-direction: column; gap: 16px;">
+        @if (rolUsuario == "Revisor" && solicitudes.Any())
+        {
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 16px 20px; margin-bottom: 4px; display: flex; align-items: center; gap: 12px;">
+                <span class="material-icons" style="font-size: 1.5rem; color: #10b981;">verified</span>
+                <div>
+                    <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Solicitudes con Documento Final Pendiente</h3>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 2px 0 0 0;">Selecciona una solicitud para revisar y dar visto bueno al documento final.</p>
+                </div>
+            </div>
+        }
         @foreach (var sol in solicitudes)
         {
             <div class="gx-card" style="position: relative; padding: 7px; transition: all var(--transition-medium); border-left: 4px solid @ObtenerBordePorEstado(sol.Estado); background: white; cursor: pointer;" @onclick='() => Navegador.NavigateTo($"/solicitud-academica/{sol.Id}")'>
