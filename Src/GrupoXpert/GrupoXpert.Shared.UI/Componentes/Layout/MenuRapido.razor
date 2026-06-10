@@ -2,7 +2,7 @@
 
 <div class="gx-card" id="gx-menu-rapido">
     <div style="padding:8px 0;">
-        @foreach (var item in elementos)
+        @foreach (var item in elementos.Where(e => EsVisible(e, RolUsuario)))
         {
             <a href="@item.Ruta" class="gx-quick-menu-item">
                 <span class="material-icons">@item.Icono</span>
@@ -13,13 +13,20 @@
 </div>
 
 @code {
+    [Parameter] public string RolUsuario { get; set; } = "Estudiante";
+
     [Parameter] public List<ElementoMenu> elementos { get; set; } = new()
     {
-        new("Mis Cursos", "menu_book", "/cursos"),
-        new("Calificaciones", "grade", "/calificaciones"),
-        new("Documentos", "folder_shared", "/documentos"),
-        new("Configuración", "settings", "/configuracion")
+        new("Mis Cursos", "menu_book", "/cursos", new[] { "Estudiante", "Asesor", "Administrador", "Revisor" }),
+        new("Calificaciones", "grade", "/calificaciones", new[] { "Estudiante", "Asesor", "Administrador" }),
+        new("Documentos", "folder_shared", "/documentos", new[] { "Estudiante", "Asesor", "Administrador", "Revisor" }),
+        new("Configuración", "settings", "/configuracion", new[] { "Estudiante", "Asesor", "Administrador", "Revisor" })
     };
 
-    public record ElementoMenu(string Texto, string Icono, string Ruta);
+    private bool EsVisible(ElementoMenu item, string rol)
+    {
+        return item.RolesPermitidos.Contains(rol);
+    }
+
+    public record ElementoMenu(string Texto, string Icono, string Ruta, string[] RolesPermitidos);
 }

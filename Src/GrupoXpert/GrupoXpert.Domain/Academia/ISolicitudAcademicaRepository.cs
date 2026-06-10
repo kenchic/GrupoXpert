@@ -9,5 +9,7 @@ public interface ISolicitudAcademicaRepository
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerPendientesYAsignadasAAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerPorEstadosAsync(IEnumerable<EstadoSolicitud> estados, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerConAvanceFinalPendienteRevisionAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionAsync(CancellationToken cancellationToken = default);
     Task EliminarAsync(Guid id, CancellationToken cancellationToken = default);
 }

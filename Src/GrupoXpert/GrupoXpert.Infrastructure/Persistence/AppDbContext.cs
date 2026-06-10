@@ -3,6 +3,7 @@ using GrupoXpert.Domain.Identidad;
 using GrupoXpert.Domain.Perfil;
 using GrupoXpert.Domain.Academia;
 using GrupoXpert.Domain.Calidad;
+using GrupoXpert.Domain.Calificacion;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrupoXpert.Infrastructure.Persistence;
@@ -22,6 +23,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Comentario> Comentarios => Set<Comentario>();
     public DbSet<ArchivoAdjunto> ArchivosAdjuntos => Set<ArchivoAdjunto>();
     public DbSet<RevisionCalidad> RevisionesCalidad => Set<RevisionCalidad>();
+    public DbSet<CalificacionColaborador> CalificacionesColaborador => Set<CalificacionColaborador>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,5 @@
 @inherits LayoutComponentBase
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
 
 @* === TOP NAVBAR (estilo LinkedIn) === *@
 <BarraNavegacion />
@@ -8,7 +9,7 @@
     @* Sidebar Izquierdo — Perfil + Menú Rápido *@
     <aside class="gx-sidebar-left">
         <TarjetaPerfil />
-        <MenuRapido />
+        <MenuRapido RolUsuario="@_rolUsuario" />
     </aside>
 
     @* Contenido Principal (feed / página) *@
@@ -31,6 +32,21 @@
 <RadzenComponents />
 
 @code {
+    private string _rolUsuario = "Estudiante";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            if (authState.User.Identity?.IsAuthenticated == true)
+            {
+                _rolUsuario = authState.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Estudiante";
+            }
+        }
+        catch { }
+    }
+
     private List<PanelLateral.ElementoPanel> noticiasAcademicas = new()
     {
         new("Nuevos horarios de tutorías disponibles", "Hace 2 horas", "#A62677"),

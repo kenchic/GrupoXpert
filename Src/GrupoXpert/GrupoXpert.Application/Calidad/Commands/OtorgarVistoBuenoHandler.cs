@@ -10,6 +10,7 @@ namespace GrupoXpert.Application.Calidad.Commands;
 public sealed class OtorgarVistoBuenoHandler(
     IRevisionCalidadRepository revisionRepositorio,
     IAvanceRepository avanceRepositorio,
+    ISolicitudAcademicaRepository solicitudRepositorio,
     IUsuarioRepository usuarioRepositorio,
     IUnidadDeTrabajo unidadDeTrabajo)
     : IRequestHandler<OtorgarVistoBuenoCommand, RevisionCalidadDto>
@@ -27,6 +28,13 @@ public sealed class OtorgarVistoBuenoHandler(
 
         avance.Liberar();
         await avanceRepositorio.ActualizarAsync(avance, cancelacion);
+
+        var solicitud = await solicitudRepositorio.ObtenerPorIdAsync(avance.SolicitudId, cancelacion);
+        if (solicitud is not null)
+        {
+            solicitud.Liberar();
+            await solicitudRepositorio.ActualizarAsync(solicitud, cancelacion);
+        }
 
         await unidadDeTrabajo.GuardarCambiosAsync(cancelacion);
 

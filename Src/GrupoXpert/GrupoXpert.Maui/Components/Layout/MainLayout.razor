@@ -35,10 +35,13 @@
         <span class="material-icons">school</span>
         <span>Academia</span>
     </NavLink>
-    <div class="gx-tab-item gx-tab-item-create">
-        <span class="material-icons">add</span>
-        <span>Publicar</span>
-    </div>
+    @if (rolUsuario != "Revisor")
+    {
+        <NavLink href="/calificaciones" class="gx-tab-item">
+            <span class="material-icons">grade</span>
+            <span>Calif.</span>
+        </NavLink>
+    }
     <NavLink href="/notificaciones" class="gx-tab-item">
         <span class="material-icons">notifications</span>
         <span>Avisos</span>

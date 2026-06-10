@@ -1,0 +1,51 @@
+@page "/calificaciones"
+@using Microsoft.Maui.Storage
+@using GrupoXpert.Shared.UI.Componentes.Calificacion
+
+<PageTitle>Calificaciones - GrupoXpert</PageTitle>
+
+<PanelCalificaciones EsEstudiante="@_esEstudiante" EsAdministrador="@_esAdministrador" EsAsesor="@_esAsesor" />
+
+@code {
+    private bool _esEstudiante = false;
+    private bool _esAdministrador = false;
+    private bool _esAsesor = false;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            var token = Preferences.Default.Get("authToken", string.Empty);
+            if (!string.IsNullOrEmpty(token))
+            {
+                var role = ObtenerRolDelToken(token);
+                _esEstudiante = role == "Estudiante";
+                _esAdministrador = role == "Administrador";
+                _esAsesor = role == "Asesor";
+            }
+        }
+        catch { }
+    }
+
+    private static string ObtenerRolDelToken(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("role", out var roleProp))
+                    return roleProp.GetString() ?? "Estudiante";
+                if (doc.RootElement.TryGetProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var rolePropXml))
+                    return rolePropXml.GetString() ?? "Estudiante";
+            }
+        }
+        catch { }
+        return "Estudiante";
+    }
+}

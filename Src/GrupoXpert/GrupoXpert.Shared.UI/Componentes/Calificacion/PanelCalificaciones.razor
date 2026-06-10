@@ -1,0 +1,425 @@
+@using GrupoXpert.Shared.UI.Modelos.Calificacion
+@using GrupoXpert.Shared.UI.Abstracciones
+
+<div class="gx-card" style="margin-bottom: 1rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="material-icons" style="color: var(--color-primario); font-size: 1.5rem;">@(_esEstudiante ? "star_rate" : _esAdministrador ? "manage_accounts" : "emoji_events")</span>
+            <h2 style="margin: 0; font-size: 1.2rem; font-weight: 700;">
+                @if (_esEstudiante)
+                {
+                    <text>Calificar Colaborador</text>
+                }
+                else if (_esAdministrador)
+                {
+                    <text>Calificaciones de Colaboradores</text>
+                }
+                else
+                {
+                    <text>Mis Calificaciones</text>
+                }
+            </h2>
+        </div>
+        @if (_esEstudiante && _solicitudes.Count > 0)
+        {
+            var pendientes = _solicitudes.Count(s => !s.Calificada);
+            if (pendientes > 0)
+            {
+                <span class="gx-chip gx-chip-warning" style="font-weight: 600;">
+                    @pendientes pendiente@(pendientes != 1 ? "s" : "")
+                </span>
+            }
+        }
+        else if (!_esEstudiante && _calificacionesPorSolicitud.Count > 0)
+        {
+            <span class="gx-chip gx-chip-success" style="font-weight: 600;">
+                @_calificacionesPorSolicitud.Count calificacion@(_calificacionesPorSolicitud.Count != 1 ? "es" : "")
+            </span>
+        }
+    </div>
+
+    @if (_estaCargando)
+    {
+        <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem 0;">
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="animate-pulse" style="background: #f3f4f6; border-radius: 12px; padding: 1.25rem; border: 1px solid #e5e7eb;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 10px; background: #e5e7eb;"></div>
+                        <div style="flex: 1;">
+                            <div style="width: 200px; height: 16px; background: #e5e7eb; border-radius: 4px; margin-bottom: 6px;"></div>
+                            <div style="width: 140px; height: 12px; background: #e5e7eb; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (_esEstudiante && _solicitudes.Count == 0)
+    {
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--color-texto-secundario);">
+            <span class="material-icons" style="font-size: 3rem; color: #d1d5db; margin-bottom: 0.5rem; display: block;">rate_review</span>
+            <p style="font-size: 0.95rem; margin: 0;">No tienes solicitudes pendientes por calificar.</p>
+            <p style="font-size: 0.82rem; color: #9ca3af; margin-top: 0.5rem;">Cuando un avance final sea liberado, podrás calificar al colaborador aquí.</p>
+        </div>
+    }
+    else if (!_esEstudiante && _calificacionesPorSolicitud.Count == 0)
+    {
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--color-texto-secundario);">
+            <span class="material-icons" style="font-size: 3rem; color: #d1d5db; margin-bottom: 0.5rem; display: block;">@(_esAdministrador ? "group_off" : "star_outline")</span>
+            <p style="font-size: 0.95rem; margin: 0;">
+                @if (_esAdministrador)
+                {
+                    <text>Aún no hay calificaciones registradas en el sistema.</text>
+                }
+                else
+                {
+                    <text>Aún no has recibido calificaciones de los clientes.</text>
+                }
+            </p>
+        </div>
+    }
+    else if (_esEstudiante)
+    {
+        @* ESTUDIANTE: Mostrar solicitudes pendientes primero, luego calificadas con tarjeta rica *@
+        var pendientes = _solicitudes.Where(s => !s.Calificada).ToList();
+        var calificadas = _solicitudes.Where(s => s.Calificada).ToList();
+
+        @if (pendientes.Count > 0)
+        {
+            <div style="margin-bottom: 0.5rem;">
+                <h3 style="font-size: 0.9rem; font-weight: 700; color: var(--color-texto-secundario); margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.4rem;">
+                    <span class="material-icons" style="font-size: 1rem; color: #f59e0b;">pending_actions</span>
+                    Pendientes por calificar
+                </h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                @foreach (var solicitud in pendientes)
+                {
+                    <div class="gx-card" style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; cursor: pointer; transition: box-shadow 0.2s;" @onclick="() => AbrirCalificacion(solicitud)">
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <div style="width: 44px; height: 44px; border-radius: 10px; background: #f59e0b; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                                <span class="material-icons" style="font-size: 1.3rem;">star_rate</span>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem;">@solicitud.AreaTematica</div>
+                                <div style="font-size: 0.8rem; color: var(--color-texto-secundario); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                        <span class="material-icons" style="font-size: 0.85rem;">person</span>
+                                        @solicitud.NombreAsesor
+                                    </span>
+                                    <span>•</span>
+                                    <span class="gx-chip gx-chip-warning" style="font-size: 0.7rem;">Sin calificar</span>
+                                </div>
+                                <div style="margin-top: 0.5rem;">
+                                    <RadzenButton Text="Calificar" Icon="star_rate" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Click="@(() => AbrirCalificacion(solicitud))" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (calificadas.Count > 0)
+        {
+            <div style="margin-bottom: 0.5rem;">
+                <h3 style="font-size: 0.9rem; font-weight: 700; color: var(--color-texto-secundario); margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.4rem;">
+                    <span class="material-icons" style="font-size: 1rem; color: #10b981;">check_circle</span>
+                    Calificaciones realizadas
+                </h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                @foreach (var solicitud in calificadas.OrderByDescending(s => s.FechaCalificacion))
+                {
+                    <div class="gx-card" style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <div style="width: 44px; height: 44px; border-radius: 10px; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                                <span class="material-icons" style="font-size: 1.3rem;">check_circle</span>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 0.95rem;">@solicitud.NombreAsesor</div>
+                                        <div style="display: flex; align-items: center; gap: 2px; margin-top: 0.25rem;">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <span class="material-icons" style="font-size: 1rem; color: @(i <= solicitud.Puntaje ? "#fbbf24" : "#e5e7eb");">star</span>
+                                            }
+                                            <span style="font-size: 0.85rem; font-weight: 600; margin-left: 4px; color: var(--color-texto-secundario);">@solicitud.Puntaje/5</span>
+                                        </div>
+                                    </div>
+                                    @if (solicitud.FechaCalificacion.HasValue)
+                                    {
+                                        <span style="font-size: 0.75rem; color: var(--color-texto-secundario);">@solicitud.FechaCalificacion.Value.ToString("dd/MM/yyyy")</span>
+                                    }
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--color-texto-secundario); margin-top: 0.25rem;">
+                                    <span style="display: flex; align-items: center; gap: 0.25rem;">
+                                        <span class="material-icons" style="font-size: 0.85rem;">school</span>
+                                        @solicitud.AreaTematica
+                                    </span>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(solicitud.ObservacionCalificacion))
+                                {
+                                    <div style="margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: #f9fafb; border-radius: 8px; font-size: 0.85rem; color: var(--color-texto-secundario); border: 1px solid #e5e7eb;">
+                                        <span class="material-icons" style="font-size: 0.85rem; vertical-align: middle; margin-right: 0.25rem;">chat_bubble_outline</span>
+                                        @solicitud.ObservacionCalificacion
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        @* ADMIN y ASESOR: Tarjetas ricas de calificaciones *@
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            @foreach (var cal in _calificacionesPorSolicitud.Values.OrderByDescending(c => c.FechaCalificacion))
+            {
+                <div class="gx-card" style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                        <div style="width: 44px; height: 44px; border-radius: 10px; background: #fbbf24; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                            <span class="material-icons" style="font-size: 1.3rem;">star</span>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                <div>
+                                    <div style="font-weight: 700; font-size: 0.95rem;">@cal.NombreColaborador</div>
+                                    <div style="display: flex; align-items: center; gap: 2px; margin-top: 0.25rem;">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="material-icons" style="font-size: 1rem; color: @(i <= cal.Puntaje ? "#fbbf24" : "#e5e7eb");">star</span>
+                                        }
+                                        <span style="font-size: 0.85rem; font-weight: 600; margin-left: 4px; color: var(--color-texto-secundario);">@cal.Puntaje/5</span>
+                                    </div>
+                                </div>
+                                <span style="font-size: 0.75rem; color: var(--color-texto-secundario);">@cal.FechaCalificacion.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(cal.Observacion))
+                            {
+                                <div style="margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: #f9fafb; border-radius: 8px; font-size: 0.85rem; color: var(--color-texto-secundario); border: 1px solid #e5e7eb;">
+                                    <span class="material-icons" style="font-size: 0.85rem; vertical-align: middle; margin-right: 0.25rem;">chat_bubble_outline</span>
+                                    @cal.Observacion
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* MODAL DE CALIFICACION (solo Estudiante) *@
+@if (_mostrarModal && _solicitudSeleccionada != null && _esEstudiante)
+{
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700;">Calificar Colaborador</h3>
+                <RadzenButton Text="" Icon="close" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="CerrarModal" />
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <span style="font-size: 0.85rem; color: var(--color-texto-secundario);">Solicitud:</span>
+                <span style="font-size: 0.95rem; font-weight: 600; margin-left: 0.5rem;">@_solicitudSeleccionada.AreaTematica</span>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <span style="font-size: 0.85rem; color: var(--color-texto-secundario);">Colaborador:</span>
+                <span style="font-size: 0.95rem; font-weight: 600; margin-left: 0.5rem;">@_solicitudSeleccionada.NombreAsesor</span>
+            </div>
+
+            <div style="margin-bottom: 1.25rem; text-align: center;">
+                <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;">Selecciona tu calificación</p>
+                <div style="display: flex; justify-content: center; gap: 0.25rem;">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var estrellaValor = i;
+                        <span style="font-size: 2.5rem; cursor: pointer; color: @(estrellaValor <= _puntajeSeleccionado ? "#fbbf24" : "#e5e7eb"); transition: color 0.15s, transform 0.15s;"
+                              @onclick="() => SeleccionarPuntaje(estrellaValor)"
+                              @onmouseover="() => _puntajeHover = estrellaValor"
+                              @onmouseout="() => _puntajeHover = 0"
+                              class="material-icons">
+                            @(estrellaValor <= (_puntajeHover > 0 ? _puntajeHover : _puntajeSeleccionado) ? "star" : "star_border")
+                        </span>
+                    }
+                </div>
+                <p style="font-size: 0.8rem; color: var(--color-texto-secundario); margin-top: 0.25rem;">
+                    @_ObtenerTextoPuntaje(_puntajeHover > 0 ? _puntajeHover : _puntajeSeleccionado)
+                </p>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Observación (opcional)</label>
+                <RadzenTextArea @bind-Value="_observacion" Rows="3" Placeholder="Describe tu experiencia con el colaborador..." Style="width: 100%; border-radius: 8px;" />
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                <RadzenButton Text="Cancelar" ButtonStyle="ButtonStyle.Secondary" Click="CerrarModal" />
+                <RadzenButton Text="Enviar Calificación" Icon="send" ButtonStyle="ButtonStyle.Primary" Click="EnviarCalificacion" Disabled="@(_puntajeSeleccionado == 0 || _enviando)" IsBusy="@_enviando" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Inject] private ICalificacionService CalificacionService { get; set; } = default!;
+    [Inject] private NotificationService Notificaciones { get; set; } = default!;
+    [Parameter] public bool EsEstudiante { get; set; }
+    [Parameter] public bool EsAdministrador { get; set; }
+    [Parameter] public bool EsAsesor { get; set; }
+
+    private List<SolicitudPorCalificarDto> _solicitudes = new();
+    private Dictionary<Guid, CalificacionColaboradorDto> _calificacionesPorSolicitud = new();
+    private bool _estaCargando = true;
+    private bool _esEstudiante;
+    private bool _esAdministrador;
+    private bool _esAsesor;
+    private bool _mostrarModal = false;
+    private SolicitudPorCalificarDto? _solicitudSeleccionada;
+    private int _puntajeSeleccionado = 0;
+    private int _puntajeHover = 0;
+    private string _observacion = string.Empty;
+    private bool _enviando = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _esEstudiante = EsEstudiante;
+        _esAdministrador = EsAdministrador;
+        _esAsesor = EsAsesor;
+        await CargarDatosAsync();
+    }
+
+    private async Task CargarDatosAsync()
+    {
+        _estaCargando = true;
+        StateHasChanged();
+
+        try
+        {
+            if (_esEstudiante)
+            {
+                _solicitudes = (await CalificacionService.ObtenerSolicitudesPorCalificarAsync()).ToList();
+            }
+            else if (_esAdministrador)
+            {
+                var todasCalificaciones = await CalificacionService.ObtenerTodasAsync();
+                foreach (var cal in todasCalificaciones)
+                {
+                    _calificacionesPorSolicitud[cal.SolicitudId] = cal;
+                }
+            }
+            else if (_esAsesor)
+            {
+                var misCalificaciones = await CalificacionService.ObtenerMisCalificacionesAsync();
+                foreach (var cal in misCalificaciones)
+                {
+                    _calificacionesPorSolicitud[cal.SolicitudId] = cal;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"No se pudieron cargar las calificaciones: {ex.Message}",
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            _estaCargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private void AbrirCalificacion(SolicitudPorCalificarDto solicitud)
+    {
+        if (!_esEstudiante || solicitud.Calificada) return;
+        _solicitudSeleccionada = solicitud;
+        _puntajeSeleccionado = 0;
+        _puntajeHover = 0;
+        _observacion = string.Empty;
+        _mostrarModal = true;
+    }
+
+    private void CerrarModal()
+    {
+        _mostrarModal = false;
+        _solicitudSeleccionada = null;
+    }
+
+    private void SeleccionarPuntaje(int puntaje)
+    {
+        _puntajeSeleccionado = puntaje;
+    }
+
+    private async Task EnviarCalificacion()
+    {
+        if (_solicitudSeleccionada == null || _puntajeSeleccionado == 0) return;
+        _enviando = true;
+        StateHasChanged();
+
+        try
+        {
+            var clienteId = _solicitudSeleccionada.ClienteId;
+            var colaboradorId = _solicitudSeleccionada.AsesorId ?? Guid.Empty;
+
+            var resultado = await CalificacionService.CalificarAsync(
+                _solicitudSeleccionada.SolicitudId,
+                clienteId,
+                colaboradorId,
+                _puntajeSeleccionado,
+                string.IsNullOrWhiteSpace(_observacion) ? null : _observacion.Trim());
+
+            if (resultado != null)
+            {
+                Notificaciones.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Calificación Enviada",
+                    Detail = "Tu calificación ha sido registrada exitosamente.",
+                    Duration = 5000
+                });
+                CerrarModal();
+                await CargarDatosAsync();
+            }
+            else
+            {
+                throw new Exception("No se recibió respuesta del servidor.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Notificaciones.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"No se pudo enviar la calificación: {ex.Message}",
+                Duration = 6000
+            });
+        }
+        finally
+        {
+            _enviando = false;
+            StateHasChanged();
+        }
+    }
+
+    private static string _ObtenerTextoPuntaje(int puntaje) => puntaje switch
+    {
+        1 => "Muy malo",
+        2 => "Malo",
+        3 => "Regular",
+        4 => "Bueno",
+        5 => "Excelente",
+        _ => "Selecciona una opción"
+    };
+}

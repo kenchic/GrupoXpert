@@ -89,4 +89,20 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
             .Where(s => solicitudIds.Contains(s.Id))
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Include(x => x.Postulaciones)
+            .Where(x => x.ClienteId == clienteId && x.Estado == EstadoSolicitud.Liberacion)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Include(x => x.Postulaciones)
+            .Where(x => x.Estado == EstadoSolicitud.Liberacion)
+            .ToListAsync(cancellationToken);
+    }
 }

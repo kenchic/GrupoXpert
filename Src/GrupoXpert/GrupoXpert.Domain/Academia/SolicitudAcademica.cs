@@ -183,6 +183,14 @@ public class SolicitudAcademica : AggregateRoot
         _postulaciones.Add(new Postulacion(Id, colaboradorId));
     }
 
+    public void Liberar()
+    {
+        if (Estado != EstadoSolicitud.EnProceso && Estado != EstadoSolicitud.Asignada)
+            throw new Exceptions.ExcepcionDominio("Solo se puede Liberar una solicitud que esté Asignada o En Proceso.");
+
+        Estado = EstadoSolicitud.Liberacion;
+    }
+
     /// <summary>
     /// Permite al administrador seleccionar una postulación, aceptándola y rechazando las demás.
     /// </summary>

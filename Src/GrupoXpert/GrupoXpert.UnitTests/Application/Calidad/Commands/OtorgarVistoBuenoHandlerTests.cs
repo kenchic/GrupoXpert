@@ -14,6 +14,7 @@ public class OtorgarVistoBuenoHandlerTests
 {
     private readonly IRevisionCalidadRepository _revisionRepositorio;
     private readonly IAvanceRepository _avanceRepositorio;
+    private readonly ISolicitudAcademicaRepository _solicitudRepositorio;
     private readonly IUsuarioRepository _usuarioRepositorio;
     private readonly IUnidadDeTrabajo _unidadDeTrabajo;
     private readonly OtorgarVistoBuenoHandler _manejador;
@@ -22,10 +23,11 @@ public class OtorgarVistoBuenoHandlerTests
     {
         _revisionRepositorio = Substitute.For<IRevisionCalidadRepository>();
         _avanceRepositorio = Substitute.For<IAvanceRepository>();
+        _solicitudRepositorio = Substitute.For<ISolicitudAcademicaRepository>();
         _usuarioRepositorio = Substitute.For<IUsuarioRepository>();
         _unidadDeTrabajo = Substitute.For<IUnidadDeTrabajo>();
         _manejador = new OtorgarVistoBuenoHandler(
-            _revisionRepositorio, _avanceRepositorio, _usuarioRepositorio, _unidadDeTrabajo);
+            _revisionRepositorio, _avanceRepositorio, _solicitudRepositorio, _usuarioRepositorio, _unidadDeTrabajo);
     }
 
     [Fact]
@@ -39,6 +41,7 @@ public class OtorgarVistoBuenoHandlerTests
 
         _revisionRepositorio.ObtenerPorIdAsync(revision.Id, Arg.Any<CancellationToken>()).Returns(revision);
         _avanceRepositorio.ObtenerPorIdAsync(avance.Id, Arg.Any<CancellationToken>()).Returns(avance);
+        _solicitudRepositorio.ObtenerPorIdAsync(avance.SolicitudId, Arg.Any<CancellationToken>()).Returns((SolicitudAcademica?)null);
         _usuarioRepositorio.ObtenerPorIdAsync(revision.RevisorId, Arg.Any<CancellationToken>()).Returns((Usuario?)null);
 
         // Act
@@ -106,6 +109,7 @@ public class OtorgarVistoBuenoHandlerTests
 
         _revisionRepositorio.ObtenerPorIdAsync(revision.Id, Arg.Any<CancellationToken>()).Returns(revision);
         _avanceRepositorio.ObtenerPorIdAsync(avance.Id, Arg.Any<CancellationToken>()).Returns(avance);
+        _solicitudRepositorio.ObtenerPorIdAsync(avance.SolicitudId, Arg.Any<CancellationToken>()).Returns((SolicitudAcademica?)null);
         _usuarioRepositorio.ObtenerPorIdAsync(revision.RevisorId, Arg.Any<CancellationToken>()).Returns(usuarioRevisor);
 
         // Act

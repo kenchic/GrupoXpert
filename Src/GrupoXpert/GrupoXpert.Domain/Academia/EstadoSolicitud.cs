@@ -9,5 +9,6 @@ public enum EstadoSolicitud
     EnProceso = 2,
     Completada = 3,
     Cancelada = 4,
-    Asignada = 5
+    Asignada = 5,
+    Liberacion = 6
 }
