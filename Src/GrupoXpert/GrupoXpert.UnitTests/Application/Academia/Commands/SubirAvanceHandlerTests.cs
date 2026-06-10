@@ -94,7 +94,7 @@ public class SubirAvanceHandlerTests
     }
 
     [Fact]
-    public async Task Handle_CuandoSolicitudNoEstaEnProceso_DebeLanzarExcepcion()
+    public async Task Handle_CuandoSolicitudEstaCancelada_DebeLanzarExcepcion()
     {
         var solicitud = SolicitudAcademica.Crear(
             Guid.NewGuid(), NivelAcademico.Pregrado, TipoTrabajo.Tesis, "Derecho Penal",
@@ -102,6 +102,7 @@ public class SubirAvanceHandlerTests
             "PDF", "Instrucciones", false, false);
         var asesorId = Guid.NewGuid();
         solicitud.AsignarAsesor(asesorId);
+        solicitud.Cancelar();
 
         var comando = new SubirAvanceCommand(solicitud.Id, asesorId, "Avance", 1, (int)TipoAvance.Parcial, Array.Empty<ArchivoAdjuntoInput>());
 

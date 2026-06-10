@@ -36,7 +36,7 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [x] | 20 | Visualizar y Descargar Entregables Aprobados (Cliente) | 
 | [x] | 21 | Solicitar Correcciones al Entregable (Cliente) | 
 | [X] | 22 | Aprobar Entregable Final y Cerrar Proyecto (Cliente) | 
-| [ ] | 23 | Calificar Servicio y Colaborador (Sistema de Evaluación) | 
+| [x] | 23 | Calificar Servicio y Colaborador (Sistema de Evaluación) | 
 | [ ] | 24 | Procesar Liberación de Pago a Colaborador (Sistema) | 
 | [ ] | 25 | Visualizar Dashboard de Colaborador (Historial, Ingresos, Reputación) |  
 | [ ] | 26 | Visualizar Dashboard de Administrador (Métricas Globales) |  
