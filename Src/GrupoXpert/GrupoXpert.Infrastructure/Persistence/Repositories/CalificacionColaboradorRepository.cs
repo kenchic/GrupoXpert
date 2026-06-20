@@ -50,4 +50,24 @@ public sealed class CalificacionColaboradorRepository(AppDbContext context) : IC
             .OrderByDescending(x => x.FechaCalificacion)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<decimal> ObtenerPuntajePromedioPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default)
+    {
+        var calificaciones = await context.Set<CalificacionColaborador>()
+            .Where(x => x.ColaboradorId == colaboradorId)
+            .Select(x => x.Puntaje.Valor)
+            .ToListAsync(cancellationToken);
+
+        if (calificaciones.Count == 0)
+            return 0m;
+
+        return Math.Round((decimal)calificaciones.Average(), 2);
+    }
+
+    public async Task<int> ContarCalificacionesPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<CalificacionColaborador>()
+            .Where(x => x.ColaboradorId == colaboradorId)
+            .CountAsync(cancellationToken);
+    }
 }

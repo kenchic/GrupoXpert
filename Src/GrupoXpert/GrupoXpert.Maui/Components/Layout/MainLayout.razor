@@ -31,10 +31,20 @@
         <span class="material-icons">home</span>
         <span>Inicio</span>
     </NavLink>
-    <NavLink href="/academia" class="gx-tab-item">
-        <span class="material-icons">school</span>
-        <span>Academia</span>
-    </NavLink>
+    @if (rolUsuario == "Asesor" || rolUsuario == "Administrador")
+    {
+        <NavLink href="/dashboard/colaborador" class="gx-tab-item" Match="NavLinkMatch.Prefix">
+            <span class="material-icons">dashboard</span>
+            <span>Mi Panel</span>
+        </NavLink>
+    }
+    else
+    {
+        <NavLink href="/academia" class="gx-tab-item">
+            <span class="material-icons">school</span>
+            <span>Academia</span>
+        </NavLink>
+    }
     @if (rolUsuario != "Revisor")
     {
         <NavLink href="/calificaciones" class="gx-tab-item">

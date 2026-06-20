@@ -1,0 +1,232 @@
+@* DashboardColaborador.razor — Página principal del Dashboard del Asesor/Colaborador *@
+@using GrupoXpert.Shared.UI.Abstracciones
+@using GrupoXpert.Shared.UI.Modelos.Perfil
+@inject IDashboardColaboradorService DashboardService
+@inject NotificationService NotificationService
+@inject NavigationManager Navegador
+
+<PageTitle>Mi Dashboard - GrupoXpert</PageTitle>
+
+@if (cargando)
+{
+    <div class="gx-card" style="text-align: center; padding: 3rem;">
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 1rem;" />
+        <p style="color: var(--color-texto); margin: 0;">Cargando dashboard...</p>
+    </div>
+}
+else if (dashboard is null)
+{
+    <div class="gx-card" style="text-align: center; padding: 3rem;">
+        <span class="material-icons" style="font-size: 3rem; color: var(--color-primario);">error_outline</span>
+        <h3 style="color: var(--color-texto); margin-top: 1rem;">No se encontró tu perfil de colaborador</h3>
+        <p style="color: var(--color-texto); opacity: 0.7;">Si eres asesor, asegúrate de que tu perfil ha sido aprobado.</p>
+    </div>
+}
+else
+{
+    @* Sección de bienvenida y KPIs *@
+    <div class="gx-card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            <span class="material-icons" style="font-size: 2.5rem; color: var(--color-primario);">dashboard</span>
+            <div>
+                <h2 style="margin: 0; color: var(--color-texto);">Mi Panel</h2>
+                <p style="margin: 0; color: var(--color-texto); opacity: 0.7; font-size: 0.9rem;">Resumen de tu actividad académica</p>
+            </div>
+        </div>
+
+        <div class="gx-dashboard-kpis">
+            <div class="gx-kpi-card">
+                <span class="material-icons" style="color: var(--color-secundario);">assignment</span>
+                <div class="gx-kpi-info">
+                    <span class="gx-kpi-value">@dashboard.ProyectosEnCurso</span>
+                    <span class="gx-kpi-label">En Curso</span>
+                </div>
+            </div>
+            <div class="gx-kpi-card">
+                <span class="material-icons" style="color: #27ae60;">upload_file</span>
+                <div class="gx-kpi-info">
+                    <span class="gx-kpi-value">@dashboard.Solicitudes.Count(s => s.Estado == "Liberacion")</span>
+                    <span class="gx-kpi-label">Entregas</span>
+                </div>
+            </div>
+            <div class="gx-kpi-card">
+                <span class="material-icons" style="color: #f39c12;">folder_open</span>
+                <div class="gx-kpi-info">
+                    <span class="gx-kpi-value">@dashboard.SolicitudesAbiertas</span>
+                    <span class="gx-kpi-label">Abiertas</span>
+                </div>
+            </div>
+            <div class="gx-kpi-card">
+                <span class="material-icons" style="color: #e67e22;">pending_actions</span>
+                <div class="gx-kpi-info">
+                    <span class="gx-kpi-value">@dashboard.PostulacionesPendientes</span>
+                    <span class="gx-kpi-label">Postulaciones Pendientes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Sección de Reputación Académica *@
+    <div class="gx-card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <span class="material-icons" style="font-size: 1.5rem; color: var(--color-acento);">emoji_events</span>
+            <h3 style="margin: 0; color: var(--color-texto);">Reputación Académica</h3>
+        </div>
+        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+            <div style="text-align: center;">
+                <div class="gx-reputacion-puntaje">@dashboard.Reputacion.PuntajePromedio.ToString("0.0")</div>
+                <div style="font-size: 0.8rem; color: var(--color-texto); opacity: 0.7;">de 5.0</div>
+            </div>
+            <div>
+                <div style="display: flex; gap: 0.25rem; margin-bottom: 0.5rem;">
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        <span class="material-icons" style="font-size: 1.2rem; color: @(i <= Math.Round(dashboard.Reputacion.PuntajePromedio) ? "#f1c40f" : "#ddd");">star</span>
+                    }
+                </div>
+                <span class="gx-reputacion-nivel">@ObtenerNombreNivel(dashboard.Reputacion.Nivel)</span>
+                <span style="color: var(--color-texto); opacity: 0.6; font-size: 0.85rem; margin-left: 0.5rem;">(@dashboard.Reputacion.TotalCalificaciones calificaciones)</span>
+            </div>
+        </div>
+    </div>
+
+    @* Sección de Solicitudes Asociadas *@
+    <div class="gx-card" style="padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <span class="material-icons" style="font-size: 1.5rem; color: var(--color-primario);">list_alt</span>
+            <h3 style="margin: 0; color: var(--color-texto);">Mis Solicitudes</h3>
+        </div>
+
+        @if (dashboard.Solicitudes.Count == 0)
+        {
+            <div style="text-align: center; padding: 2rem; color: var(--color-texto); opacity: 0.6;">
+                <span class="material-icons" style="font-size: 3rem;">inbox</span>
+                <p>Aún no tienes solicitudes asignadas.</p>
+            </div>
+        }
+        else
+        {
+            <RadzenDataGrid Data="@dashboard.Solicitudes" TItem="DetalleSolicitudAsesorModelo"
+                             AllowPaging="true" PageSize="10"
+                             AllowSorting="true"
+                             Style="width: 100%;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="AreaTematica" Title="Área" Width="180px" />
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="TipoTrabajo" Title="Tipo" Width="120px">
+                        <Template Context="s">
+                            @ObtenerNombreTipoTrabajo(s.TipoTrabajo)
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="Estado" Title="Estado" Width="130px">
+                        <Template Context="s">
+                            <span class="gx-estado-badge @ObtenerClaseEstado(s.Estado)">@ObtenerNombreEstado(s.Estado)</span>
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="FechaEntrega" Title="Entrega" Width="120px">
+                        <Template Context="s">
+                            @s.FechaEntrega.ToString("dd/MM/yyyy")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="EsUrgente" Title="" Width="60px">
+                        <Template Context="s">
+                            @if (s.EsUrgente)
+                            {
+                                <span class="material-icons" style="color: #e74c3c; font-size: 1.1rem;" title="Urgente">priority_high</span>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="NumeroEntregas" Title="Entregas" Width="90px" />
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Property="PuntajeCalificacion" Title="Puntaje" Width="90px">
+                        <Template Context="s">
+                            @if (s.PuntajeCalificacion.HasValue)
+                            {
+                                <span style="color: #f1c40f; font-weight: 600;">@s.PuntajeCalificacion <span class="material-icons" style="font-size: 0.8rem; vertical-align: middle;">star</span></span>
+                            }
+                            else
+                            {
+                                <span style="color: var(--color-texto); opacity: 0.4;">—</span>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DetalleSolicitudAsesorModelo" Title="" Width="80px">
+                        <Template Context="s">
+                            <RadzenButton Text="Ver" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Primary"
+                                          Click="@(() => NavegarASolicitud(s.SolicitudId))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </div>
+}
+
+@code {
+    private DashboardColaboradorModelo? dashboard;
+    private bool cargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            dashboard = await DashboardService.ObtenerDashboardAsync();
+        }
+        catch (Exception)
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo cargar el dashboard.");
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private string ObtenerNombreEstado(string estado) => estado switch
+    {
+        "Pendiente" => "Pendiente",
+        "Asignada" => "Asignada",
+        "EnProceso" => "En Proceso",
+        "Completada" => "Completada",
+        "Cancelada" => "Cancelada",
+        "Liberacion" => "Liberación",
+        _ => estado
+    };
+
+    private string ObtenerClaseEstado(string estado) => estado switch
+    {
+        "Pendiente" => "gx-estado-pendiente",
+        "Asignada" => "gx-estado-asignada",
+        "EnProceso" => "gx-estado-proceso",
+        "Completada" => "gx-estado-completada",
+        "Cancelada" => "gx-estado-cancelada",
+        "Liberacion" => "gx-estado-liberacion",
+        _ => ""
+    };
+
+    private string ObtenerNombreTipoTrabajo(string tipo) => tipo switch
+    {
+        "Ensayo" => "Ensayo",
+        "Tesis" => "Tesis",
+        "Articulo" => "Artículo",
+        "Monografia" => "Monografía",
+        "ProyectoGrado" => "Proyecto de Grado",
+        "Resumen" => "Resumen",
+        "Presentacion" => "Presentación",
+        "Otro" => "Otro",
+        _ => tipo
+    };
+
+    private string ObtenerNombreNivel(string nivel) => nivel switch
+    {
+        "SinCalificar" => "Sin Calificar",
+        "Principiante" => "Principiante",
+        "Intermedio" => "Intermedio",
+        "Avanzado" => "Avanzado",
+        "Experto" => "Experto",
+        _ => nivel
+    };
+
+    private void NavegarASolicitud(Guid solicitudId)
+    {
+        Navegador.NavigateTo($"/solicitud-academica/{solicitudId}");
+    }
+}

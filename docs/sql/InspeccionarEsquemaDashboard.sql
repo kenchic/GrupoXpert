@@ -1,0 +1,53 @@
+USE [GrupoXpert];
+GO
+
+-- Verificar tablas existentes
+SELECT TABLE_SCHEMA AS Esquema, TABLE_NAME AS Tabla
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_SCHEMA, TABLE_NAME;
+GO
+
+-- Verificar columnas de PerfilesColaboradores
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE, COLUMN_DEFAULT
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'PerfilesColaboradores'
+ORDER BY ORDINAL_POSITION;
+GO
+
+-- Verificar columnas de SolicitudesAcademicas
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'SolicitudesAcademicas'
+ORDER BY ORDINAL_POSITION;
+GO
+
+-- Verificar columnas de Postulaciones
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Postulaciones'
+ORDER BY ORDINAL_POSITION;
+GO
+
+-- Verificar columnas de Avances
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Avances'
+ORDER BY ORDINAL_POSITION;
+GO
+
+-- Verificar columnas de CalificacionesColaborador
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'CalificacionesColaborador'
+ORDER BY ORDINAL_POSITION;
+GO
+
+-- Verificar indices existentes en tablas relevantes
+SELECT t.NAME AS Tabla, i.NAME AS Indice, i.TYPE_DESC AS Tipo, i.is_unique AS EsUnico
+FROM sys.indexes i
+JOIN sys.tables t ON i.object_id = t.object_id
+WHERE t.NAME IN ('PerfilesColaboradores', 'SolicitudesAcademicas', 'Postulaciones', 'Avances', 'CalificacionesColaborador')
+AND i.NAME IS NOT NULL
+ORDER BY t.NAME, i.NAME;
+GO

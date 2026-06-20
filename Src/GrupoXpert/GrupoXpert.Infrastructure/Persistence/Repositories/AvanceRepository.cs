@@ -70,4 +70,11 @@ public sealed class AvanceRepository(AppDbContext context) : IAvanceRepository
             .OrderByDescending(x => x.FechaSubida)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> ContarEntregasPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<Avance>()
+            .Where(x => x.AsesorId == asesorId)
+            .CountAsync(cancellationToken);
+    }
 }

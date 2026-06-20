@@ -208,3 +208,123 @@ h1:focus { outline:none; }
     background: rgba(245, 158, 11, 0.08);
     color: #d97706;
 }
+
+/* =============================================
+   DASHBOARD COLABORADOR
+   ============================================= */
+.gx-dashboard-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.gx-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--color-fondo);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: transform 0.15s ease;
+}
+
+.gx-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.gx-kpi-card .material-icons {
+    font-size: 2rem;
+}
+
+.gx-kpi-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.gx-kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-texto);
+    line-height: 1.1;
+}
+
+.gx-kpi-label {
+    font-size: 0.78rem;
+    color: var(--color-texto);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.gx-reputacion-puntaje {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    line-height: 1;
+}
+
+.gx-reputacion-nivel {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(166, 38, 119, 0.1);
+    color: var(--color-primario);
+}
+
+/* Estado badges para solicitudes */
+.gx-estado-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.gx-estado-pendiente {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.gx-estado-asignada {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.gx-estado-proceso {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.gx-estado-completada {
+    background: rgba(38, 176, 80, 0.1);
+    color: #26b050;
+}
+
+.gx-estado-cancelada {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+}
+
+.gx-estado-liberacion {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+@media (max-width: 768px) {
+    .gx-dashboard-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gx-kpi-value {
+        font-size: 1.3rem;
+    }
+
+    .gx-reputacion-puntaje {
+        font-size: 2.2rem;
+    }
+}

@@ -1,5 +1,7 @@
 @* TarjetaPerfil.razor — Card de perfil lateral estilo LinkedIn *@
+@using GrupoXpert.Shared.UI.Abstracciones
 @inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthStateProvider
+@inject IDashboardColaboradorService DashboardService
 
 <div class="gx-card gx-profile-card" id="gx-tarjeta-perfil">
     <div class="gx-profile-banner"></div>
@@ -40,6 +42,13 @@
 
     private string iniciales = "GX";
     private bool tieneImagen = false;
+    private bool _cargandoDashboard = false;
+
+    private bool EsEstadisticaDefault() =>
+        estadisticas.Count == 3
+        && estadisticas[0].Etiqueta == "Cursos activos" && estadisticas[0].Valor == "3"
+        && estadisticas[1].Etiqueta == "Promedio" && estadisticas[1].Valor == "4.2"
+        && estadisticas[2].Etiqueta == "Documentos" && estadisticas[2].Valor == "12";
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,6 +69,35 @@
                 if (!string.IsNullOrEmpty(rolClaim))
                 {
                     rol = rolClaim;
+                }
+
+                if (EsEstadisticaDefault() && (rol == "Asesor" || rol == "Administrador"))
+                {
+                    _cargandoDashboard = true;
+                    try
+                    {
+                        var dashboard = await DashboardService.ObtenerDashboardAsync();
+                        if (dashboard != null)
+                        {
+                            var solicitudesLiberadas = dashboard.Solicitudes
+                                .Count(s => s.Estado == "Liberacion");
+
+                            estadisticas = new List<EstadisticaPerfil>
+                            {
+                                new("Solicitudes abiertas", dashboard.SolicitudesAbiertas.ToString()),
+                                new("Calificación", dashboard.Reputacion?.PuntajePromedio.ToString("0.0") ?? "0.0"),
+                                new("Entregas", solicitudesLiberadas.ToString())
+                            };
+                        }
+                    }
+                    catch
+                    {
+                        // Si falla el servicio, mantener valores por defecto
+                    }
+                    finally
+                    {
+                        _cargandoDashboard = false;
+                    }
                 }
 
                 var imagenClaim = user.FindFirst("imagen")?.Value;

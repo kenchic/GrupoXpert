@@ -52,6 +52,15 @@
                 </Authorized>
             </AuthorizeView>
 
+            <AuthorizeView Roles="Asesor,Administrador">
+                <Authorized>
+                    <a href="/dashboard/colaborador" class="gx-nav-item @(EsRutaActiva("/dashboard") ? "active" : "")">
+                        <span class="material-icons">dashboard</span>
+                        <span>Mi Panel</span>
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
             <a class="gx-nav-item">
                 <span class="material-icons">notifications</span>
                 <span>Avisos</span>

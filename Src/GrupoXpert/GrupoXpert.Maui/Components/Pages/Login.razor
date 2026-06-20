@@ -32,6 +32,9 @@
                     Preferences.Default.Set("usuarioCorreo", resultado.Correo);
                     Preferences.Default.Set("usuarioNombre", resultado.Nombre);
                     Preferences.Default.Set("usuarioImagen", resultado.Imagen ?? string.Empty);
+
+                    var rol = ObtenerRolDelToken(resultado.TokenAcceso);
+                    Preferences.Default.Set("usuarioRol", rol);
                 }
 
                 Notificaciones.Notify(NotificationSeverity.Success, "Bienvenido", $"Sesión iniciada como {modelo.Correo}");
@@ -51,4 +54,28 @@
     }
 
     private record ResultadoSesion(string TokenAcceso, string Correo, string Nombre, string? Imagen);
+
+    private string ObtenerRolDelToken(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("role", out var roleProp))
+                    return roleProp.GetString() ?? "Estudiante";
+
+                if (doc.RootElement.TryGetProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var rolePropXml))
+                    return rolePropXml.GetString() ?? "Estudiante";
+            }
+        }
+        catch { }
+        return "Estudiante";
+    }
 }

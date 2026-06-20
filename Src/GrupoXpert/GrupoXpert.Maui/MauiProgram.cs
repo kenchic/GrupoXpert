@@ -32,6 +32,7 @@ namespace GrupoXpert.Maui
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IRevisionCalidadService, GrupoXpert.Maui.Services.RevisionCalidadService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ICalificacionService, GrupoXpert.Maui.Services.CalificacionService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IDescargadorArchivos, GrupoXpert.Maui.Services.DescargadorArchivos>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IDashboardColaboradorService, GrupoXpert.Maui.Services.DashboardColaboradorService>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();

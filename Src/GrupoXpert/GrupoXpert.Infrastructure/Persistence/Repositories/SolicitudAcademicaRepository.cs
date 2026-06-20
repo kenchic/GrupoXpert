@@ -105,4 +105,35 @@ public sealed class SolicitudAcademicaRepository(AppDbContext context) : ISolici
             .Where(x => x.Estado == EstadoSolicitud.Liberacion)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> ContarEnProcesoPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Where(x => x.AsesorId == asesorId && x.Estado == EstadoSolicitud.EnProceso)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> ContarAbiertasPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default)
+    {
+        var estadosAbiertos = new[] { EstadoSolicitud.Pendiente, EstadoSolicitud.Asignada, EstadoSolicitud.EnProceso };
+        return await context.Set<SolicitudAcademica>()
+            .Where(x => x.AsesorId == asesorId && estadosAbiertos.Contains(x.Estado))
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<SolicitudAcademica>> ObtenerAsignadasAAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<SolicitudAcademica>()
+            .Include(x => x.Postulaciones)
+            .Where(x => x.AsesorId == asesorId)
+            .OrderByDescending(x => x.FechaEntrega)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> ContarPostulacionesPendientesPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default)
+    {
+        return await context.Set<Postulacion>()
+            .Where(p => p.ColaboradorId == colaboradorId && p.Estado == EstadoPostulacion.Pendiente)
+            .CountAsync(cancellationToken);
+    }
 }

@@ -1,0 +1,59 @@
+@page "/dashboard/colaborador"
+@using Microsoft.Maui.Storage
+@using GrupoXpert.Shared.UI.Abstracciones
+@inject IDashboardColaboradorService DashboardService
+
+<PageTitle>Mi Panel - GrupoXpert</PageTitle>
+
+<GrupoXpert.Shared.UI.Componentes.Perfil.DashboardColaborador />
+
+@code {
+    [Inject] private NavigationManager Navegador { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var rol = ObtenerRolUsuario();
+        var estaAutorizado = rol == "Asesor" || rol == "Administrador";
+
+        if (!estaAutorizado)
+        {
+            Navegador.NavigateTo("/");
+            return;
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private string ObtenerRolUsuario()
+    {
+        var rol = Preferences.Default.Get("usuarioRol", string.Empty);
+        if (!string.IsNullOrEmpty(rol))
+            return rol;
+
+        var token = Preferences.Default.Get("authToken", string.Empty);
+        if (string.IsNullOrEmpty(token))
+            return "Estudiante";
+
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                var payload = parts[1];
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+                var bytes = Convert.FromBase64String(payload);
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("role", out var roleProp))
+                    return roleProp.GetString() ?? "Estudiante";
+
+                if (doc.RootElement.TryGetProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var rolePropXml))
+                    return rolePropXml.GetString() ?? "Estudiante";
+            }
+        }
+        catch { }
+
+        return "Estudiante";
+    }
+}

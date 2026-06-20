@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using GrupoXpert.Domain.Perfil;
 using GrupoXpert.Domain.Perfil.Events;
@@ -160,5 +161,88 @@ public class PerfilColaboradorTests
 
         // Assert
         perfil.AreasConocimiento.Should().NotContain(area);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ACTUALIZAR REPUTACIÓN
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    [Fact]
+    public void ActualizarReputacion_ConReputacionValida_DebeActualizarYRegistrarEvento()
+    {
+        // Arrange
+        var perfil = PerfilColaborador.Crear(Guid.NewGuid());
+        var nuevaReputacion = new ReputacionAcademica(4.5m, 15);
+
+        // Act
+        perfil.ActualizarReputacion(nuevaReputacion);
+
+        // Assert
+        perfil.Reputacion.Should().Be(nuevaReputacion);
+        perfil.Reputacion.Nivel.Should().Be(NivelReputacion.Experto);
+        perfil.EventosDominio.Should().ContainItemsAssignableTo<ReputacionAcademicaActualizadaEvent>();
+    }
+
+    [Fact]
+    public void Crear_CuandoPerfilEsNuevo_DebeTenerReputacionSinCalificaciones()
+    {
+        // Arrange
+        var usuarioId = Guid.NewGuid();
+
+        // Act
+        var perfil = PerfilColaborador.Crear(usuarioId);
+
+        // Assert
+        perfil.Reputacion.Should().Be(ReputacionAcademica.SinCalificaciones);
+        perfil.Reputacion.PuntajePromedio.Should().Be(0m);
+        perfil.Reputacion.TotalCalificaciones.Should().Be(0);
+        perfil.Reputacion.Nivel.Should().Be(NivelReputacion.SinCalificar);
+    }
+
+    [Fact]
+    public void ActualizarReputacion_CuandoReputacionEsNula_DebeLanzarExcepcion()
+    {
+        // Arrange
+        var perfil = PerfilColaborador.Crear(Guid.NewGuid());
+
+        // Act
+        var accion = () => perfil.ActualizarReputacion(null!);
+
+        // Assert
+        accion.Should().Throw<ArgumentException>().WithMessage("*reputación*nula*");
+    }
+
+    [Fact]
+    public void ActualizarReputacion_EventoDebeContenerDatosCorrectos()
+    {
+        // Arrange
+        var perfil = PerfilColaborador.Crear(Guid.NewGuid());
+        var nuevaReputacion = new ReputacionAcademica(3.8m, 7);
+
+        // Act
+        perfil.ActualizarReputacion(nuevaReputacion);
+
+        // Assert
+        var evento = perfil.EventosDominio.OfType<ReputacionAcademicaActualizadaEvent>().Single();
+        evento.PerfilColaboradorId.Should().Be(perfil.Id);
+        evento.PuntajePromedio.Should().Be(3.8m);
+        evento.TotalCalificaciones.Should().Be(7);
+        evento.NivelReputacion.Should().Be("Avanzado");
+    }
+
+    [Fact]
+    public void Reputacion_AlRecalcular_DebeReflejarNuevaCalificacion()
+    {
+        // Arrange
+        var perfil = PerfilColaborador.Crear(Guid.NewGuid());
+        var puntajes = new[] { 5, 5, 4, 5 };
+        var reputacionCalculada = perfil.Reputacion.Recalcular(puntajes);
+
+        // Act
+        perfil.ActualizarReputacion(reputacionCalculada);
+
+        // Assert
+        perfil.Reputacion.PuntajePromedio.Should().Be(4.75m);
+        perfil.Reputacion.Nivel.Should().Be(NivelReputacion.Experto);
     }
 }

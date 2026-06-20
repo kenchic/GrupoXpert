@@ -1,0 +1,8 @@
+@page "/dashboard/colaborador"
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Asesor,Administrador")]
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>Mi Panel - GrupoXpert</PageTitle>
+
+<GrupoXpert.Shared.UI.Componentes.Perfil.DashboardColaborador />

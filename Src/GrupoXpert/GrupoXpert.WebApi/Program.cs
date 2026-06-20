@@ -2,6 +2,7 @@ using System.Text;
 using GrupoXpert.Application;
 using GrupoXpert.Application.Identidad.Commands;
 using GrupoXpert.Application.Perfil.Commands;
+using GrupoXpert.Application.Perfil.Dtos;
 using GrupoXpert.Application.Perfil.Queries;
 using GrupoXpert.Infrastructure;
 using GrupoXpert.Infrastructure.Persistence;
@@ -226,6 +227,20 @@ try
         {
             return Results.BadRequest(new { mensaje = ex.Message });
         }
+    });
+
+    // 7. Endpoint de Dashboard Colaborador
+    var dashboardGroup = app.MapGroup("/api/dashboard")
+        .WithTags("Dashboard")
+        .RequireAuthorization();
+
+    dashboardGroup.MapGet("/colaborador", async (System.Security.Claims.ClaimsPrincipal user, ISender mediador, CancellationToken ct) =>
+    {
+        var usuarioIdString = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(usuarioIdString, out var usuarioId)) return Results.Unauthorized();
+
+        var dashboard = await mediador.Send(new ObtenerDashboardColaboradorQuery(usuarioId), ct);
+        return dashboard is not null ? Results.Ok(dashboard) : Results.NotFound(new { mensaje = "No se encontró el perfil de colaborador." });
     });
 
     app.MapControllers();

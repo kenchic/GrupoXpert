@@ -7,4 +7,5 @@ public interface IAvanceRepository
     Task ActualizarAsync(Avance avance, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Avance>> ObtenerPorSolicitudAsync(Guid solicitudId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Avance>> ObtenerPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
+    Task<int> ContarEntregasPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
 }

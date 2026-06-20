@@ -14,6 +14,7 @@ public class PerfilColaborador : AggregateRoot
     public int DisponibilidadHorasSemana { get; private set; }
     public int CargaAcademicaIdeal { get; private set; }
     public decimal EvaluacionCalidad { get; private set; }
+    public ReputacionAcademica Reputacion { get; private set; }
 
     private readonly List<AreaConocimiento> _areasConocimiento = new();
     public IReadOnlyList<string> AreasConocimiento => _areasConocimiento.Select(x => x.Area).ToList().AsReadOnly();
@@ -27,7 +28,7 @@ public class PerfilColaborador : AggregateRoot
     private readonly List<NormaCitacion> _normasCitacion = new();
     public IReadOnlyList<string> NormasCitacion => _normasCitacion.Select(x => x.Norma).ToList().AsReadOnly();
 
-    private PerfilColaborador() { } // Para EF Core
+    private PerfilColaborador() { EvaluacionCalidad = default; Reputacion = default!; }
 
     private PerfilColaborador(Guid id, Guid usuarioId) : base(id)
     {
@@ -37,6 +38,7 @@ public class PerfilColaborador : AggregateRoot
         DisponibilidadHorasSemana = 0;
         CargaAcademicaIdeal = 0;
         EvaluacionCalidad = 0m;
+        Reputacion = ReputacionAcademica.SinCalificaciones;
     }
 
     public static PerfilColaborador Crear(Guid usuarioId)
@@ -78,6 +80,20 @@ public class PerfilColaborador : AggregateRoot
             
         EvaluacionCalidad = nuevaEvaluacion;
         AgregarEventoDominio(new PerfilColaboradorActualizadoEvent(Id));
+    }
+
+    public void ActualizarReputacion(ReputacionAcademica nuevaReputacion)
+    {
+        if (nuevaReputacion is null)
+            throw new ArgumentException("La reputación académica no puede ser nula.", nameof(nuevaReputacion));
+
+        Reputacion = nuevaReputacion;
+
+        AgregarEventoDominio(new ReputacionAcademicaActualizadaEvent(
+            Id,
+            nuevaReputacion.PuntajePromedio,
+            nuevaReputacion.TotalCalificaciones,
+            nuevaReputacion.Nivel.ToString()));
     }
 
     public void AgregarAreaConocimiento(string area)

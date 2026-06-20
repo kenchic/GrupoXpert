@@ -26,6 +26,7 @@ builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ISolicitudAcademic
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IRevisionCalidadService, GrupoXpert.Web.Services.RevisionCalidadService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.ICalificacionService, GrupoXpert.Web.Services.CalificacionService>();
 builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IDescargadorArchivos, GrupoXpert.Web.Services.DescargadorArchivos>();
+builder.Services.AddScoped<GrupoXpert.Shared.UI.Abstracciones.IDashboardColaboradorService, GrupoXpert.Web.Services.DashboardColaboradorService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configurar servicios de autenticación y autorización basada en Cookies

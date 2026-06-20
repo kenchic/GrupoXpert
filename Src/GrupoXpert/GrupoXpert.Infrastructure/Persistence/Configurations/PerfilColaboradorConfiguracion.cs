@@ -21,6 +21,26 @@ public class PerfilColaboradorConfiguracion : IEntityTypeConfiguration<PerfilCol
         builder.Property(p => p.CargaAcademicaIdeal).IsRequired();
         builder.Property(p => p.EvaluacionCalidad).HasColumnType("decimal(3,1)").IsRequired();
 
+        builder.OwnsOne(p => p.Reputacion, reputacion =>
+        {
+            reputacion.Property(r => r.PuntajePromedio)
+                .HasColumnName("PuntajePromedioReputacion")
+                .HasColumnType("decimal(5,2)")
+                .IsRequired()
+                .HasDefaultValue(0m);
+
+            reputacion.Property(r => r.TotalCalificaciones)
+                .HasColumnName("TotalCalificacionesReputacion")
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            reputacion.Property(r => r.Nivel)
+                .HasColumnName("NivelReputacion")
+                .HasConversion<int>()
+                .IsRequired()
+                .HasDefaultValue(NivelReputacion.SinCalificar);
+        });
+
         // Configuración de AreasConocimiento
         builder.OwnsMany<AreaConocimiento>("_areasConocimiento", area =>
         {

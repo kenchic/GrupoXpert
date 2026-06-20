@@ -38,7 +38,7 @@ Esta tabla enumera los casos de uso en el orden lógico en que deben ser desarro
 | [X] | 22 | Aprobar Entregable Final y Cerrar Proyecto (Cliente) | 
 | [x] | 23 | Calificar Servicio y Colaborador (Sistema de Evaluación) | 
 | [ ] | 24 | Procesar Liberación de Pago a Colaborador (Sistema) | 
-| [ ] | 25 | Visualizar Dashboard de Colaborador (Historial, Ingresos, Reputación) |  
+| [x] | 25 | Visualizar Dashboard de Colaborador (Historial, Ingresos, Reputación) |  
 | [ ] | 26 | Visualizar Dashboard de Administrador (Métricas Globales) |  
 | [ ] | 27 | Gestionar Usuarios y Roles (CRUD Administrador) | 
 | [ ] | 28 | Gestionar Conflictos y Reclamos (Módulo de Soporte Admin) | 

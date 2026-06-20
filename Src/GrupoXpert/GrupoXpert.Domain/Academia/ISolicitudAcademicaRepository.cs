@@ -12,4 +12,8 @@ public interface ISolicitudAcademicaRepository
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<SolicitudAcademica>> ObtenerEnLiberacionAsync(CancellationToken cancellationToken = default);
     Task EliminarAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<int> ContarEnProcesoPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
+    Task<int> ContarAbiertasPorAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SolicitudAcademica>> ObtenerAsignadasAAsesorAsync(Guid asesorId, CancellationToken cancellationToken = default);
+    Task<int> ContarPostulacionesPendientesPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default);
 }

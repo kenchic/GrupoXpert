@@ -9,4 +9,6 @@ public interface ICalificacionColaboradorRepository
     Task<IReadOnlyList<CalificacionColaborador>> ObtenerPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<CalificacionColaborador>> ObtenerPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<CalificacionColaborador>> ObtenerTodasAsync(CancellationToken cancellationToken = default);
+    Task<decimal> ObtenerPuntajePromedioPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default);
+    Task<int> ContarCalificacionesPorColaboradorAsync(Guid colaboradorId, CancellationToken cancellationToken = default);
 }
